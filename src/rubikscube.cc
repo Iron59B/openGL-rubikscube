@@ -28,6 +28,18 @@ SubCube::SubCube(string colorstring) {
     }
 }
 
+void SubCube::setSubCube(string colorstring) {
+    colors.clear();
+    unsigned i;
+    for (i = 0; i < colorstring.size(); i++) {
+        colors.push_back(colorstring.at(i));
+    }
+}
+
+SubCube SubCube::getSubCube() {
+    return colors;
+}
+
 void SubCube::print() {
     string out = "";
     unsigned i;
@@ -66,6 +78,13 @@ void Cube::printFirstLayer() {
         cubes[i][0][0].print();
         cout << "\n";
     }
+}
+
+// function writes new subCube on cubes[x][y][z] and returns old one
+SubCube Cube::setNewPart(unsigned x, unsigned y, unsigned z, SubCube subCube) {
+    SubCube tmp = cubes[x][y][z];
+    cubes[x][y][z] = subCube;
+    return tmp;
 }
 
 Cube turn180Vert(Cube cube) {

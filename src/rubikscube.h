@@ -25,6 +25,8 @@ private:
 public:
     SubCube();
     SubCube(string colorstring);
+    void setSubCube(string colorstring);
+    SubCube getSubCube();
     void print();
 };
 
@@ -36,6 +38,7 @@ public:
     Cube();
     Cube(vector<SubCube> subCubes);
     void printFirstLayer();
+    SubCube setNewPart(unsigned x, unsigned y, unsigned z, SubCube subCube);
 };
 
 Cube turn180Vert(Cube cube);
