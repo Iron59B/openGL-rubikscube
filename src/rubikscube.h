@@ -26,7 +26,7 @@ public:
     SubCube();
     SubCube(string colorstring);
     void setSubCube(string colorstring);
-    SubCube getSubCube();
+    vector<char> getSubCube();
     void print();
 };
 

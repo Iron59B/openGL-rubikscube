@@ -36,7 +36,7 @@ void SubCube::setSubCube(string colorstring) {
     }
 }
 
-SubCube SubCube::getSubCube() {
+vector<char> SubCube::getSubCube() {
     return colors;
 }
 
