@@ -12,3 +12,15 @@ src/Makefile
 src/cmake_install.cmake
 openGL_demo
 rubikscube
+src/callbacks_quad.cc
+src/colored_quad.cc
+src/colored_tri.cc
+src/drawing.cc
+src/mvp_quad.cc
+src/spinning_quad.cc
+src/textured_cube.cc
+src/textured_quad.cc
+src/transformed_quad.cc
+src/window.cc
+libGLEW.a
+README.txt
