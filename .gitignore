@@ -1,0 +1,5 @@
+cleancmake.sh
+CMakeLists.txt
+CMake/FindGLFW.cmake
+CMake/FindSOIL.cmake
+img
