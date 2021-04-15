@@ -71,12 +71,14 @@ Cube::Cube(vector<SubCube> subCubes) {
 }
 
 void Cube::printFirstLayer() {
-    unsigned i;
+    unsigned i, p;
     string out = "";
 
     for (i = 0; i < 3; i++) {
-        cubes[i][0][0].print();
-        cout << "\n";
+        for (p = 0; p < 3; p++) {
+            cubes[p][i][0].print();
+            cout << "\n";
+        }
     }
 }
 
@@ -91,8 +93,8 @@ Cube turn180Vert(Cube cube) {
     return cube;
 }
 
+// testing function
 int test() {
-    // testing
     vector<SubCube> testCube;
 
     // first layer:

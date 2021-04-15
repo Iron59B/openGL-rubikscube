@@ -20,7 +20,9 @@ private:
     ** tation priority of each SubCube is consistent:           **
     ** CORNERS -- (1) front-back, (2) top-bottom (3) left-right **
     ** EDGES -- (1) front-back, (2) top-bottom (3) left-right   **
-    ** SURFACES -- consist of only 1 color at [0]               */
+    ** SURFACES -- consist of only 1 color at [0]               **
+    *************************************************************/
+
     vector<char> colors;
 public:
     SubCube();
