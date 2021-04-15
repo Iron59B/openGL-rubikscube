@@ -10,3 +10,5 @@ src/CMakeLists.txt
 src/CMakeFiles/
 src/Makefile
 src/cmake_install.cmake
+openGL_demo
+rubikscube
