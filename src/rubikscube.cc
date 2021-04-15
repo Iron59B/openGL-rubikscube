@@ -16,19 +16,19 @@ using namespace std;
 
 
 /**********************************************************************
-**                         DEFINITION SCOPE                          **
+**                      CLASS MEMBER DEFINITIONS                     **
 **********************************************************************/
 
-SubCube::SubCube(){}
+CubePiece::CubePiece(){}
 
-SubCube::SubCube(string colorstring) {
+CubePiece::CubePiece(string colorstring) {
     unsigned i;
     for (i = 0; i < colorstring.size(); i++) {
         colors.push_back(colorstring.at(i));
     }
 }
 
-void SubCube::setSubCube(string colorstring) {
+void CubePiece::setColors(string colorstring) {
     colors.clear();
     unsigned i;
     for (i = 0; i < colorstring.size(); i++) {
@@ -36,11 +36,11 @@ void SubCube::setSubCube(string colorstring) {
     }
 }
 
-vector<char> SubCube::getSubCube() {
+vector<char> CubePiece::getColors() {
     return colors;
 }
 
-void SubCube::print() {
+void CubePiece::print() {
     string out = "";
     unsigned i;
     for (i = 0; i < colors.size(); i++) {
@@ -52,9 +52,29 @@ void SubCube::print() {
     }
 }
 
+bool CubePiece::isCornerPiece() {
+    if (colors.size() == 3)
+        return true;
+    else return false;
+}
+bool CubePiece::isEdgePiece() {
+    if (colors.size() == 2)
+        return true;
+    else return false;
+}
+bool CubePiece::isSurfacePiece() {
+    if (colors.size() == 1)
+        return true;
+    else return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 Cube::Cube(){}
 
-Cube::Cube(vector<SubCube> subCubes) {
+Cube::Cube(vector<CubePiece> cubePieces) {
     unsigned i, x, y, z;
     i = 0;
 
@@ -62,7 +82,7 @@ Cube::Cube(vector<SubCube> subCubes) {
         for (y = 0; y < 3; y++) {
             for (x = 0; x < 3; x++) {
                 if (i < 27) {
-                    cubes[x][y][z] = subCubes[i];
+                    cubes[x][y][z] = cubePieces[i];
                     i++;
                 }
             }
@@ -82,31 +102,45 @@ void Cube::printFirstLayer() {
     }
 }
 
-// function writes new subCube on cubes[x][y][z] and returns old one
-SubCube Cube::setNewPart(unsigned x, unsigned y, unsigned z, SubCube subCube) {
-    SubCube tmp = cubes[x][y][z];
-    cubes[x][y][z] = subCube;
+// function writes new cubePiece on cubes[x][y][z] and returns old one
+CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece) {
+    CubePiece tmp = cubes[x][y][z];
+    cubes[x][y][z] = cubePiece;
     return tmp;
 }
 
+
+/**********************************************************************
+**                    GLOBAL FUNCTION DEFINITIONS                    **
+**********************************************************************/
+
+
+//
+// Cube swapCubePiecesDiagonal(Cube cube, unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
+//     if (cube.cubes[initX][initY][initZ]
+// }
+
+
 Cube turn180Vert(Cube cube) {
+
+
     return cube;
 }
 
 // testing function
 int test() {
-    vector<SubCube> testCube;
+    vector<CubePiece> testCube;
 
     // first layer:
-    SubCube c000 = SubCube("bwo");
-    SubCube c100 = SubCube("yb");
-    SubCube c200 = SubCube("ybr");
-    SubCube c010 = SubCube("gw");
-    SubCube c110 = SubCube("w");
-    SubCube c210 = SubCube("rb");
-    SubCube c020 = SubCube("rwg");
-    SubCube c120 = SubCube("gr");
-    SubCube c220 = SubCube("brw");
+    CubePiece c000 = CubePiece("bwo");
+    CubePiece c100 = CubePiece("yb");
+    CubePiece c200 = CubePiece("ybr");
+    CubePiece c010 = CubePiece("gw");
+    CubePiece c110 = CubePiece("w");
+    CubePiece c210 = CubePiece("rb");
+    CubePiece c020 = CubePiece("rwg");
+    CubePiece c120 = CubePiece("gr");
+    CubePiece c220 = CubePiece("brw");
 
     testCube.push_back(c000);
     testCube.push_back(c100);
@@ -119,15 +153,15 @@ int test() {
     testCube.push_back(c220);
 
     // second layer:
-    SubCube c001 = SubCube("ob");
-    SubCube c101 = SubCube("r");
-    SubCube c201 = SubCube("wo");
-    SubCube c011 = SubCube("b");
-    SubCube c111 = SubCube("-");
-    SubCube c211 = SubCube("g");
-    SubCube c021 = SubCube("wb");
-    SubCube c121 = SubCube("o");
-    SubCube c221 = SubCube("ry");
+    CubePiece c001 = CubePiece("ob");
+    CubePiece c101 = CubePiece("r");
+    CubePiece c201 = CubePiece("wo");
+    CubePiece c011 = CubePiece("b");
+    CubePiece c111 = CubePiece("-");
+    CubePiece c211 = CubePiece("g");
+    CubePiece c021 = CubePiece("wb");
+    CubePiece c121 = CubePiece("o");
+    CubePiece c221 = CubePiece("ry");
 
     testCube.push_back(c001);
     testCube.push_back(c101);
@@ -140,15 +174,15 @@ int test() {
     testCube.push_back(c221);
 
     // third layer:
-    SubCube c002 = SubCube("gyr");
-    SubCube c102 = SubCube("yg");
-    SubCube c202 = SubCube("oyb");
-    SubCube c012 = SubCube("wr");
-    SubCube c112 = SubCube("y");
-    SubCube c212 = SubCube("oy");
-    SubCube c022 = SubCube("wgo");
-    SubCube c122 = SubCube("og");
-    SubCube c222 = SubCube("goy");
+    CubePiece c002 = CubePiece("gyr");
+    CubePiece c102 = CubePiece("yg");
+    CubePiece c202 = CubePiece("oyb");
+    CubePiece c012 = CubePiece("wr");
+    CubePiece c112 = CubePiece("y");
+    CubePiece c212 = CubePiece("oy");
+    CubePiece c022 = CubePiece("wgo");
+    CubePiece c122 = CubePiece("og");
+    CubePiece c222 = CubePiece("goy");
 
     testCube.push_back(c002);
     testCube.push_back(c102);
