@@ -19,12 +19,28 @@ using namespace std;
 **                      CLASS MEMBER DEFINITIONS                     **
 **********************************************************************/
 
+Color::Color(){}
+
+Color::Color(char color) {
+    this->color = color;
+}
+
+char Color::getColor() {
+    return color;
+}
+
+void Color::setColor(char color) {
+    this->color = color;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 CubePiece::CubePiece(){}
 
 CubePiece::CubePiece(string colorstring) {
     unsigned i;
     for (i = 0; i < colorstring.size(); i++) {
-        colors.push_back(colorstring.at(i));
+        colors.push_back(Color(colorstring.at(i)));
     }
 }
 
@@ -32,11 +48,11 @@ void CubePiece::setColors(string colorstring) {
     colors.clear();
     unsigned i;
     for (i = 0; i < colorstring.size(); i++) {
-        colors.push_back(colorstring.at(i));
+        colors.push_back(Color(colorstring.at(i)));
     }
 }
 
-vector<char> CubePiece::getColors() {
+vector<Color> CubePiece::getColors() {
     return colors;
 }
 
@@ -45,10 +61,10 @@ void CubePiece::print() {
     unsigned i;
     for (i = 0; i < colors.size(); i++) {
         if (i == colors.size() -1) {
-            cout << out << colors[i] << "\n";
+            cout << out << colors[i].getColor() << "\n";
             return;
         }
-        out = out + colors[i] + ", ";
+        out = out + colors[i].getColor() + ", ";
     }
 }
 
@@ -74,7 +90,7 @@ bool CubePiece::isSurfacePiece() {
 
 Cube::Cube(){}
 
-Cube::Cube(vector<CubePiece> cubePieces) {
+Cube::Cube(vector<CubePiece> pieces) {
     unsigned i, x, y, z;
     i = 0;
 
@@ -82,7 +98,7 @@ Cube::Cube(vector<CubePiece> cubePieces) {
         for (y = 0; y < 3; y++) {
             for (x = 0; x < 3; x++) {
                 if (i < 27) {
-                    cubes[x][y][z] = cubePieces[i];
+                    cubePieces[x][y][z] = pieces[i];
                     i++;
                 }
             }
@@ -96,18 +112,58 @@ void Cube::printFirstLayer() {
 
     for (i = 0; i < 3; i++) {
         for (p = 0; p < 3; p++) {
-            cubes[p][i][0].print();
+            cubePieces[p][i][0].print();
             cout << "\n";
         }
     }
 }
 
-// function writes new cubePiece on cubes[x][y][z] and returns old one
+void Cube::printWholeCube() {
+    unsigned i, p, k;
+    string out = "";
+
+    for (i = 0; i < 3; i++) {
+        if (i == 0)
+            cout << "First layer: \n";
+        else if (i == 1)
+            cout << "Second layer: \n";
+        else
+            cout << "Third layer: \n";
+        for (p = 0; p < 3; p++) {
+            for (k = 0; k < 3; k++) {
+                cubePieces[k][p][i].print();
+                cout << "\n";
+            }
+        }
+    }
+}
+// function writes new cubePiece on cubePieces[x][y][z] and returns old one
 CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece) {
-    CubePiece tmp = cubes[x][y][z];
-    cubes[x][y][z] = cubePiece;
+    CubePiece tmp = cubePieces[x][y][z];
+    cubePieces[x][y][z] = cubePiece;
     return tmp;
 }
+
+/**********************************************************************
+**                  CUBE MOVEMENT FUNCTION DEFINITIONS               **
+**********************************************************************/
+
+// cube (layer) being roated 180 degrees vertically
+void Cube::swapCornerPieces(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
+    CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[initX][initY][initZ]);
+    setNewPiece(initX, initY, initZ, tmp);
+}
+
+// Cube Cube::swapCubePiecesDiagonally(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
+//     if (cube.cubePieces[initX][initY][initZ].isCornerPiece())
+// }
+//
+// // in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY
+// Cube Cube::turn180Vert(Cube cube) {
+//
+//
+//     return cube;
+// }
 
 
 /**********************************************************************
@@ -115,17 +171,6 @@ CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePi
 **********************************************************************/
 
 
-//
-// Cube swapCubePiecesDiagonal(Cube cube, unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
-//     if (cube.cubes[initX][initY][initZ]
-// }
-
-
-Cube turn180Vert(Cube cube) {
-
-
-    return cube;
-}
 
 // testing function
 int test() {
@@ -196,7 +241,11 @@ int test() {
 
     Cube cube = Cube(testCube);
 
-    cube.printFirstLayer();
+    cube.printWholeCube();
+
+    cube.swapCornerPieces(0,0,0,0,2,2);
+    cout << "swapped pieces \n";
+    cube.printWholeCube();
 
     return 0;
 }
