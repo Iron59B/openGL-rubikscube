@@ -148,22 +148,43 @@ CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePi
 **                  CUBE MOVEMENT FUNCTION DEFINITIONS               **
 **********************************************************************/
 
-// cube (layer) being roated 180 degrees vertically
-void Cube::swapCornerPieces(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
-    CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[initX][initY][initZ]);
-    setNewPiece(initX, initY, initZ, tmp);
+void Cube::swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
+    CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[startX][startY][startZ]);
+    setNewPiece(startX, startY, startZ, tmp);
 }
 
-// Cube Cube::swapCubePiecesDiagonally(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
-//     if (cube.cubePieces[initX][initY][initZ].isCornerPiece())
-// }
-//
-// // in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY
-// Cube Cube::turn180Vert(Cube cube) {
-//
-//
-//     return cube;
-// }
+
+// in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY
+void Cube::turn180Vert() {
+    unsigned x, y, z;
+
+    for (z = 0; z < 2; z++) {
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (y == 1 && z == 1)
+                    return;
+                if (cubePieces[x][y][z].isCornerPiece()) {
+                    swapPieces(x, y, z, x, 2-y, 2-z); // 2-y and 2-z swaps start and target coordinates of y,z
+                } else if (cubePieces[x][y][z].isEdgePiece()) {
+                    if (x == 1) {   // x == 1 means that edge pieces are swapping diagonally
+                        swapPieces(x, 2-y, 2-z, x, y, z);
+                    } else if ((x == 0 && y == 1) || (x == 2 && y == 1)) {  // edge pieces are on x == 0 \ 2
+                        swapPieces(x, y, z, x, y, 2-z);
+                    } else {
+                        swapPieces(x, y, z, x, 2-y, z);
+                    }
+                } else {
+                    if (x == 1) {
+                        if (z == 0)
+                            swapPieces(x, y, z, x, y, 2-z);
+                        else
+                            swapPieces(x, y, z, x, 2-y, z);
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 /**********************************************************************
@@ -243,9 +264,11 @@ int test() {
 
     cube.printWholeCube();
 
-    cube.swapCornerPieces(0,0,0,0,2,2);
-    cout << "swapped pieces \n";
+    cube.turn180Vert();
+    cout << "Turned cube 180 degrees vertically\n";
+
     cube.printWholeCube();
+
 
     return 0;
 }

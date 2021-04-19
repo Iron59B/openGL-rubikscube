@@ -57,9 +57,8 @@ public:
     void printFirstLayer();
     void printWholeCube();
     CubePiece setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece);
-    void swapCornerPieces(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ);
-    Cube swapCubePiecesDiagonally(unsigned initX, unsigned initY, unsigned initZ, unsigned targetX, unsigned targetY, unsigned targetZ);
-    Cube turn180Vert(Cube cube);
+    void swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ);
+    void turn180Vert();
     Cube turnUp90Vert(Cube cube);
     Cube turnDown90Vert(Cube cube);
     Cube spin180(Cube cube);
