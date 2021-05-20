@@ -84,6 +84,27 @@ bool CubePiece::isSurfacePiece() {
     else return false;
 }
 
+// changes the color orientation of the cubepiece so it ist correctly oriented after the move
+void CubePiece::prepareEdgePieceMoveRight90() {
+    string prepared = "";
+    Color initCol1 = getColors().at(0);
+    Color initCol2 = getColors().at(1);
+    //cout << initCol1.getColor() << endl;
+    prepared = initCol2.getColor() + initCol1.getColor();
+    setColors(prepared);
+}
+
+// changes the color orientation of the cubepiece so it ist correctly oriented after the move
+void CubePiece::prepareCornerPieceMoveRight90() {
+    string prepared = "";
+    Color initCol1 = getColors().at(0);
+    Color initCol2 = getColors().at(1);
+    Color initCol3 = getColors().at(2);
+    //cout << initCol3.getColor() << initCol2.getColor() << initCol1.getColor() << endl;
+    prepared = initCol3.getColor() + initCol2.getColor() + initCol1.getColor();
+    setColors(prepared);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -148,20 +169,21 @@ CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePi
 **                  CUBE MOVEMENT FUNCTION DEFINITIONS               **
 **********************************************************************/
 
+// swaps CubePiece[startX][startY][startZ] with CubePiece[targetX][targetY][targetZ]
 void Cube::swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
     CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[startX][startY][startZ]);
     setNewPiece(startX, startY, startZ, tmp);
 }
 
 
-// in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY
-void Cube::turn180Vert() {
+// in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY (along x axis)
+void Cube::spinUpAlongX180() {
     unsigned x, y, z;
 
-    for (z = 0; z < 2; z++) {
+    for (z = 0; z < 3; z++) {
         for (y = 0; y < 3; y++) {
             for (x = 0; x < 3; x++) {
-                if (y == 1 && z == 1)
+                if (y == 1 && z == 1) // core piece (invisible) is reached -> any piece has been changed -> done
                     return;
                 if (cubePieces[x][y][z].isCornerPiece()) {
                     swapPieces(x, y, z, x, 2-y, 2-z); // 2-y and 2-z swaps start and target coordinates of y,z
@@ -184,6 +206,29 @@ void Cube::turn180Vert() {
             }
         }
     }
+}
+
+// spins whole cube to the right along the z axis
+void Cube::spinRight90AlongZ() {
+    unsigned x, y, z;
+    vector<CubePiece> cornerPieces;
+    vector<CubePiece> edgePieces;
+    vector<CubePiece> surfacePieces;
+
+    z = 0;
+    for (y = 0; y < 3; y++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece()) {
+                cornerPieces.push_back(cubePieces[x][y][z]);
+            } else if (cubePieces[x][y][z].isEdgePiece()) {
+                edgePieces.push_back(cubePieces[x][y][z]);
+            } else {
+                surfacePieces.push_back(cubePieces[x][y][z]);
+            }
+        }
+    }
+
+
 }
 
 
@@ -264,10 +309,11 @@ int test() {
 
     cube.printWholeCube();
 
-    cube.turn180Vert();
+    cube.spinUpAlongX180();
     cout << "Turned cube 180 degrees vertically\n";
 
     cube.printWholeCube();
+
 
 
     return 0;

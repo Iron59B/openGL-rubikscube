@@ -34,7 +34,7 @@ private:
     ** CORNERS -- (1) front-back, (2) top-bottom (3) left-right   **
     ** EDGES -- (1) front-back, (2) top-bottom (3) left-right     **
     ** SURFACES -- consist of only 1 color at [0]                 **
-    ****************************************************************/
+    ***************************************************************/
     vector<Color> colors;
 public:
     CubePiece();
@@ -45,6 +45,8 @@ public:
     bool isCornerPiece();
     bool isEdgePiece();
     bool isSurfacePiece();
+    void prepareCornerPieceMoveRight90();
+    void prepareEdgePieceMoveRight90();
 };
 
 class Cube {
@@ -58,12 +60,8 @@ public:
     void printWholeCube();
     CubePiece setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece);
     void swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ);
-    void turn180Vert();
-    Cube turnUp90Vert(Cube cube);
-    Cube turnDown90Vert(Cube cube);
-    Cube spin180(Cube cube);
-    Cube spinRight90(Cube cube);
-    Cube spinLeft90(Cube cube);
+    void spinUpAlongX180();
+    void spinRight90AlongZ();
 };
 
 
