@@ -209,33 +209,16 @@ void Cube::spinUpAlongX180() {
 
 // spins whole cube to the right along the z axis
 void Cube::spinRight90AlongZ() {
-    // unsigned x, y, z;
-    // vector<CubePiece> cornerPieces;
-    // vector<CubePiece> edgePieces;
-    // vector<CubePiece> surfacePieces;
-    //
-    // z = 0;
-    // for (y = 0; y < 3; y++) {
-    //     for (x = 0; x < 3; x++) {
-    //         if (cubePieces[x][y][z].isCornerPiece()) {
-    //             cornerPieces.push_back(cubePieces[x][y][z].prepareCornerPieceMoveRight90());
-    //         } else if (cubePieces[x][y][z].isEdgePiece()) {
-    //             edgePieces.push_back(cubePieces[x][y][z].prepareEdgePieceMoveRight90());
-    //         } else {
-    //             surfacePieces.push_back(cubePieces[x][y][z]);
-    //         }
-    //     }
-    // }
-    // CubePiece tmp = cornerPieces.at(0);
-    // CubePiece new
-
-
+    spinLayerRight90AlongZ(0);
+    spinLayerRight90AlongZ(1);
+    spinLayerRight90AlongZ(2);
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
 void Cube::spinLayerRight90AlongZ(unsigned layer) {
     unsigned x, y;
     unsigned z = layer;
+    CubePiece tmpEdge, tmpCorn;
 
     for (y = 0; y < 3; y++) {
         for (x = 0; x < 3; x++) {
@@ -246,19 +229,25 @@ void Cube::spinLayerRight90AlongZ(unsigned layer) {
         }
     }
 
-    // moving corner pieces
-    CubePiece tmpCorn = cubePieces[0][2][z];
-    cubePieces[0][2][z] = cubePieces[0][0][z];
-    cubePieces[0][0][z] = cubePieces[2][0][z];
-    cubePieces[2][0][z] = cubePieces[2][2][z];
-    cubePieces[2][2][z] = tmpCorn;
+    // if (layer != 1) {
+        // moving corner pieces
+        tmpCorn = cubePieces[0][2][z];
+        cubePieces[0][2][z] = cubePieces[0][0][z];
+        cubePieces[0][0][z] = cubePieces[2][0][z];
+        cubePieces[2][0][z] = cubePieces[2][2][z];
+        cubePieces[2][2][z] = tmpCorn;
 
-    // moving edge cubePieces
-    CubePiece tmpEdge = cubePieces[0][1][z];
-    cubePieces[0][1][z] = cubePieces[1][0][z];
-    cubePieces[1][0][z] = cubePieces[2][1][z];
-    cubePieces[2][1][z] = cubePieces[1][2][z];
-    cubePieces[1][2][z] = tmpEdge;
+        // moving edge cubePieces
+        tmpEdge = cubePieces[0][1][z];
+        cubePieces[0][1][z] = cubePieces[1][0][z];
+        cubePieces[1][0][z] = cubePieces[2][1][z];
+        cubePieces[2][1][z] = cubePieces[1][2][z];
+        cubePieces[1][2][z] = tmpEdge;
+    // }
+    // else {
+    //     tmpEdge = cubePieces[0][2][z];
+    //     cubePieces[0][2][z] =
+    // }
 
 }
 
@@ -345,11 +334,11 @@ int test() {
     //
     // cube.printWholeCube();
 
-    cube.printFirstLayer();
-    cube.spinLayerRight90AlongZ(0);
-    cout << "Spinned bottom layer 90 degrees to the right" << endl;
+    cube.printWholeCube();
+    cube.spinRight90AlongZ();
+    cout << "Spinned cube 90 degrees to the right" << endl;
 
-    cube.printFirstLayer();
+    cube.printWholeCube();
 
 
 
