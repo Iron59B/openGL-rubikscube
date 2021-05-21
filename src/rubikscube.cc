@@ -87,21 +87,19 @@ bool CubePiece::isSurfacePiece() {
 // changes the color orientation of the cubepiece so it ist correctly oriented after the move
 void CubePiece::prepareEdgePieceMoveRight90() {
     string prepared = "";
-    Color initCol1 = getColors().at(0);
-    Color initCol2 = getColors().at(1);
-    //cout << initCol1.getColor() << endl;
-    prepared = initCol2.getColor() + initCol1.getColor();
+    char initCol1 = getColors().at(0).getColor();
+    char initCol2 = getColors().at(1).getColor();
+    prepared = prepared + initCol2 + initCol1;
     setColors(prepared);
 }
 
 // changes the color orientation of the cubepiece so it ist correctly oriented after the move
 void CubePiece::prepareCornerPieceMoveRight90() {
     string prepared = "";
-    Color initCol1 = getColors().at(0);
-    Color initCol2 = getColors().at(1);
-    Color initCol3 = getColors().at(2);
-    //cout << initCol3.getColor() << initCol2.getColor() << initCol1.getColor() << endl;
-    prepared = initCol3.getColor() + initCol2.getColor() + initCol1.getColor();
+    char initCol1 = getColors().at(0).getColor();
+    char initCol2 = getColors().at(1).getColor();
+    char initCol3 = getColors().at(2).getColor();
+    prepared = prepared + initCol3 + initCol2 + initCol1;
     setColors(prepared);
 }
 
@@ -127,6 +125,7 @@ Cube::Cube(vector<CubePiece> pieces) {
     }
 }
 
+// prints first (bottom) layer
 void Cube::printFirstLayer() {
     unsigned i, p;
     string out = "";
@@ -210,24 +209,56 @@ void Cube::spinUpAlongX180() {
 
 // spins whole cube to the right along the z axis
 void Cube::spinRight90AlongZ() {
-    unsigned x, y, z;
-    vector<CubePiece> cornerPieces;
-    vector<CubePiece> edgePieces;
-    vector<CubePiece> surfacePieces;
+    // unsigned x, y, z;
+    // vector<CubePiece> cornerPieces;
+    // vector<CubePiece> edgePieces;
+    // vector<CubePiece> surfacePieces;
+    //
+    // z = 0;
+    // for (y = 0; y < 3; y++) {
+    //     for (x = 0; x < 3; x++) {
+    //         if (cubePieces[x][y][z].isCornerPiece()) {
+    //             cornerPieces.push_back(cubePieces[x][y][z].prepareCornerPieceMoveRight90());
+    //         } else if (cubePieces[x][y][z].isEdgePiece()) {
+    //             edgePieces.push_back(cubePieces[x][y][z].prepareEdgePieceMoveRight90());
+    //         } else {
+    //             surfacePieces.push_back(cubePieces[x][y][z]);
+    //         }
+    //     }
+    // }
+    // CubePiece tmp = cornerPieces.at(0);
+    // CubePiece new
 
-    z = 0;
+
+}
+
+// spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
+void Cube::spinLayerRight90AlongZ(unsigned layer) {
+    unsigned x, y;
+    unsigned z = layer;
+
     for (y = 0; y < 3; y++) {
         for (x = 0; x < 3; x++) {
-            if (cubePieces[x][y][z].isCornerPiece()) {
-                cornerPieces.push_back(cubePieces[x][y][z]);
-            } else if (cubePieces[x][y][z].isEdgePiece()) {
-                edgePieces.push_back(cubePieces[x][y][z]);
-            } else {
-                surfacePieces.push_back(cubePieces[x][y][z]);
-            }
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMoveRight90();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMoveRight90();
         }
     }
 
+    // moving corner pieces
+    CubePiece tmpCorn = cubePieces[0][2][z];
+    cubePieces[0][2][z] = cubePieces[0][0][z];
+    cubePieces[0][0][z] = cubePieces[2][0][z];
+    cubePieces[2][0][z] = cubePieces[2][2][z];
+    cubePieces[2][2][z] = tmpCorn;
+
+    // moving edge cubePieces
+    CubePiece tmpEdge = cubePieces[0][1][z];
+    cubePieces[0][1][z] = cubePieces[1][0][z];
+    cubePieces[1][0][z] = cubePieces[2][1][z];
+    cubePieces[2][1][z] = cubePieces[1][2][z];
+    cubePieces[1][2][z] = tmpEdge;
 
 }
 
@@ -307,12 +338,18 @@ int test() {
 
     Cube cube = Cube(testCube);
 
-    cube.printWholeCube();
+    // cube.printWholeCube();
+    //
+    // cube.spinUpAlongX180();
+    // cout << "Turned cube 180 degrees vertically\n";
+    //
+    // cube.printWholeCube();
 
-    cube.spinUpAlongX180();
-    cout << "Turned cube 180 degrees vertically\n";
+    cube.printFirstLayer();
+    cube.spinLayerRight90AlongZ(0);
+    cout << "Spinned bottom layer 90 degrees to the right" << endl;
 
-    cube.printWholeCube();
+    cube.printFirstLayer();
 
 
 

@@ -62,6 +62,7 @@ public:
     void swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ);
     void spinUpAlongX180();
     void spinRight90AlongZ();
+    void spinLayerRight90AlongZ(unsigned layer);
 };
 
 
