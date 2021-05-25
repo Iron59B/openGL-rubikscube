@@ -6,9 +6,9 @@
 #include "rubikscube.h"
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
-#include <GL/glew.h>
+#include<GL/glew.h>
 /* SOIL is used for loading (texture) images */
-#include <SOIL.h>
+#include<SOIL.h>
 /* GLFW is used for creating and manipulating graphics windows */
 #include<GLFW/glfw3.h>
 
@@ -25,7 +25,7 @@ Color::Color(char color) {
     this->color = color;
 }
 
-char Color::getColor() {
+char Color::getColorChar() {
     return color;
 }
 
@@ -61,10 +61,10 @@ void CubePiece::print() {
     unsigned i;
     for (i = 0; i < colors.size(); i++) {
         if (i == colors.size() -1) {
-            cout << out << colors[i].getColor() << "\n";
+            cout << out << colors[i].getColorChar() << "\n";
             return;
         }
-        out = out + colors[i].getColor() + ", ";
+        out = out + colors[i].getColorChar() + ", ";
     }
 }
 
@@ -84,22 +84,71 @@ bool CubePiece::isSurfacePiece() {
     else return false;
 }
 
-// changes the color orientation of the cubepiece so it ist correctly oriented after the move
-void CubePiece::prepareEdgePieceMoveRight90() {
+// prepareCornerPieceMove functions
+
+/************************************************************************************************
+** functions that turn the color order of the CubePiece so it is oriented correctly            **
+** after the particular move                                                                   **
+************************************************************************************************/
+void CubePiece::prepareCornerPieceMove90AlongX() {
     string prepared = "";
-    char initCol1 = getColors().at(0).getColor();
-    char initCol2 = getColors().at(1).getColor();
-    prepared = prepared + initCol2 + initCol1;
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+    char initCol3 = getColors().at(2).getColorChar();
+    prepared = prepared + initCol2 + initCol1 + initCol3;
     setColors(prepared);
 }
 
-// changes the color orientation of the cubepiece so it ist correctly oriented after the move
-void CubePiece::prepareCornerPieceMoveRight90() {
+void CubePiece::prepareEdgePieceMove90AlongX(unsigned z, unsigned x) {
     string prepared = "";
-    char initCol1 = getColors().at(0).getColor();
-    char initCol2 = getColors().at(1).getColor();
-    char initCol3 = getColors().at(2).getColor();
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+
+    // orientation only changes in the particular case
+    if (z == 0 || z == 2) {  // top and bottom layer behave differently than middle one
+        if (x == 1) {
+            prepared = prepared + initCol2 + initCol1;
+            setColors(prepared);
+        }
+    }
+}
+
+void CubePiece::prepareCornerPieceMove90AlongY() {
+    string prepared = "";
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+    char initCol3 = getColors().at(2).getColorChar();
+    prepared = prepared + initCol1 + initCol3 + initCol2;
+    setColors(prepared);
+}
+
+void CubePiece::prepareEdgePieceMove90AlongY(unsigned y) {
+    string prepared = "";
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+
+    // orientation only changes in the second y layer
+    if (y == 1) {
+        prepared = prepared + initCol2 + initCol1;
+        setColors(prepared);
+    }
+}
+
+// changes the color orientation of the cubepiece so it ist correctly oriented after the move
+void CubePiece::prepareCornerPieceMove90AlongZ() {
+    string prepared = "";
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+    char initCol3 = getColors().at(2).getColorChar();
     prepared = prepared + initCol3 + initCol2 + initCol1;
+    setColors(prepared);
+}
+
+void CubePiece::prepareEdgePieceMove90AlongZ() {
+    string prepared = "";
+    char initCol1 = getColors().at(0).getColorChar();
+    char initCol2 = getColors().at(1).getColorChar();
+    prepared = prepared + initCol2 + initCol1;
     setColors(prepared);
 }
 
@@ -157,54 +206,139 @@ void Cube::printWholeCube() {
         }
     }
 }
-// function writes new cubePiece on cubePieces[x][y][z] and returns old one
-CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece) {
-    CubePiece tmp = cubePieces[x][y][z];
-    cubePieces[x][y][z] = cubePiece;
-    return tmp;
-}
+// // function writes new cubePiece on cubePieces[x][y][z] and returns old one
+// CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece) {
+//     CubePiece tmp = cubePieces[x][y][z];
+//     cubePieces[x][y][z] = cubePiece;
+//     return tmp;
+// }
+
+// // swaps CubePiece[startX][startY][startZ] with CubePiece[targetX][targetY][targetZ]
+// void Cube::swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
+//     CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[startX][startY][startZ]);
+//     setNewPiece(startX, startY, startZ, tmp);
+// }
+
 
 /**********************************************************************
 **                  CUBE MOVEMENT FUNCTION DEFINITIONS               **
 **********************************************************************/
 
-// swaps CubePiece[startX][startY][startZ] with CubePiece[targetX][targetY][targetZ]
-void Cube::swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
-    CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[startX][startY][startZ]);
-    setNewPiece(startX, startY, startZ, tmp);
+
+void Cube::spinUp180AlongX() {
+    spinUp90AlongX();
+    spinUp90AlongX();
 }
 
+// spins whole cube up along the x axis
+void Cube::spinUp90AlongX() {
+    spinLayerUp90AlongX(0);
+    spinLayerUp90AlongX(1);
+    spinLayerUp90AlongX(2);
+}
 
-// in order to turn around the whole cube, we always turn it by 180 degrees VERTICALLY (along x axis)
-void Cube::spinUpAlongX180() {
-    unsigned x, y, z;
+// spins affected layer up 90 degrees along the x axis
+void Cube::spinLayerUp90AlongX(unsigned xLayer) {
+    unsigned y, z;
+    unsigned x = xLayer;
+    CubePiece tmp;
 
     for (z = 0; z < 3; z++) {
         for (y = 0; y < 3; y++) {
-            for (x = 0; x < 3; x++) {
-                if (y == 1 && z == 1) // core piece (invisible) is reached -> any piece has been changed -> done
-                    return;
-                if (cubePieces[x][y][z].isCornerPiece()) {
-                    swapPieces(x, y, z, x, 2-y, 2-z); // 2-y and 2-z swaps start and target coordinates of y,z
-                } else if (cubePieces[x][y][z].isEdgePiece()) {
-                    if (x == 1) {   // x == 1 means that edge pieces are swapping diagonally
-                        swapPieces(x, 2-y, 2-z, x, y, z);
-                    } else if ((x == 0 && y == 1) || (x == 2 && y == 1)) {  // edge pieces are on x == 0 \ 2
-                        swapPieces(x, y, z, x, y, 2-z);
-                    } else {
-                        swapPieces(x, y, z, x, 2-y, z);
-                    }
-                } else {
-                    if (x == 1) {
-                        if (z == 0)
-                            swapPieces(x, y, z, x, y, 2-z);
-                        else
-                            swapPieces(x, y, z, x, 2-y, z);
-                    }
-                }
-            }
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongX();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongX(z, x);
         }
     }
+
+    // moving corner pieces
+    tmp = cubePieces[x][0][2];
+    cubePieces[x][0][2] = cubePieces[x][0][0];
+    cubePieces[x][0][0] = cubePieces[x][2][0];
+    cubePieces[x][2][0] = cubePieces[x][2][2];
+    cubePieces[x][2][2] = tmp;
+
+    // moving edge cubePieces
+    tmp = cubePieces[x][0][1];
+    cubePieces[x][0][1] = cubePieces[x][1][0];
+    cubePieces[x][1][0] = cubePieces[x][2][1];
+    cubePieces[x][2][1] = cubePieces[x][1][2];
+    cubePieces[x][1][2] = tmp;
+}
+
+// spins whole cube down along the x axis
+void Cube::spinDown90AlongX() {
+    spinLayerDown90AlongX(0);
+    spinLayerDown90AlongX(1);
+    spinLayerDown90AlongX(2);
+}
+
+// spins affected layer down 90 degrees along the x axis
+void Cube::spinLayerDown90AlongX(unsigned xLayer) {
+    unsigned y, z;
+    unsigned x = xLayer;
+    CubePiece tmp;
+
+    for (z = 0; z < 3; z++) {
+        for (y = 0; y < 3; y++) {
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongX();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongX(z, x);
+        }
+    }
+
+    // moving corner pieces
+    tmp = cubePieces[x][2][0];
+    cubePieces[x][2][0] = cubePieces[x][0][0];
+    cubePieces[x][0][0] = cubePieces[x][0][2];
+    cubePieces[x][0][2] = cubePieces[x][2][2];
+    cubePieces[x][2][2] = tmp;
+
+    // moving edge cubePieces
+    tmp = cubePieces[x][1][0];
+    cubePieces[x][1][0] = cubePieces[x][0][1];
+    cubePieces[x][0][1] = cubePieces[x][1][2];
+    cubePieces[x][1][2] = cubePieces[x][2][1];
+    cubePieces[x][2][1] = tmp;
+}
+
+// spins whole cube to the right along the y axis
+void Cube::spinRight90AlongY() {
+    spinLayerRight90AlongY(0);
+    spinLayerRight90AlongY(1);
+    spinLayerRight90AlongY(2);
+}
+
+// spins the affected layer 90 degrees to the right along y axis
+void Cube::spinLayerRight90AlongY(unsigned yLayer) {
+    unsigned x, z;
+    unsigned y = yLayer;
+    CubePiece tmp;
+
+    for (z = 0; z < 3; z++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongY();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongY(y);
+        }
+    }
+
+    // moving corner pieces
+    tmp = cubePieces[0][y][2];
+    cubePieces[0][y][2] = cubePieces[0][y][0];
+    cubePieces[0][y][0] = cubePieces[2][y][0];
+    cubePieces[2][y][0] = cubePieces[2][y][2];
+    cubePieces[2][y][2] = tmp;
+
+    // moving edge cubePieces
+    tmp = cubePieces[0][y][1];
+    cubePieces[0][y][1] = cubePieces[1][y][0];
+    cubePieces[1][y][0] = cubePieces[2][y][1];
+    cubePieces[2][y][1] = cubePieces[1][y][2];
+    cubePieces[1][y][2] = tmp;
 }
 
 // spins whole cube to the right along the z axis
@@ -215,40 +349,70 @@ void Cube::spinRight90AlongZ() {
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
-void Cube::spinLayerRight90AlongZ(unsigned layer) {
+void Cube::spinLayerRight90AlongZ(unsigned zLayer) {
     unsigned x, y;
-    unsigned z = layer;
-    CubePiece tmpEdge, tmpCorn;
+    unsigned z = zLayer;
+    CubePiece tmp;
 
     for (y = 0; y < 3; y++) {
         for (x = 0; x < 3; x++) {
             if (cubePieces[x][y][z].isCornerPiece())
-                cubePieces[x][y][z].prepareCornerPieceMoveRight90();
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongZ();
             else if (cubePieces[x][y][z].isEdgePiece())
-                cubePieces[x][y][z].prepareEdgePieceMoveRight90();
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongZ();
         }
     }
 
-    // if (layer != 1) {
-        // moving corner pieces
-        tmpCorn = cubePieces[0][2][z];
-        cubePieces[0][2][z] = cubePieces[0][0][z];
-        cubePieces[0][0][z] = cubePieces[2][0][z];
-        cubePieces[2][0][z] = cubePieces[2][2][z];
-        cubePieces[2][2][z] = tmpCorn;
+    // moving corner pieces
+    tmp = cubePieces[0][2][z];
+    cubePieces[0][2][z] = cubePieces[0][0][z];
+    cubePieces[0][0][z] = cubePieces[2][0][z];
+    cubePieces[2][0][z] = cubePieces[2][2][z];
+    cubePieces[2][2][z] = tmp;
 
-        // moving edge cubePieces
-        tmpEdge = cubePieces[0][1][z];
-        cubePieces[0][1][z] = cubePieces[1][0][z];
-        cubePieces[1][0][z] = cubePieces[2][1][z];
-        cubePieces[2][1][z] = cubePieces[1][2][z];
-        cubePieces[1][2][z] = tmpEdge;
-    // }
-    // else {
-    //     tmpEdge = cubePieces[0][2][z];
-    //     cubePieces[0][2][z] =
-    // }
+    // moving edge cubePieces
+    tmp = cubePieces[0][1][z];
+    cubePieces[0][1][z] = cubePieces[1][0][z];
+    cubePieces[1][0][z] = cubePieces[2][1][z];
+    cubePieces[2][1][z] = cubePieces[1][2][z];
+    cubePieces[1][2][z] = tmp;
+}
 
+// spins whole cube to the left along the z axis
+void Cube::spinLeft90AlongZ() {
+    spinLayerLeft90AlongZ(0);
+    spinLayerLeft90AlongZ(1);
+    spinLayerLeft90AlongZ(2);
+}
+
+// spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the left along z axis
+void Cube::spinLayerLeft90AlongZ(unsigned zLayer) {
+    unsigned x, y;
+    unsigned z = zLayer;
+    CubePiece tmp;
+
+    for (y = 0; y < 3; y++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongZ();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongZ();
+        }
+    }
+
+    // moving corner pieces
+    tmp = cubePieces[2][0][z];
+    cubePieces[2][0][z] = cubePieces[0][0][z];
+    cubePieces[0][0][z] = cubePieces[0][2][z];
+    cubePieces[0][2][z] = cubePieces[2][2][z];
+    cubePieces[2][2][z] = tmp;
+
+    // moving edge cubePieces
+    tmp = cubePieces[1][0][z];
+    cubePieces[1][0][z] = cubePieces[0][1][z];
+    cubePieces[0][1][z] = cubePieces[1][2][z];
+    cubePieces[1][2][z] = cubePieces[2][1][z];
+    cubePieces[2][1][z] = tmp;
 }
 
 
@@ -327,19 +491,21 @@ int test() {
 
     Cube cube = Cube(testCube);
 
-    // cube.printWholeCube();
-    //
-    // cube.spinUpAlongX180();
-    // cout << "Turned cube 180 degrees vertically\n";
-    //
-    // cube.printWholeCube();
-
-    cube.printWholeCube();
-    cube.spinRight90AlongZ();
-    cout << "Spinned cube 90 degrees to the right" << endl;
-
     cube.printWholeCube();
 
+    // cube.spinLeft90AlongZ();
+    // cout << "Spinned cube 90 degrees to the left" << endl;
+
+    // cube.spinUp90AlongX();
+    // cout << "spinned cube 90 degrees up along x\n";
+
+    // cube.spinDown90AlongX();
+    // cout << "spinned cube 90 degrees down along x axis \n ------------------------------- \n\n";
+
+    cube.spinRight90AlongY();
+    cout << "spinned cube 90 degrees clockwise along y axis \n\n";
+
+    cube.printWholeCube();
 
 
     return 0;

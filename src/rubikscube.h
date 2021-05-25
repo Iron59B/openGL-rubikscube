@@ -22,7 +22,7 @@ public:
     Color();
     Color(char color);
     void setColor(char color);
-    char getColor();
+    char getColorChar();
 };
 
 class CubePiece {
@@ -30,9 +30,10 @@ private:
     /***************************************************************
     ** Each CubePiece consists of maximum 3 colors as there are   **
     ** corners (3), edges (2) and surfaces (1). The color no-     **
-    ** tation priority of each CubePiece is consistent:           **
+    ** tation order of each CubePiece is consistent:              **
     ** CORNERS -- (1) front-back, (2) top-bottom (3) left-right   **
     ** EDGES -- (1) front-back, (2) top-bottom (3) left-right     **
+    **       -- consist of only 2 of these 3 orientations         **
     ** SURFACES -- consist of only 1 color at [0]                 **
     ***************************************************************/
     vector<Color> colors;
@@ -45,8 +46,12 @@ public:
     bool isCornerPiece();
     bool isEdgePiece();
     bool isSurfacePiece();
-    void prepareCornerPieceMoveRight90();
-    void prepareEdgePieceMoveRight90();
+    void prepareCornerPieceMove90AlongX();
+    void prepareEdgePieceMove90AlongX(unsigned z, unsigned x);
+    void prepareCornerPieceMove90AlongY();
+    void prepareEdgePieceMove90AlongY(unsigned y);
+    void prepareCornerPieceMove90AlongZ();
+    void prepareEdgePieceMove90AlongZ();
 };
 
 class Cube {
@@ -58,11 +63,17 @@ public:
     Cube(vector<CubePiece> pieces);
     void printFirstLayer();
     void printWholeCube();
-    CubePiece setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece);
-    void swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ);
-    void spinUpAlongX180();
+    void spinUp180AlongX();
+    void spinUp90AlongX();
+    void spinLayerUp90AlongX(unsigned xLayer);
+    void spinDown90AlongX();
+    void spinLayerDown90AlongX(unsigned xLayer);
+    void spinRight90AlongY();
+    void spinLayerRight90AlongY(unsigned yLayer);
     void spinRight90AlongZ();
-    void spinLayerRight90AlongZ(unsigned layer);
+    void spinLayerRight90AlongZ(unsigned zLayer);
+    void spinLeft90AlongZ();
+    void spinLayerLeft90AlongZ(unsigned zLayer);
 };
 
 
