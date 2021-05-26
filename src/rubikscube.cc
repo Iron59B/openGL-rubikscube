@@ -152,6 +152,29 @@ void CubePiece::prepareEdgePieceMove90AlongZ() {
     setColors(prepared);
 }
 
+// returns true if the corresponding color is on top of the cube (on one of the edge pieces)
+bool CubePiece::isColorOnTopOfEdgePiece(char color, unsigned x, unsigned y) {
+    if (x == 0 || x == 2) {
+        if (getColors().at(0).getColorChar() == color)
+            return true;
+    }
+    else if (x == 1) {
+        if (getColors().at(1).getColorChar() == color)
+            return true;
+    }
+
+    return false;
+}
+
+bool CubePiece::edgePieceContainsColor(char color) {
+    if (getColors().at(0).getColorChar() == 'w')
+        return true;
+    else if (getColors().at(1).getColorChar() == 'w')
+        return true;
+    else
+        return false;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -206,24 +229,13 @@ void Cube::printWholeCube() {
         }
     }
 }
-// // function writes new cubePiece on cubePieces[x][y][z] and returns old one
-// CubePiece Cube::setNewPiece(unsigned x, unsigned y, unsigned z, CubePiece cubePiece) {
-//     CubePiece tmp = cubePieces[x][y][z];
-//     cubePieces[x][y][z] = cubePiece;
-//     return tmp;
-// }
-
-// // swaps CubePiece[startX][startY][startZ] with CubePiece[targetX][targetY][targetZ]
-// void Cube::swapPieces(unsigned startX, unsigned startY, unsigned startZ, unsigned targetX, unsigned targetY, unsigned targetZ) {
-//     CubePiece tmp = setNewPiece(targetX, targetY, targetZ, cubePieces[startX][startY][startZ]);
-//     setNewPiece(startX, startY, startZ, tmp);
-// }
 
 
 /**********************************************************************
 **                  CUBE MOVEMENT FUNCTION DEFINITIONS               **
 **********************************************************************/
 
+// any identifier corresponds to the point of view of the beholder which means that [0][0][0] is the front-bottom-leftest cube piece
 
 void Cube::spinUp180AlongX() {
     spinUp90AlongX();
@@ -237,7 +249,7 @@ void Cube::spinUp90AlongX() {
     spinLayerUp90AlongX(2);
 }
 
-// spins affected layer up 90 degrees along the x axis
+// spins affected layer (0: left, 1: middle, 2: right) up 90 degrees along the x axis
 void Cube::spinLayerUp90AlongX(unsigned xLayer) {
     unsigned y, z;
     unsigned x = xLayer;
@@ -274,7 +286,7 @@ void Cube::spinDown90AlongX() {
     spinLayerDown90AlongX(2);
 }
 
-// spins affected layer down 90 degrees along the x axis
+// spins affected layer (0: left, 1: middle, 2: right) down 90 degrees along the x axis
 void Cube::spinLayerDown90AlongX(unsigned xLayer) {
     unsigned y, z;
     unsigned x = xLayer;
@@ -452,6 +464,187 @@ void Cube::spinLayerLeft90AlongZ(unsigned zLayer) {
 
 
 /**********************************************************************
+**                    CUBE SOLVING ALGORITHM SECTION                 **
+**********************************************************************/
+
+void Cube::solveFirstLayer() {
+
+}
+
+void Cube::buildWhiteCross() {
+ 
+}
+
+void Cube::buildWhiteFlower() {
+    unsigned x, y, z;
+    unsigned counter;
+
+    turnCubeYellowTop();
+
+    while (isWhiteFlowerOnTop() == false) {
+        z = 1; // middle z-layer first (only 1 move to insert in top layer)
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (cubePieces[x][y][z].isEdgePiece() && cubePieces[x][y][z].edgePieceContainsColor('w')) {
+                    if (cubePieces[x][y][z].getColors().at(0).getColorChar() == 'w') { // means that the white face is on front or back side
+                        counter = 0;
+                        cout << "was in there" << endl;
+                        while (cubePieces[x][1][2].getColors().at(0).getColorChar() == 'w' && counter < 4) { // layer can be turned only if target piece is not white
+                            if (counter == 4)
+                                    return;
+                            spinLayerRight90AlongZ(2);
+                            counter++;
+                        }
+                        if (cubePieces[x][1][2].getColors().at(0).getColorChar() != 'w') {
+                            if (y == 0) // front y layer
+                                spinLayerUp90AlongX(x);
+                            else if (y == 2) // back y layer
+                                spinLayerDown90AlongX(x);
+                        }
+                        else
+                            return;
+                    }
+                    else if (cubePieces[x][y][z].getColors().at(1).getColorChar() == 'w') { // means that the white face is lateral
+                        counter = 0;
+                        while (cubePieces[1][y][2].getColors().at(1).getColorChar() == 'w' && counter < 4) {
+                            if (counter == 4)
+                                    return;
+                            spinLayerRight90AlongZ(2);
+                            counter++;
+                        }
+                        if (cubePieces[1][y][2].getColors().at(1).getColorChar() != 'w') {
+                            if (x == 0) // left x layer
+                                spinLayerRight90AlongY(y);
+                            else if (x == 2) // right x layer
+                                spinLayerLeft90AlongY(y);
+                        }
+                        else
+                            return;
+                    }
+                }
+            }
+        }
+
+        if (isWhiteFlowerOnTop())
+            return;
+        z = 0; // bottom z-layer a bit more complicated
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (cubePieces[x][y][z].isEdgePiece() && cubePieces[x][y][z].edgePieceContainsColor('w')) {
+                    if (x == 0 || x == 2) { // lateral x layers
+                        if (cubePieces[x][y][z].getColors().at(0).getColorChar() == 'w') { // means that the white face is on bottom of the cube
+                            counter = 0;
+                            while (cubePieces[x][1][2].getColors().at(0).getColorChar() == 'w' && counter < 5) {
+                                if (counter == 4)
+                                    return;
+                                spinLayerRight90AlongZ(2);
+                                counter++;
+                            }
+                            if (cubePieces[x][1][2].getColors().at(0).getColorChar() != 'w') {
+                                // turn the layer 180 degrees and insert piece in opposite side of cube
+                                spinLayerUp90AlongX(x);
+                                spinLayerUp90AlongX(x);
+                            }
+                            else
+                                return;
+                        }
+                        else if (cubePieces[x][y][z].getColors().at(1).getColorChar() == 'w') { // white face is not on the bottom but on the side --> we need to turn the layer if possible and then insert like in z=1
+                            counter = 0;
+                            while (cubePieces[x][1][2].getColors().at(0).getColorChar() == 'w' && counter < 5) {
+                                if (counter == 4)
+                                    return;
+                                spinLayerRight90AlongZ(2);
+                                counter++;
+                            }
+                            if (cubePieces[x][1][2].getColors().at(0).getColorChar() != 'w') {
+                                spinLayerUp90AlongX(x); // piece gets inserted in top layer in the next loop
+                            }
+                            else
+                                return;
+                        }
+                    }
+                    else if (x == 1) {
+                        if (cubePieces[x][y][z].getColors().at(1).getColorChar() == 'w') { // means that the white face is on bottom of the cube
+                            counter = 0;
+                            while (cubePieces[1][y][2].getColors().at(1).getColorChar() == 'w' && counter < 5) {
+                                if (counter == 4)
+                                    return;
+                                spinLayerRight90AlongZ(2);
+                                counter++;
+                            }
+                            if (cubePieces[1][y][2].getColors().at(1).getColorChar() != 'w') {
+                                spinLayerRight90AlongY(y);
+                                spinLayerRight90AlongY(y);
+                            }
+                            else
+                                return;
+                        }
+                        else if (cubePieces[x][y][z].getColors().at(0).getColorChar() == 'w') { // white face is not on the bottom but on the side --> we need to turn the layer if possible and then insert like in z=1
+                            counter = 0;
+                            while (cubePieces[1][y][2].getColors().at(1).getColorChar() == 'w' && counter < 5) {
+                                if (counter == 4)
+                                    return;
+                                spinLayerRight90AlongZ(2);
+                                counter++;
+                            }
+                            if (cubePieces[1][y][2].getColors().at(0).getColorChar() != 'w') {
+                                spinLayerUp90AlongX(x); // piece gets inserted in top layer in the next loop
+                            }
+                            else return;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isWhiteFlowerOnTop())
+            return;
+        z = 2;
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (cubePieces[x][y][z].isEdgePiece() && cubePieces[x][y][z].edgePieceContainsColor('w')) {
+                    if (x == 0 || x == 2) {
+                        if (cubePieces[x][y][z].getColors().at(1).getColorChar() == 'w')
+                            spinLayerDown90AlongX(x);
+                    }
+                    else if (x == 1) {
+                        if (cubePieces[x][y][z].getColors().at(0).getColorChar() == 'w')
+                            spinLayerRight90AlongY(y);
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool Cube::isWhiteFlowerOnTop() {
+    if (cubePieces[1][1][2].getColors().at(0).getColorChar() == 'y')
+        if (cubePieces[1][0][2].isColorOnTopOfEdgePiece('w', 1, 0) && cubePieces[0][1][2].isColorOnTopOfEdgePiece('w', 0, 1)
+        && cubePieces[2][1][2].isColorOnTopOfEdgePiece('w', 2, 1) && cubePieces[1][2][2].isColorOnTopOfEdgePiece('w', 1, 2))
+            return true;
+    
+    return false;
+}
+
+// turns the cube so the yellow layer is on top
+void Cube::turnCubeYellowTop() {
+
+    if (cubePieces[1][1][2].getColors().at(0).getColorChar() != 'y') {
+        if (cubePieces[1][1][0].getColors().at(0).getColorChar() == 'y')
+            spinUp180AlongX();
+        else if (cubePieces[0][1][1].getColors().at(0).getColorChar() == 'y')
+            spinRight90AlongY();
+        else if (cubePieces[2][1][1].getColors().at(0).getColorChar() == 'y')
+            spinLeft90AlongY();
+        else if (cubePieces[1][0][1].getColors().at(0).getColorChar() == 'y')
+            spinUp90AlongX();
+        else if (cubePieces[1][2][1].getColors().at(0).getColorChar() == 'y')
+            spinDown90AlongX();
+    }
+}
+
+
+/**********************************************************************
 **                    GLOBAL FUNCTION DEFINITIONS                    **
 **********************************************************************/
 
@@ -526,26 +719,12 @@ int test() {
 
     Cube cube = Cube(testCube);
 
-    cube.printWholeCube();
-
-    // cube.spinLeft90AlongZ();
-    // cout << "Spinned cube 90 degrees to the left" << endl;
-
-    // cube.spinUp90AlongX();
-    // cout << "spinned cube 90 degrees up along x\n";
-
-    // cube.spinDown90AlongX();
-    // cout << "spinned cube 90 degrees down along x axis \n ------------------------------- \n\n";
-
-    // cube.spinRight90AlongY();
-    // cout << "spinned cube 90 degrees clockwise along y axis \n\n";
-
-    cube.spinLeft90AlongY();
-    cout << "spinned cube 90 degr to the left along y axis\n\n";
-
 
     cube.printWholeCube();
 
+    cube.buildWhiteFlower();
+
+    cube.printWholeCube();
 
     return 0;
 }

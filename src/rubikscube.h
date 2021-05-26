@@ -52,6 +52,10 @@ public:
     void prepareEdgePieceMove90AlongY(unsigned y);
     void prepareCornerPieceMove90AlongZ();
     void prepareEdgePieceMove90AlongZ();
+
+    bool isColorOnTopOfEdgePiece(char color, unsigned x, unsigned y);
+    bool edgePieceContainsColor(char color);
+
 };
 
 class Cube {
@@ -76,6 +80,12 @@ public:
     void spinLayerRight90AlongZ(unsigned zLayer);
     void spinLeft90AlongZ();
     void spinLayerLeft90AlongZ(unsigned zLayer);
+
+    void solveFirstLayer();
+    void buildWhiteFlower();
+    void buildWhiteCross();
+    void turnCubeYellowTop();
+    bool isWhiteFlowerOnTop();
 };
 
 
