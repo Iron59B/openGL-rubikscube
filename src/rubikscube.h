@@ -70,6 +70,8 @@ public:
     void spinLayerDown90AlongX(unsigned xLayer);
     void spinRight90AlongY();
     void spinLayerRight90AlongY(unsigned yLayer);
+    void spinLeft90AlongY();
+    void spinLayerLeft90AlongY(unsigned yLayer);
     void spinRight90AlongZ();
     void spinLayerRight90AlongZ(unsigned zLayer);
     void spinLeft90AlongZ();

@@ -6,11 +6,11 @@
 #include "rubikscube.h"
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
-#include<GL/glew.h>
+//#include<GL/glew.h>
 /* SOIL is used for loading (texture) images */
-#include<SOIL.h>
+//#include<SOIL.h>
 /* GLFW is used for creating and manipulating graphics windows */
-#include<GLFW/glfw3.h>
+//#include<GLFW/glfw3.h>
 
 using namespace std;
 
@@ -341,6 +341,41 @@ void Cube::spinLayerRight90AlongY(unsigned yLayer) {
     cubePieces[1][y][2] = tmp;
 }
 
+void Cube::spinLeft90AlongY() {
+    spinLayerLeft90AlongY(0);
+    spinLayerLeft90AlongY(1);
+    spinLayerLeft90AlongY(2);
+}
+
+void Cube::spinLayerLeft90AlongY(unsigned yLayer) {
+    unsigned x, z;
+    unsigned y = yLayer;
+    CubePiece tmp;
+
+    for (z = 0; z < 3; z++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece())
+                cubePieces[x][y][z].prepareCornerPieceMove90AlongY();
+            else if (cubePieces[x][y][z].isEdgePiece())
+                cubePieces[x][y][z].prepareEdgePieceMove90AlongY(y);
+        }
+    }
+
+    // moving corner pieces
+    tmp = cubePieces[2][y][0];
+    cubePieces[2][y][0] = cubePieces[0][y][0];
+    cubePieces[0][y][0] = cubePieces[0][y][2];
+    cubePieces[0][y][2] = cubePieces[2][y][2];
+    cubePieces[2][y][2] = tmp;
+
+    // moving edge cubePieces
+    tmp = cubePieces[1][y][0];
+    cubePieces[1][y][0] = cubePieces[0][y][1];
+    cubePieces[0][y][1] = cubePieces[1][y][2];
+    cubePieces[1][y][2] = cubePieces[2][y][1];
+    cubePieces[2][y][1] = tmp;
+}
+
 // spins whole cube to the right along the z axis
 void Cube::spinRight90AlongZ() {
     spinLayerRight90AlongZ(0);
@@ -502,8 +537,12 @@ int test() {
     // cube.spinDown90AlongX();
     // cout << "spinned cube 90 degrees down along x axis \n ------------------------------- \n\n";
 
-    cube.spinRight90AlongY();
-    cout << "spinned cube 90 degrees clockwise along y axis \n\n";
+    // cube.spinRight90AlongY();
+    // cout << "spinned cube 90 degrees clockwise along y axis \n\n";
+
+    cube.spinLeft90AlongY();
+    cout << "spinned cube 90 degr to the left along y axis\n\n";
+
 
     cube.printWholeCube();
 
