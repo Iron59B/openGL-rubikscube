@@ -41,7 +41,7 @@ public:
     CubePiece();
     CubePiece(string colorstring);
     void setColors(string colorstring);
-    vector<Color> getColors();
+    char getColor(unsigned index);
     void print();
     bool isCornerPiece();
     bool isEdgePiece();
