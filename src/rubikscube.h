@@ -53,7 +53,7 @@ public:
     void prepareCornerPieceMove90AlongZ();
     void prepareEdgePieceMove90AlongZ();
 
-    bool isColorOnTopOfEdgePiece(char color, unsigned x, unsigned y);
+    bool isColorOnTopOfEdgePiece(char color, unsigned x);
     bool edgePieceContainsColor(char color);
 
 };
@@ -65,6 +65,7 @@ private:
 public:
     Cube();
     Cube(vector<CubePiece> pieces);
+    void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
     void spinUp180AlongX();
@@ -81,10 +82,15 @@ public:
     void spinLeft90AlongZ();
     void spinLayerLeft90AlongZ(unsigned zLayer);
 
-    void solveFirstLayer();
+    void buildWhiteFlowerMiddleLayer();
+    void buildWhiteFlowerBottomLayer();
+    void buildWhiteFlowerTopLayer();
     void buildWhiteFlower();
+
     void buildWhiteCross();
+    void solveFirstLayer();
     void turnCubeYellowTop();
+    bool isWhiteCrossOnBottom();
     bool isWhiteFlowerOnTop();
 };
 
