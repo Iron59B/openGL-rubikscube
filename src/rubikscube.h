@@ -53,6 +53,7 @@ public:
     void prepareCornerPieceMove90AlongZ();
     void prepareEdgePieceMove90AlongZ();
 
+    int getPositionOfColor(char color);
     bool isColorOnTopOfEdgePiece(char color, unsigned x);
     bool edgePieceContainsColor(char color);
 
@@ -60,7 +61,7 @@ public:
 
 class Cube {
 private:
-    //      [x: left-right] [y: front-back] [z: bottom-top]
+    //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
 public:
     Cube();
@@ -88,10 +89,23 @@ public:
     void buildWhiteFlower();
 
     void buildWhiteCross();
+    void bringBottomWhiteCornerFront();
+    void bringTopWhiteCornerFront();
+    void dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y);
+    void insertNextWhiteCornerPiece(unsigned x);
     void solveFirstLayer();
     void turnCubeYellowTop();
+    void turnCubeWhiteTop();
+    int turnCubeUntilWhiteBottomCornerFront();
+
+    int isWhiteBottomCornerFront();
+    bool isWhiteBottomCornerLeftBottom();
     bool isWhiteCrossOnBottom();
+    bool isWhiteCrossOnTop();
     bool isWhiteFlowerOnTop();
+    bool isFirstLayerSolved();
+    bool isWhiteCornerPieceCorrect(unsigned x, unsigned y);
+    bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
 };
 
 
