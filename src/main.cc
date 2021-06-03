@@ -95,27 +95,27 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
 {
     static glm::vec3 look[3];
     double x_pos, y_pos;
-    
+
     glfwGetCursorPos(myWindow, &x_pos, &y_pos);
     //glfwSetCursorPos(myWindow, 800/2, 600/2);
-    
+
     horizontalAngle += mouseSpeed * deltaTime * float(800/2 - x_pos);
     verticalAngle   += mouseSpeed * deltaTime * float(600/2 - y_pos);
-    
+
     glm::vec3 direction(
         cos(verticalAngle) * sin(horizontalAngle),
         sin(verticalAngle),
         cos(verticalAngle) * cos(horizontalAngle)
     );
-    
+
     glm::vec3 right = glm::vec3(
         sin(horizontalAngle - 3.14f/2.0f),
         0,
         cos(horizontalAngle - 3.14f/2.0f)
     );
-    
+
     glm::vec3 up = glm::cross(right, direction);
-    
+
     if (glfwGetKey(myWindow, GLFW_KEY_UP) == GLFW_PRESS){
         position += direction * deltaTime * speed;
     }
@@ -131,24 +131,24 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
     if (glfwGetKey(myWindow, GLFW_KEY_LEFT) == GLFW_PRESS){
         position -= right * deltaTime * speed;
     }
-    
+
     //float FoV = initialFoV - 5 * glfwGetMouseWheel(myWindow);
     look[0] = direction;
     look[1] = right;
     look[2] = up;
-    
+
     return look;
 }
 
 glm::mat4 spinObj(glm::mat4 anim, bool state) {
     float angle = 1.0f;
-   
+
     if(state == true) {
     // anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 1.0f) );
         anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
     // anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, 1.0f)) );
     }
-    
+
     return anim;
 }
 
@@ -165,11 +165,21 @@ glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::
     return anim;
 }
 
+void createAnim(GLuint shaderProgram, glm::mat4 anim) {
+  const char* uniformName = "anim";
+  GLint uniformAnim = glGetUniformLocation(shaderProgram, uniformName);
+  if (uniformAnim == -1) {
+      fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
+      exit(EXIT_FAILURE);
+  }
+  glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
+}
+
 int main()
 {
     /* window dimensions */
     const GLuint WIDTH = 800, HEIGHT = 600;
-    
+
     /*                                                                        */
     /* initialization and set-up                                              */
     /*                                                                        */
@@ -179,14 +189,14 @@ int main()
         fprintf(stderr, "Cannot initialize GLFW\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* set some GLFW options: we require OpenGL 3.3 (or more recent) context */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
+
     /* create GFLW window (monitor in windowed mode), do not share resources */
     GLFWwindow* myWindow = glfwCreateWindow(WIDTH, HEIGHT, "Rubikscube",
                                             NULL, NULL);
@@ -195,7 +205,7 @@ int main()
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(myWindow);
-    
+
     /* initialization of GLEW */
     glewExperimental = GL_TRUE;
     GLenum glewStatus = glewInit();
@@ -203,27 +213,27 @@ int main()
         fprintf(stderr, "Error: %s\n", glewGetErrorString(glewStatus));
         exit(EXIT_FAILURE);
     }
-    
+
     if (!GLEW_VERSION_2_0) {
         fprintf(stderr, "Error: GPU does not support GLEW 2.0\n");
         exit(EXIT_FAILURE);
     }
-    
+
     int vtxSize = 6*36;
-    int arraySize = 3;
+    int arraySize = 2;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
-        Cube(RIGHT, 0.0f),
-        Cube(LEFT, 0.0f)
+        Cube(RIGHT, 0.0f)
+        //Cube(LEFT, 0.0f)
         // Cube(RIGHT, 0.0f)
     };
 
     GLfloat* vtxArray[arraySize];
-    
+
     GLuint VAOArray[arraySize];
     GLuint VBOArray[arraySize];
-  
-    for(int i = 0; i < arraySize; i++) {    
+
+    for(int i = 0; i < arraySize; i++) {
         GLfloat* vtx = cube[i].createCubes();
         vtxArray[i] = vtx;
         /* create and bind one Vertex Array Object */
@@ -240,16 +250,16 @@ int main()
         VBOArray[i] = myVBO;
     }
 
-   
+
     /* copy the vertex data to it */
 
-    
+
     /* OpenGL settings */
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     /* define and compile the vertex shader */
     const char* vertexShaderSource = GLSL(
       in vec3 position;
@@ -270,13 +280,13 @@ int main()
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
-    
+
     /* check whether the vertex shader compiled without an error */
     if (!checkShaderCompileStatus(vertexShader)) {
         fprintf(stderr, "Vertex shader did not compile\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* define and compile the fragment shader */
     const char* fragmentShaderSource = GLSL(
         in vec3 colorVtxOut;
@@ -288,7 +298,7 @@ int main()
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
-    
+
     /* check whether the fragment shader compiled without an error */
     if (!checkShaderCompileStatus(fragmentShader)) {
         fprintf(stderr, "Fragment shader did not compile\n");
@@ -301,16 +311,16 @@ int main()
     glAttachShader(shaderProgram, fragmentShader);
     glBindFragDataLocation(shaderProgram, 0, "outColor");
     glLinkProgram(shaderProgram);
-    
+
     /* check whether the shader program linked without an error */
     if (!checkShaderProgramLinkStatus(shaderProgram)) {
         fprintf(stderr, "Shader did not link\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* make the shader program active */
     glUseProgram(shaderProgram);
-    
+
     /* define how the input is organized */
     const char* attributeName;
     attributeName = "position";
@@ -322,7 +332,7 @@ int main()
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,
                           6 * sizeof(GLfloat), 0);
-    
+
     attributeName = "colorVtxIn";
     GLint colAttrib = glGetAttribLocation(shaderProgram, attributeName);
     if (colAttrib == -1) {
@@ -331,7 +341,7 @@ int main()
     glEnableVertexAttribArray(colAttrib);
     glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
                           6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
-    
+
     /*attributeName = "textureCoordIn";
      GLint texAttrib = glGetAttribLocation(shaderProgram, attributeName);
      if (texAttrib == -1) {
@@ -341,7 +351,7 @@ int main()
      glEnableVertexAttribArray(texAttrib);
      glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE,
      5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));*/
-    
+
     /* load texture image */
     /*GLint texWidth, texHeight;
      GLint channels;*/
@@ -352,9 +362,9 @@ int main()
      fprintf(stderr, "Image file could no_BUFFER, vtxSize2*4, vtx2, GL_STATIC_DRAW);
 
         // glDrawArrays(GL_TRIANGLES, 0, 12*36);
-        
+
      }*/
-    
+
     /* generate texture */
     /*GLuint textureID;
      glActiveTexture(GL_TEXTURE0);
@@ -363,15 +373,15 @@ int main()
      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB,
      GL_UNSIGNED_BYTE, texImage);
      SOIL_free_image_data(texImage);*/
-    
+
     /* set texture parameters */
     /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-    
+
     /* define a view transformation */
-    
+
     // position
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     // horizontal angle : toward -Z
@@ -386,22 +396,22 @@ int main()
     GLfloat lastTime = 0;
     glm::vec3* look;
     GLfloat deltaTime = 0;
-    
-    
+
+
     glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
 
     //glm::mat4 view = glm::lookAt(look[0], look[1], look[2]);
-    
+
     /* define a  projection transformation */
     glm::mat4 proj = glm::perspective(glm::radians(100.0f), 4.0f/3.0f, 0.1f, 40.0f);
-    
+
     /* define a transformation matrix for the animation */
     glm::mat4 anim = glm::mat4(1.0f);
-    
+
     glm::mat4 anim2 = glm::mat4(1.0f);
-    
+
     /* bind uniforms and pass data to the shader program */
     const char* uniformName;
     /*uniformName = "textureData";
@@ -411,7 +421,7 @@ int main()
      exit(EXIT_FAILURE);
      }
      glUniform1i(uniformTex, 0);*/
-    
+
     uniformName = "view";
     GLint uniformView = glGetUniformLocation(shaderProgram, uniformName);
     if (uniformView == -1) {
@@ -419,7 +429,7 @@ int main()
         exit(EXIT_FAILURE);
     }
     glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
-    
+
     uniformName = "proj";
     GLint uniformProj = glGetUniformLocation(shaderProgram, "proj");
     if (uniformProj == -1) {
@@ -427,33 +437,25 @@ int main()
         exit(EXIT_FAILURE);
     }
     glUniformMatrix4fv(uniformProj, 1, GL_FALSE, glm::value_ptr(proj));
-    
-    uniformName = "anim";
-    GLint uniformAnim = glGetUniformLocation(shaderProgram, uniformName);
-    if (uniformAnim == -1) {
-        fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
-        exit(EXIT_FAILURE);
-    }
-    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-    
+
     /* register callback functions */
     glfwSetKeyCallback(myWindow, keyCallback);
     //glfwSetCursorPosCallback(myWindow, cursorPosCallBack);
     glfwSetMouseButtonCallback(myWindow, mouseButtonCallBack);
-    
+
     /*                                                                        */
     /* event-handling and rendering loop                                      */
     /*                                                                        */
-   
+
     bool state = true;
-    glm::mat4 bAnim; 
+    glm::mat4 bAnim;
     while (!glfwWindowShouldClose(myWindow)) {
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         /* make the object spin around */
-       
+
         // anim = glm::rotate(anim, glm::radians(0.5f),
         //  glm::vec3(0.0f, 0.0f, 1.0f));
         /*GLint rnd = rand() % 3;
@@ -472,65 +474,76 @@ int main()
         // glBufferData(GL_ARRAY_BUFFER, vtxSize*4, vtx2, GL_STATIC_DRAW);
         // glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        anim = handleCube(vtxArray, VAOArray, VBOArray, anim, arraySize, state);
+        for(int i = 0; i < arraySize; i+=1) {
+            createAnim(shaderProgram, anim);
+            if(i == 1) {
+                createAnim(shaderProgram, anim2);
+                anim2 = spinObj(anim2, state);
+            }
+
+            glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtxArray[i], GL_STATIC_DRAW);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        //anim = handleCube(vtxArray, VAOArray, VBOArray, anim, arraySize, state);
         // state = false;
-        glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));    
+        //glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 
 
         // if(state == true) {
         //     anim = spinObj(anim, state);
         // }
         // state = false;
-        
-        // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));    
+
+        // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         deltaTime = GLfloat(glfwGetTime() - lastTime);
         lastTime = deltaTime;
-        
+
         look = getDirectionRightUp(myWindow, position, horizontalAngle, verticalAngle, initialFoV, speed, mouseSpeed, deltaTime);
         view = glm::lookAt(look[0], look[1], look[2]);
-        
+
         /* draw the VAO */
 
         // glBufferData(GL_ARRAY_BUFFER, vtxSize*4, vtx, GL_STATIC_DRAW);
 
         // glDrawArrays(GL_TRIANGLES, 0, 36);
-        
-    
+
+
         // glBufferData(GL_ARRAY_BUFFER, vtxSize2*4, vtx2, GL_STATIC_DRAW);
 
         // glDrawArrays(GL_TRIANGLES, 0, 12*36);
-        
+
         /* Swap buffers */
         glfwSwapBuffers(myWindow);
-        
+
         /* poll events */
         glfwPollEvents();
     }
-    
+
     /*                                                                        */
     /* clean-up and release resources                                         */
     /*                                                                        */
     //glDeleteTextures(1, &textureID);
-    
+
     glUseProgram(0);
     glDetachShader(shaderProgram, vertexShader);
     glDetachShader(shaderProgram, fragmentShader);
     glDeleteShader(fragmentShader);
     glDeleteShader(vertexShader);
     glDeleteProgram(shaderProgram);
-    
+
     for(int i = 0; i < 5; i+=1) {
         glDeleteBuffers(1, &VBOArray[i]);
 
         glDeleteVertexArrays(1, &VAOArray[i]);
     }
 
-    
-    
+
+
     /*                                                                        */
     /* termination of GLFW                                                    */
     /*                                                                        */
     glfwTerminate();
-    
+
     exit(EXIT_SUCCESS);
 }
