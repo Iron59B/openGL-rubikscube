@@ -13,10 +13,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "cube.h"
+#include "rubikscube/cube.h"
 
 #define GLSL(src) "#version 330 core\n" #src
 #define GLM_FORCE_RADIANS
+
+const int MIDDLE = 0;
+const int LEFT = 1;
+const int RIGHT = 2;
+const int TOP = 3;
+const int BOTTOM = 4;
+const int TOP_LEFT = 5;
+const int TOP_RIGHT = 6;
+const int BOTTOM_LEFT = 7;
+const int BOTTOM_RIGHT = 8;
 
 /*                                                                           */
 /* GLFW callback functions for event handling                                */
@@ -83,7 +93,7 @@ bool checkShaderProgramLinkStatus(GLuint programID)
 
 glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngle, GLfloat initialFoV, GLfloat speed, GLfloat mouseSpeed, GLfloat deltaTime)
 {
-    glm::vec3 look[3];
+    static glm::vec3 look[3];
     double x_pos, y_pos;
     
     glfwGetCursorPos(myWindow, &x_pos, &y_pos);
@@ -130,6 +140,30 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
     return look;
 }
 
+glm::mat4 spinObj(glm::mat4 anim, bool state) {
+    float angle = 1.0f;
+   
+    if(state == true) {
+    // anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 1.0f) );
+        anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
+    // anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, 1.0f)) );
+    }
+    
+    return anim;
+}
+
+glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::mat4 anim, int arraySize, bool state) {
+    for(int i = 0; i < arraySize; i+=1) {
+
+        if(i == 1) {
+        //    anim = spinObj(anim, state);
+        }
+
+        glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtx[i], GL_STATIC_DRAW);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+    return anim;
+}
 
 int main()
 {
@@ -175,23 +209,40 @@ int main()
         exit(EXIT_FAILURE);
     }
     
+    int vtxSize = 6*36;
+    int arraySize = 3;
+    static Cube cube[] ={
+        Cube(MIDDLE, 0.0f),
+        Cube(RIGHT, 0.0f),
+        Cube(LEFT, 0.0f)
+        // Cube(RIGHT, 0.0f)
+    };
+
+    GLfloat* vtxArray[arraySize];
     
-    int vtxSize = 26*6*36;
-    Cube cube = Cube(vtxSize);
-    GLfloat* vtx = cube.createCubes();
-    
-    /* create and bind one Vertex Array Object */
-    GLuint myVAO;
-    glGenVertexArrays(1, &myVAO);
-    glBindVertexArray(myVAO);
-    
-    /* generate and bind one Vertex Buffer Object */
-    GLuint myVBO;
-    glGenBuffers(1, &myVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, myVBO);
-    
+    GLuint VAOArray[arraySize];
+    GLuint VBOArray[arraySize];
+  
+    for(int i = 0; i < arraySize; i++) {    
+        GLfloat* vtx = cube[i].createCubes();
+        vtxArray[i] = vtx;
+        /* create and bind one Vertex Array Object */
+        GLuint myVAO;
+        glGenVertexArrays(1, &myVAO);
+        glBindVertexArray(myVAO);
+
+        VAOArray[i] = myVAO;
+
+        /* generate and bind one Vertex Buffer Object */
+        GLuint myVBO;
+        glGenBuffers(1, &myVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, myVBO);
+        VBOArray[i] = myVBO;
+    }
+
+   
     /* copy the vertex data to it */
-    glBufferData(GL_ARRAY_BUFFER, vtxSize*4, vtx, GL_STATIC_DRAW);
+
     
     /* OpenGL settings */
     glEnable(GL_DEPTH_TEST);
@@ -243,7 +294,7 @@ int main()
         fprintf(stderr, "Fragment shader did not compile\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* create a shader program by linking the vertex and fragment shader */
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
@@ -298,8 +349,10 @@ int main()
      &texWidth, &texHeight, &channels,
      SOIL_LOAD_RGB);
      if (texImage == NULL) {
-     fprintf(stderr, "Image file could not be loaded\n");
-     exit(EXIT_FAILURE);
+     fprintf(stderr, "Image file could no_BUFFER, vtxSize2*4, vtx2, GL_STATIC_DRAW);
+
+        // glDrawArrays(GL_TRIANGLES, 0, 12*36);
+        
      }*/
     
     /* generate texture */
@@ -347,6 +400,8 @@ int main()
     /* define a transformation matrix for the animation */
     glm::mat4 anim = glm::mat4(1.0f);
     
+    glm::mat4 anim2 = glm::mat4(1.0f);
+    
     /* bind uniforms and pass data to the shader program */
     const char* uniformName;
     /*uniformName = "textureData";
@@ -389,13 +444,18 @@ int main()
     /*                                                                        */
     /* event-handling and rendering loop                                      */
     /*                                                                        */
+   
+    bool state = true;
+    glm::mat4 bAnim; 
     while (!glfwWindowShouldClose(myWindow)) {
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         /* make the object spin around */
-        anim = glm::rotate(anim, 0.01f, glm::vec3(0.0f, 2.0f, 0.0f));
+       
+        // anim = glm::rotate(anim, glm::radians(0.5f),
+        //  glm::vec3(0.0f, 0.0f, 1.0f));
         /*GLint rnd = rand() % 3;
          if (rnd == 0) {
          anim = glm::rotate(anim, glm::radians(0.5f),
@@ -409,8 +469,20 @@ int main()
          anim = glm::rotate(anim, glm::radians(0.5f),
          glm::vec3(1.0f, 0.0f, 0.0f));
          }*/
-        glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
+        // glBufferData(GL_ARRAY_BUFFER, vtxSize*4, vtx2, GL_STATIC_DRAW);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        anim = handleCube(vtxArray, VAOArray, VBOArray, anim, arraySize, state);
+        // state = false;
+        glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));    
+
+
+        // if(state == true) {
+        //     anim = spinObj(anim, state);
+        // }
+        // state = false;
         
+        // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));    
         deltaTime = GLfloat(glfwGetTime() - lastTime);
         lastTime = deltaTime;
         
@@ -418,7 +490,15 @@ int main()
         view = glm::lookAt(look[0], look[1], look[2]);
         
         /* draw the VAO */
-        glDrawArrays(GL_TRIANGLES, 0, 26*36);
+
+        // glBufferData(GL_ARRAY_BUFFER, vtxSize*4, vtx, GL_STATIC_DRAW);
+
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+    
+        // glBufferData(GL_ARRAY_BUFFER, vtxSize2*4, vtx2, GL_STATIC_DRAW);
+
+        // glDrawArrays(GL_TRIANGLES, 0, 12*36);
         
         /* Swap buffers */
         glfwSwapBuffers(myWindow);
@@ -439,9 +519,12 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteProgram(shaderProgram);
     
-    glDeleteBuffers(1, &myVBO);
-    
-    glDeleteVertexArrays(1, &myVAO);
+    for(int i = 0; i < 5; i+=1) {
+        glDeleteBuffers(1, &VBOArray[i]);
+
+        glDeleteVertexArrays(1, &VAOArray[i]);
+    }
+
     
     
     /*                                                                        */
