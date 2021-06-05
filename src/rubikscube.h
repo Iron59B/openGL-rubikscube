@@ -83,6 +83,11 @@ public:
     void spinLeft90AlongZ();
     void spinLayerLeft90AlongZ(unsigned zLayer);
 
+    bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
+
+    // first layer functions
+
+    void solveFirstLayer();
     void buildWhiteFlowerMiddleLayer();
     void buildWhiteFlowerBottomLayer();
     void buildWhiteFlowerTopLayer();
@@ -93,7 +98,7 @@ public:
     void bringTopWhiteCornerFront();
     void dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y);
     void insertNextWhiteCornerPiece(unsigned x);
-    void solveFirstLayer();
+    
     void turnCubeYellowTop();
     void turnCubeWhiteTop();
     int turnCubeUntilWhiteBottomCornerFront();
@@ -105,7 +110,15 @@ public:
     bool isWhiteFlowerOnTop();
     bool isFirstLayerSolved();
     bool isWhiteCornerPieceCorrect(unsigned x, unsigned y);
-    bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
+
+    // second layer functions
+
+    void solveSecondLayer();
+    int prepareForNextEdgePieceInsertion();
+    void insertNextEdgePiece(unsigned awayFrom);
+    void turnCubeColorFront(char color);
+    bool isSecondLayerSolved();
+    bool isEdgePieceCorrect(unsigned x, unsigned y);
 };
 
 
