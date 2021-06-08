@@ -132,8 +132,10 @@ public:
     void f_();
 
     void solveThirdLayer();
-    void solveYellowCross();
+    void buildYellowCross();
     void prepareNextStepYellowCross();
+    void connectEdges();
+    unsigned edgesConnected();
     bool isColorCrossOnTopNoSecondary(char color);
     bool isThirdLayerSolved();
 };

@@ -665,7 +665,6 @@ void Cube::buildWhiteCross() {
     if (!isWhiteFlowerOnTop())
         buildWhiteFlower();
 
-    printWholeCube();
     while (!isWhiteCrossOnBottom()) {
         z = 2; // top layer
         for (y = 0; y < 3; y++) {
@@ -1202,10 +1201,11 @@ void Cube::solveThirdLayer() {
         solveSecondLayer();
     }
     turnCubeYellowTop();
-    solveYellowCross();
+    buildYellowCross();
+    connectEdges();
 }
 
-void Cube::solveYellowCross() {
+void Cube::buildYellowCross() {
 
     while (!isColorCrossOnTopNoSecondary('y')) {
         prepareNextStepYellowCross();
@@ -1259,6 +1259,81 @@ void Cube::prepareNextStepYellowCross() {
             }
         }
     }
+}
+
+// perform rotations so that all secondary colors of yellow edge pieces match surfaces below
+void Cube::connectEdges() {
+
+    while (!isColorCrossOnTop('y')) { // secondary colors need to match as well
+        while (edgesConnected() == 0) { // no edges right
+            spinLayerRight90AlongZ(2);
+        }
+        if (edgesConnected() == 1) {
+            // while not both bottom and top edge piece match surfaces, spin cube right
+            while (!(edgePieceSecondaryMatchesSurface(1, 0, 2) && edgePieceSecondaryMatchesSurface(1, 2, 2))) {
+                spinRight90AlongZ();
+            }
+            r();
+            u();
+            u();
+            r_();
+            u_();
+            r();
+            u_();
+            r_();
+        }
+        if (edgesConnected() == 2) {  // two edges next each other correct
+            // while not both bottom and right edge pieces dont match surfaces, spin cube right
+            while (!(edgePieceSecondaryMatchesSurface(1, 0, 2) == false && edgePieceSecondaryMatchesSurface(2, 1, 2) == false)) {
+                spinRight90AlongZ();
+            }
+            r();
+            u();
+            u();
+            r_();
+            u_();
+            r();
+            u_();
+            r_();
+            u_();
+        }
+    }
+    cout << "connected edges" << endl;
+}
+
+// returns 0 if no edges are connected with surface below, 1 if two opposite edges, 2 if two besided edges, 4 if all edges are connected with surfaces below
+unsigned Cube::edgesConnected() {
+    unsigned x, y, z;
+    unsigned counter;
+
+    z = 2;
+    counter = 0;
+    for (y = 0; y < 3; y++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isEdgePiece() && edgePieceSecondaryMatchesSurface(x, y, z)) {
+                counter++;
+            }
+        }
+    }
+    if (counter < 2) {
+        return 0;
+    }
+    else if (counter == 2) {
+        while (edgePieceSecondaryMatchesSurface(1, 0, 2) == false) {
+            spinRight90AlongZ();
+        }
+        if (edgePieceSecondaryMatchesSurface(1, 0, 2)) {
+            if (edgePieceSecondaryMatchesSurface(1, 2, 2)) {
+                return 1;
+            }
+            else if (edgePieceSecondaryMatchesSurface(0, 1, 2) || edgePieceSecondaryMatchesSurface(2, 1, 2)) {
+                return 2;
+            }
+        }
+    }
+    
+    // all edges connected
+    return 4;
 }
 
 // returns true if yellow cross on top (criterias like in isColorCrossOnTop() concerning secondary colors not considered)
@@ -1429,12 +1504,12 @@ int test() {
 
     cube.createRandomCube();
     cube.solveSecondLayer();
-    cube.printWholeCube();
-    cube.solveThirdLayer();
-    
-    cube.printWholeCube();
 
-    cout << "is yellow cross on top: " << cube.isColorCrossOnTopNoSecondary('y') << endl;
+    cube.solveThirdLayer();
+
+    // cube.printWholeCube();
+
+    cout << "is yellow cross on top: " << cube.isColorCrossOnTop('y') << endl;
 
     return 0;
 }
