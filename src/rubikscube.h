@@ -106,10 +106,10 @@ public:
     int isWhiteBottomCornerFront();
     bool isWhiteBottomCornerLeftBottom();
     bool isWhiteCrossOnBottom();
-    bool isWhiteCrossOnTop();
+    bool isColorCrossOnTop(char color);
     bool isWhiteFlowerOnTop();
     bool isFirstLayerSolved();
-    bool isWhiteCornerPieceCorrect(unsigned x, unsigned y);
+    bool isCornerPieceCorrect(unsigned x, unsigned y, char color);
 
     // second layer functions
 
@@ -119,6 +119,23 @@ public:
     void turnCubeColorFront(char color);
     bool isSecondLayerSolved();
     bool isEdgePieceCorrect(unsigned x, unsigned y);
+
+    // third layer functions
+
+    void r();
+    void r_();
+    void u();
+    void u_();
+    void l();
+    void l_();
+    void f();
+    void f_();
+
+    void solveThirdLayer();
+    void solveYellowCross();
+    void prepareNextStepYellowCross();
+    bool isColorCrossOnTopNoSecondary(char color);
+    bool isThirdLayerSolved();
 };
 
 
