@@ -741,7 +741,6 @@ void Cube::insertNextWhiteCornerPiece(unsigned x) {
         spinLayerDown90AlongX(x);
         spinLayerRight90AlongZ(0);
         spinLayerUp90AlongX(x);
-        cout << "inserted left bottom corner piece" << endl;
     }
     else if (x == 2) {
         while (!(cubePieces[x][0][0].getColor(1) == cubePieces[1][0][1].getColor(0) && cubePieces[x][0][0].getColor(2) == cubePieces[x][1][1].getColor(0))) {
@@ -752,7 +751,6 @@ void Cube::insertNextWhiteCornerPiece(unsigned x) {
         spinLayerDown90AlongX(x);
         spinLayerLeft90AlongZ(0);
         spinLayerUp90AlongX(x);
-        cout << "inserted right bottom corner piece" << endl;
     }
 }
 
@@ -967,7 +965,7 @@ bool Cube::isCornerPieceCorrect(unsigned x, unsigned y, char color) {
             return true;
     }
     return false;
-} 
+}
 
 // returns true if top layer forms the white flower
 bool Cube::isWhiteFlowerOnTop() {
@@ -1099,7 +1097,6 @@ void Cube::insertNextEdgePiece(unsigned awayFrom) {
         spinLayerUp90AlongX(0);
         spinLeft90AlongZ();
         insertNextWhiteCornerPiece(2);
-        cout << "inserted edge piece in second layer" << endl;
     }
     else if (awayFrom == 2) {
         spinLayerRight90AlongZ(0);
@@ -1108,7 +1105,6 @@ void Cube::insertNextEdgePiece(unsigned awayFrom) {
         spinLayerUp90AlongX(2);
         spinRight90AlongZ();
         insertNextWhiteCornerPiece(0);
-        cout << "inserted edge piece in second layer" << endl;
     }
 }
 
@@ -1200,9 +1196,19 @@ void Cube::solveThirdLayer() {
     if (!isSecondLayerSolved()) {
         solveSecondLayer();
     }
+
     turnCubeYellowTop();
     buildYellowCross();
     connectEdges();
+    bringCornersIntoCorrectPosition();
+    bringCornersIntoCorrectOrientation();
+    
+    if (!isThirdLayerSolved()) {
+        solveThirdLayer();
+    }
+    else {
+        cout << "solved third layer" << endl;
+    }
 }
 
 void Cube::buildYellowCross() {
@@ -1336,6 +1342,119 @@ unsigned Cube::edgesConnected() {
     return 4;
 }
 
+void Cube::bringCornersIntoCorrectPosition() {
+    unsigned nrCornersCorrectPos;
+
+    nrCornersCorrectPos = getNrCornerPiecesInCorrectPosition();
+    while (nrCornersCorrectPos < 4) {
+        if (nrCornersCorrectPos == 1) {
+            while (!isCornerPieceInCorrectPosition(2, 0, 'y')) {
+                spinRight90AlongZ();
+            }
+        }
+        l_();
+        u();
+        r();
+        u_();
+        l();
+        u();
+        r_();
+        u_();
+        nrCornersCorrectPos = getNrCornerPiecesInCorrectPosition();
+    }
+    cout << "positioned corners in third layer correctly" << endl;
+}
+
+// can only return 0, 1 or 4
+unsigned Cube::getNrCornerPiecesInCorrectPosition() {
+    unsigned x, y, z;
+    unsigned counter;
+
+    z = 2;
+    counter = 0;
+    for (y = 0; y < 3; y++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece() && isCornerPieceInCorrectPosition(x, y, 'y')) {
+                counter++;
+            }
+        }
+    }
+    return counter;
+}
+
+void Cube::bringCornersIntoCorrectOrientation() {
+    unsigned nrCornersCorrect;
+
+    nrCornersCorrect = getNrCornerPiecesInCorrectOrientation();
+    while (getNrCornerPiecesInCorrectOrientation() < 4) {
+        if (nrCornersCorrect == 1) {
+            while (!isCornerPieceCorrect(0, 0, 'y')) { // correct one should be in bottom left
+                spinRight90AlongZ();
+            }
+        }
+        if (nrCornersCorrect == 2) {
+            while (!(isCornerPieceCorrect(0, 0, 'y') && isCornerPieceCorrect(2, 0, 'y') == false)) {
+                spinRight90AlongZ();
+            }
+        }
+
+        r();
+        u();
+        u();
+        r_();
+        u_();
+        r();
+        u_();
+        r_();
+
+        l_();
+        u();
+        u();
+        l();
+        u();
+        l_();
+        u();
+        l();
+        
+        nrCornersCorrect = getNrCornerPiecesInCorrectOrientation();
+    }
+    cout << "orientated corners in third layer correctly" << endl;
+}
+
+// can only return 0, 1, 2, 4
+unsigned Cube::getNrCornerPiecesInCorrectOrientation() {
+    unsigned x, y, z;
+    unsigned counter;
+
+    z = 2;
+    counter = 0;
+    for (y = 0; y < 3; y++) {
+        for (x = 0; x < 3; x++) {
+            if (cubePieces[x][y][z].isCornerPiece() && isCornerPieceCorrect(x, y, 'y')) {
+                counter++;
+            }
+        }
+    }
+    return counter;
+}
+
+// returns true if the corner piece is within the layer of passed @param color, and contains neighbored colors of surfaces as well, else false
+bool Cube::isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color) {
+    char surfaceColorFrontBack;
+    char surfaceColorLeftRight;
+    unsigned z;
+
+    z = 2;
+    if (cubePieces[x][y][z].getPositionOfColor(color) != -1) {
+        surfaceColorFrontBack = cubePieces[1][y][1].getColor(0);
+        surfaceColorLeftRight = cubePieces[x][1][1].getColor(0);
+        if (cubePieces[x][y][z].getPositionOfColor(surfaceColorFrontBack) != -1 && cubePieces[x][y][z].getPositionOfColor(surfaceColorLeftRight) != -1) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // returns true if yellow cross on top (criterias like in isColorCrossOnTop() concerning secondary colors not considered)
 bool Cube::isColorCrossOnTopNoSecondary(char color) {
     if (cubePieces[1][0][2].isColorOnTopOfEdgePiece(color, 1) &&
@@ -1360,26 +1479,34 @@ bool Cube::isThirdLayerSolved() {
             }
         }
     }
-    if (isColorCrossOnTop('y')) {
+    if (!isColorCrossOnTop('y')) {
         return false;
     }
 
     return true;
 }
 
+/////////////////////////////////////////////////////////////////////////////
+
+void Cube::solveRubiksCube() {
+    solveFirstLayer();
+    solveSecondLayer();
+    solveThirdLayer();
+
+    cout << "-- Rubik's Cube solved successfully --" << endl;
+}
 
 /***    	           BUILD CUBE                ***/
 
 void Cube::createRandomCube() {
     srand(time(NULL));
-    unsigned randomLoops = rand() % 30 + 8; // at least 8 moves
-    //unsigned randomLoops = rand() % 5 +1; // at least 8 moves
+    unsigned randomLoops = rand() % 40 + 12; // at least 12 moves
     unsigned randomMove;
     unsigned randomNrRotations;
     unsigned randomLayer;
     unsigned i, p;
 
-    cout << randomLoops << endl;
+    cout << "started to rotate cube randomly...\n.\n." << endl;
 
     for (i = 0; i < randomLoops; i++) {
         randomMove = rand() % 6;
@@ -1418,6 +1545,7 @@ void Cube::createRandomCube() {
                 break;
         }
     }
+    cout << ".\n.\n...finished randomly rotating cube" << endl;
 
 }
 
@@ -1497,19 +1625,11 @@ int test() {
 
     Cube cube = Cube(testCube);
 
-    // cube.spinLayerRight90AlongZ(0);
-    // cube.spinLayerLeft90AlongY(0);
-    // cube.spinLayerLeft90AlongY(0);
-    // cube.spinLayerLeft90AlongY(0);
-
     cube.createRandomCube();
-    cube.solveSecondLayer();
-
-    cube.solveThirdLayer();
-
     // cube.printWholeCube();
 
-    cout << "is yellow cross on top: " << cube.isColorCrossOnTop('y') << endl;
+    cube.solveRubiksCube();
+    // cube.printWholeCube();
 
     return 0;
 }

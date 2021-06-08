@@ -136,8 +136,15 @@ public:
     void prepareNextStepYellowCross();
     void connectEdges();
     unsigned edgesConnected();
+    void bringCornersIntoCorrectPosition();
+    unsigned getNrCornerPiecesInCorrectPosition();
+    void bringCornersIntoCorrectOrientation();
+    unsigned getNrCornerPiecesInCorrectOrientation();
+    bool isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color);
     bool isColorCrossOnTopNoSecondary(char color);
     bool isThirdLayerSolved();
+
+    void solveRubiksCube();
 };
 
 
