@@ -63,13 +63,15 @@ class Cube {
 private:
     //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
+    unsigned countMoves;
 public:
     Cube();
     Cube(vector<CubePiece> pieces);
+    unsigned getNrMoves();
+    void incrementMovesCounter();
     void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
-    void spinUp180AlongX();
     void spinUp90AlongX();
     void spinLayerUp90AlongX(unsigned xLayer);
     void spinDown90AlongX();
@@ -106,10 +108,10 @@ public:
     int isWhiteBottomCornerFront();
     bool isWhiteBottomCornerLeftBottom();
     bool isWhiteCrossOnBottom();
-    bool isWhiteCrossOnTop();
+    bool isColorCrossOnTop(char color);
     bool isWhiteFlowerOnTop();
     bool isFirstLayerSolved();
-    bool isWhiteCornerPieceCorrect(unsigned x, unsigned y);
+    bool isCornerPieceCorrect(unsigned x, unsigned y, char color);
 
     // second layer functions
 
@@ -119,6 +121,32 @@ public:
     void turnCubeColorFront(char color);
     bool isSecondLayerSolved();
     bool isEdgePieceCorrect(unsigned x, unsigned y);
+
+    // third layer functions
+
+    void r();
+    void r_();
+    void u();
+    void u_();
+    void l();
+    void l_();
+    void f();
+    void f_();
+
+    void solveThirdLayer();
+    void buildYellowCross();
+    void prepareNextStepYellowCross();
+    void connectEdges();
+    unsigned edgesConnected();
+    void bringCornersIntoCorrectPosition();
+    unsigned getNrCornerPiecesInCorrectPosition();
+    void bringCornersIntoCorrectOrientation();
+    unsigned getNrCornerPiecesInCorrectOrientation();
+    bool isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color);
+    bool isColorCrossOnTopNoSecondary(char color);
+    bool isThirdLayerSolved();
+
+    void solveRubiksCube();
 };
 
 
