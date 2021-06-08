@@ -63,13 +63,15 @@ class Cube {
 private:
     //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
+    unsigned countMoves;
 public:
     Cube();
     Cube(vector<CubePiece> pieces);
+    unsigned getNrMoves();
+    void incrementMovesCounter();
     void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
-    void spinUp180AlongX();
     void spinUp90AlongX();
     void spinLayerUp90AlongX(unsigned xLayer);
     void spinDown90AlongX();
