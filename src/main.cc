@@ -152,18 +152,30 @@ glm::mat4 spinObj(glm::mat4 anim, bool state) {
     return anim;
 }
 
-glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::mat4 anim, int arraySize, bool state) {
-    for(int i = 0; i < arraySize; i+=1) {
+glm::mat4 spinObj2(glm::mat4 anim, bool state) {
+    float angle = -1.0f;
 
-        if(i == 1) {
-        //    anim = spinObj(anim, state);
-        }
-
-        glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtx[i], GL_STATIC_DRAW);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+    if(state == true) {
+    // anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 1.0f) );
+        anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
+    // anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, 1.0f)) );
     }
+
     return anim;
 }
+
+// glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::mat4 anim, int arraySize, bool state) {
+//     for(int i = 0; i < arraySize; i+=1) {
+
+//         if(i == 1) {
+//         //    anim = spinObj(anim, state);
+//         }
+
+//         glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtx[i], GL_STATIC_DRAW);
+//         glDrawArrays(GL_TRIANGLES, 0, 36);
+//     }
+//     return anim;
+// }
 
 void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   const char* uniformName = "anim";
@@ -174,6 +186,7 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   }
   glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 }
+
 
 int main()
 {
@@ -220,12 +233,13 @@ int main()
     }
 
     int vtxSize = 6*36;
-    int arraySize = 2;
+    int arraySize = 3;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
-        Cube(RIGHT, 0.0f)
-        //Cube(LEFT, 0.0f)
-        // Cube(RIGHT, 0.0f)
+        Cube(RIGHT, 0.0f),
+        Cube(BOTTOM, 0.0f)
+        // Cube(TOP, 0.0f),
+        // Cube(BOTTOM, 0.0f)
     };
 
     GLfloat* vtxArray[arraySize];
@@ -248,6 +262,8 @@ int main()
         glGenBuffers(1, &myVBO);
         glBindBuffer(GL_ARRAY_BUFFER, myVBO);
         VBOArray[i] = myVBO;
+
+        printf("counter %u \n", i);
     }
 
 
@@ -412,6 +428,8 @@ int main()
 
     glm::mat4 anim2 = glm::mat4(1.0f);
 
+    glm::mat4 anim3 = glm::mat4(1.0f);
+
     /* bind uniforms and pass data to the shader program */
     const char* uniformName;
     /*uniformName = "textureData";
@@ -476,11 +494,14 @@ int main()
 
         for(int i = 0; i < arraySize; i+=1) {
             createAnim(shaderProgram, anim);
+            // if(i == 0) {
+            //     createAnim(shaderProgram, anim2);
+            //     anim2 = spinObj(anim2, state);
+            // }
             if(i == 1) {
-                createAnim(shaderProgram, anim2);
-                anim2 = spinObj(anim2, state);
+                createAnim(shaderProgram, anim3);
+                anim3 = spinObj2(anim3, state);
             }
-
             glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtxArray[i], GL_STATIC_DRAW);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -497,7 +518,7 @@ int main()
 
         // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         deltaTime = GLfloat(glfwGetTime() - lastTime);
-        lastTime = deltaTime;
+        lastTime = deltaTime; 
 
         look = getDirectionRightUp(myWindow, position, horizontalAngle, verticalAngle, initialFoV, speed, mouseSpeed, deltaTime);
         view = glm::lookAt(look[0], look[1], look[2]);
