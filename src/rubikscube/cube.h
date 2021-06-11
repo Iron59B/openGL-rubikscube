@@ -46,7 +46,15 @@ private:
     const int BOTTOM_LEFT = 7;
     const int BOTTOM_RIGHT = 8;
 
+    const int YELLOW = 0;
+    const int RED = 1;
+    const int BLUE = 2;
+    const int GREEN = 3;
+    const int ORANGE = 4;
+    const int WHITE = 5;
+
     array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, GLfloat depth);
+    array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
     GLfloat initCube[6*36] = {
         -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* bottom: blue */
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,

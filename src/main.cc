@@ -286,7 +286,7 @@ int main()
         vtxArray[i] = cube[i].createCubes();
         // printf("Pointer then: %u \n", *vtxArray[i]);
         // std::cout << vtxArray[i] << std::endl;
-        printCube(vtxArray[i]);
+        //printCube(vtxArray[i]);
 
         /* create and bind one Vertex Array Object */
         GLuint myVAO;
@@ -304,10 +304,10 @@ int main()
         printf("counter %u \n", i);
     }
 
-    for(int i = 0; i < arraySize; i++){
-      printf("------------------------- \n");
-      printCube(vtxArray[i]);
-    }
+    // for(int i = 0; i < arraySize; i++){
+    //   printf("------------------------- \n");
+    //   printCube(vtxArray[i]);
+    // }
 
 
     /* copy the vertex data to it */

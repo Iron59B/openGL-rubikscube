@@ -52,6 +52,15 @@ std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int p
 
     //left cube
     // printf("START OF CUBE \n");
+    /*
+      Create one cube by iteration with 6 iterations:
+      First iteration -> bottom
+      Second iteration -> top
+      Third iteration -> front
+      Fourth iteration -> back
+      Fifth iteration -> left
+      Sixth iteration -> right
+    */
     for (int i = 0; i + 5 < elementsPerCube; i += 6)
     {
         vtx[i + 2] = vtx[i + 2] + depth;
@@ -100,9 +109,23 @@ std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int p
             vtx[i + 1] = vtx[i + 1] - 2.1f;
         }
 
-        vtx[i + 3] = this->initCube[i + 3];
-        vtx[i + 4] = this->initCube[i + 4];
-        vtx[i + 5] = this->initCube[i + 5];
+        if (i == 0) {
+          vtx = addColor(this->BLUE, vtx, i+3);
+        } else if (i == 6) {
+          vtx = addColor(this->GREEN, vtx, i+3);
+        } else if (i == 2*6) {
+          vtx = addColor(this->RED, vtx, i+3);
+        } else if (i == 3*6) {
+          vtx = addColor(this->ORANGE, vtx, i+3);
+        } else if (i == 4*6) {
+          vtx = addColor(this->WHITE, vtx, i+3);
+        } else if (i == 5*6) {
+          vtx = addColor(this->YELLOW, vtx, i+3);
+        }
+
+        // vtx[i + 3] = this->initCube[i + 3];
+        // vtx[i + 4] = this->initCube[i + 4];
+        // vtx[i + 5] = this->initCube[i + 5];
         //printf("%f, %f, %f, %f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2], vtx[i+3], vtx[i+4], vtx[i+5]);
         // printf("x: %f ", vtx[i]);
         // printf("y: %f ", vtx[i+1]);
@@ -114,4 +137,34 @@ std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int p
 
     // printf("Pointer after alg: %u\n", *vtx);
     return vtx;
+}
+
+std::array<GLfloat, 6*36> Cube::addColor(int color, std::array<GLfloat, 6*36> vtx, int i) {
+  if(color == this->YELLOW) {
+    vtx[i] = 1.0f;
+    vtx[i+1] = 1.0f;
+    vtx[i+2] = 0.0f;
+  } else if(color == this->RED) {
+    vtx[i] = 1.0f;
+    vtx[i+1] = 1.0f;
+    vtx[i+2] = 0.0f;
+  } else if(color == this->BLUE) {
+    vtx[i] = 0.0f;
+    vtx[i+1] = 0.0f;
+    vtx[i+2] = 1.0f;
+  } else if(color == this->GREEN) {
+    vtx[i] = 0.0f;
+    vtx[i+1] = 1.0f;
+    vtx[i+2] = 0.0f;
+  } else if(color == this->ORANGE) {
+    vtx[i] = 1.0f;
+    vtx[i+1] = 0.5f;
+    vtx[i+2] = 0.0f;
+  } else if(color == this->WHITE) {
+    vtx[i] = 1.0f;
+    vtx[i+1] = 1.0f;
+    vtx[i+2] = 1.0f;
+  }
+
+  return vtx;
 }
