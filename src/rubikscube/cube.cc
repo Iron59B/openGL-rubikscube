@@ -18,29 +18,31 @@
 
 #include "cube.h"
 
-GLfloat* Cube::createCubes()
+std::array<GLfloat, 6 * 36> Cube::createCubes()
 {
-    if (this->position == this->MIDDLE && this->depth == 0) {
+    std::array<GLfloat, 6 * 36> vtx;
+    for (int i = 0; i < 6 * 36; i++)
+    {
+        vtx[i] = this->initCube[i];
+    }
+
+    if (this->position == this->MIDDLE && this->depth == 0)
+    {
         printf("START OF INIT CUBE \n");
-        return this->initCube;
+        return vtx;
     }
     else
     {
-        static GLfloat vtx[6*36];
-        std::vector<GLfloat> rofl;
-        printf("vector: " );
-        std::cout << &rofl << std::endl;
-
-        std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
+        // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
         return addCube(vtx, this->position, this->depth);
     }
 }
 
-GLfloat* Cube::addCube(GLfloat vtx[], int position, GLfloat depth)
+std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int position, GLfloat depth)
 {
 
-    printf("Pointer: %u\n", *vtx);
-    std::cout << vtx << std::endl;
+    // printf("Pointer: %u\n", &vtx);
+    std::cout << &vtx << std::endl;
 
     // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
     // printf("Pointer before alg: %u\n", *vtx);
@@ -50,7 +52,7 @@ GLfloat* Cube::addCube(GLfloat vtx[], int position, GLfloat depth)
 
     //left cube
     // printf("START OF CUBE \n");
-    for (int i = 0; i+5 < elementsPerCube; i += 6)
+    for (int i = 0; i + 5 < elementsPerCube; i += 6)
     {
         vtx[i + 2] = vtx[i + 2] + depth;
 
@@ -108,7 +110,6 @@ GLfloat* Cube::addCube(GLfloat vtx[], int position, GLfloat depth)
         // if(i+5 == elementsPerCube - 1) {
         //     printf("END OF CUBE \n");
         // }
-
     }
 
     // printf("Pointer after alg: %u\n", *vtx);

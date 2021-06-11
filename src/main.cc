@@ -196,6 +196,12 @@ void printCube(GLfloat* vtx) {
   }
 }
 
+void printCube(std::array<GLfloat,6*36> vtx) {
+  for(int i = 0; i+5 < 6*36; i+=6) {
+    printf("%f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2]);
+  }
+}
+
 
 int main()
 {
@@ -242,16 +248,22 @@ int main()
     }
 
     int vtxSize = 6*36;
-    int arraySize = 4;
+    int arraySize = 10;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
         Cube(RIGHT, 0.0f),
         Cube(BOTTOM, 0.0f),
-        Cube(TOP, 0.0f)
+        Cube(TOP, 0.0f),
+        Cube(LEFT, 0.0f),
+        Cube(MIDDLE, -2.1f),
+        Cube(RIGHT, -2.1f),
+        Cube(BOTTOM, -2.1f),
+        Cube(TOP, -2.1f),
+        Cube(LEFT, -2.1f),
         // Cube(BOTTOM, 0.0f)
     };
 
-    GLfloat* vtxArray[arraySize];
+    std::array<std::array<GLfloat,6*36>,10> vtxArray;
     //std::vector<GLfloat> vtxArray;
 
     GLuint VAOArray[arraySize];
@@ -264,8 +276,8 @@ int main()
         //std::copy(std::begin(initCube), std::end(initCube), std::begin(vtx));
         // printf("pointer: %u: \n", *cube[i].createCubes());
         vtxArray[i] = cube[i].createCubes();
-        printf("Pointer then: %u \n", *vtxArray[i]);
-        std::cout << vtxArray[i] << std::endl;
+        // printf("Pointer then: %u \n", *vtxArray[i]);
+        // std::cout << vtxArray[i] << std::endl;
         printCube(vtxArray[i]);
 
         /* create and bind one Vertex Array Object */
@@ -440,7 +452,7 @@ int main()
     glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
-
+vtxArray
     //glm::mat4 view = glm::lookAt(look[0], look[1], look[2]);
 
     /* define a  projection transformation */
@@ -464,7 +476,7 @@ int main()
      glUniform1i(uniformTex, 0);*/
 
     uniformName = "view";
-    GLint uniformView = glGetUniformLocation(shaderProgram, uniformName);
+    GLint uniformView = glGetUniformLocation(shaderProgvtxArrayram, uniformName);
     if (uniformView == -1) {
         fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
         exit(EXIT_FAILURE);
@@ -526,7 +538,7 @@ int main()
             //     anim3 = spinObj2(anim3, state);
             // }
 
-            glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtxArray[i], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
