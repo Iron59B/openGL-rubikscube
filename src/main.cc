@@ -248,22 +248,30 @@ int main()
     }
 
     int vtxSize = 6*36;
-    int arraySize = 10;
+    int arraySize = 18;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
         Cube(RIGHT, 0.0f),
         Cube(BOTTOM, 0.0f),
         Cube(TOP, 0.0f),
         Cube(LEFT, 0.0f),
-        Cube(MIDDLE, -2.1f),
-        Cube(RIGHT, -2.1f),
-        Cube(BOTTOM, -2.1f),
-        Cube(TOP, -2.1f),
-        Cube(LEFT, -2.1f),
+        Cube(TOP_LEFT, 0.0f),
+        Cube(TOP_RIGHT, 0.0f),
+        Cube(BOTTOM_LEFT, 0.0f),
+        Cube(BOTTOM_RIGHT, 0.0f),
+        Cube(MIDDLE, -2.2f),
+        Cube(RIGHT, -2.2f),
+        Cube(BOTTOM, -2.2f),
+        Cube(TOP, -2.2f),
+        Cube(LEFT, -2.2f),
+        Cube(TOP_LEFT, -2.2f),
+        Cube(TOP_RIGHT, -2.2f),
+        Cube(BOTTOM_LEFT, -2.2f),
+        Cube(BOTTOM_RIGHT, -2.2f),
         // Cube(BOTTOM, 0.0f)
     };
 
-    std::array<std::array<GLfloat,6*36>,10> vtxArray;
+    std::array<std::array<GLfloat,6*36>,18> vtxArray;
     //std::vector<GLfloat> vtxArray;
 
     GLuint VAOArray[arraySize];
@@ -452,7 +460,7 @@ int main()
     glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
-vtxArray
+
     //glm::mat4 view = glm::lookAt(look[0], look[1], look[2]);
 
     /* define a  projection transformation */
@@ -476,7 +484,7 @@ vtxArray
      glUniform1i(uniformTex, 0);*/
 
     uniformName = "view";
-    GLint uniformView = glGetUniformLocation(shaderProgvtxArrayram, uniformName);
+    GLint uniformView = glGetUniformLocation(shaderProgram, uniformName);
     if (uniformView == -1) {
         fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
         exit(EXIT_FAILURE);
