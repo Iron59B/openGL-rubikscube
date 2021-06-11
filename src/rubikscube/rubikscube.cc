@@ -209,7 +209,9 @@ int CubePiece::getPositionOfColor(char color) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-Cube::Cube(){}
+Cube::Cube(){
+    countMoves = 0;
+}
 
 Cube::Cube(vector<CubePiece> pieces) {
     unsigned i, x, y, z;
@@ -226,6 +228,22 @@ Cube::Cube(vector<CubePiece> pieces) {
         }
     }
     countMoves = 0;
+}
+
+void Cube::setPieces(vector<CubePiece> pieces) {
+    unsigned i, x, y, z;
+    i = 0;
+
+    for (z = 0; z < 3; z++) {
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (i < 27) {
+                    cubePieces[x][y][z] = pieces[i];
+                    i++;
+                }
+            }
+        }
+    }
 }
 
 unsigned Cube::getNrMoves() {
@@ -684,7 +702,7 @@ void Cube::buildWhiteCross() {
             for (x = 0; x < 3; x++) {
                 if (cubePieces[x][y][z].isEdgePiece() && x == 1 && cubePieces[x][y][z].isColorOnTopOfEdgePiece('w', x)) {
                     counter = 0;
-                    while (cubePieces[x][y][z].getColor(0) != cubePieces[x][y][z-1].getColor(0)) {                        
+                    while (cubePieces[x][y][z].getColor(0) != cubePieces[x][y][z-1].getColor(0)) {
                         if (counter > 4) {
                             if (isWhiteCrossOnBottom())
                                 return;
@@ -730,12 +748,12 @@ void Cube::buildWhiteCross() {
 
 void Cube::solveFirstLayer() {
     unsigned nextCornerX;
-    
+
     if (!isWhiteCrossOnBottom())
         buildWhiteCross();
 
     turnCubeWhiteTop();
-    
+
     while (!isFirstLayerSolved()) {
         nextCornerX = turnCubeUntilWhiteBottomCornerFront();
         insertNextWhiteCornerPiece(nextCornerX);
@@ -779,7 +797,7 @@ int Cube::turnCubeUntilWhiteBottomCornerFront() {
     if (isWhiteBottomCornerFront() != -1)
         return isWhiteBottomCornerFront();
     else {                    // when there is no such piece, check if there is one on the bottom, else look in top layer for incorrect white corners
-        bringBottomWhiteCornerFront();      
+        bringBottomWhiteCornerFront();
         if (isWhiteBottomCornerFront() == -1) {
             bringTopWhiteCornerFront();
         }
@@ -817,9 +835,9 @@ void Cube::bringBottomWhiteCornerFront() {
             spinLayerUp90AlongX(0); incrementMovesCounter(); //relMove
             spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove // white face is now on right bottom front
         }
-        else 
+        else
             return; // no bottom faced white corner piece
-    }       
+    }
 }
 
 // checks for incorrect white corner pieces in the top layer, if they exist, bring them to bottom layer
@@ -906,7 +924,7 @@ bool Cube::isFirstLayerSolved() {
     unsigned x, y, z;
 
     turnCubeWhiteTop();
-    
+
     if (isColorCrossOnTop('w')) {
         z = 2;
         for (y = 0; y < 3; y++) {
@@ -1088,7 +1106,7 @@ int Cube::prepareForNextEdgePieceInsertion() {
     }
 
     // no non-yellow edge piece in bottom layer
-    
+
     turnCubeYellowTop();
     counter = 0;
     while (isEdgePieceCorrect(2, 0) && counter < 4) {
@@ -1221,7 +1239,7 @@ void Cube::solveThirdLayer() {
     connectEdges();
     bringCornersIntoCorrectPosition();
     bringCornersIntoCorrectOrientation();
-    
+
     if (!isThirdLayerSolved()) {
         solveThirdLayer();
     }
@@ -1356,7 +1374,7 @@ unsigned Cube::edgesConnected() {
             }
         }
     }
-    
+
     // all edges connected
     return 4;
 }
@@ -1434,7 +1452,7 @@ void Cube::bringCornersIntoCorrectOrientation() {
         l_(); incrementMovesCounter(); //relMove
         u(); incrementMovesCounter(); //relMove
         l(); incrementMovesCounter(); //relMove
-        
+
         nrCornersCorrect = getNrCornerPiecesInCorrectOrientation();
     }
     cout << "orientated corners in third layer correctly" << endl;
@@ -1519,66 +1537,7 @@ void Cube::solveRubiksCube() {
 
 /***    	           BUILD CUBE                ***/
 
-void Cube::createRandomCube() {
-    srand(time(NULL));
-    unsigned randomLoops = rand() % 40 + 12; // at least 12 moves
-    unsigned randomMove;
-    unsigned randomNrRotations;
-    unsigned randomLayer;
-    unsigned i, p;
-
-    cout << "started to rotate cube randomly...\n.\n." << endl;
-
-    for (i = 0; i < randomLoops; i++) {
-        randomMove = rand() % 6;
-        randomNrRotations = rand() % 3 + 1;
-        randomLayer = rand() % 3;
-        switch(randomMove) {
-            case 0:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerUp90AlongX(randomLayer);
-                cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 1:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerDown90AlongX(randomLayer);
-                cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 2:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongY(randomLayer);
-                cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 3:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongY(randomLayer);
-                cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 4:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongZ(randomLayer);
-                cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 5:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongZ(randomLayer);
-                cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-        }
-    }
-    cout << ".\n.\n...finished rotating cube randomly" << endl;
-
-}
-
-
-/**********************************************************************
-**                    GLOBAL FUNCTION DEFINITIONS                    **
-**********************************************************************/
-
-
-
-// testing function
-int test() {
+void Cube::initCube() {
     vector<CubePiece> testCube;
 
     // first layer:
@@ -1644,8 +1603,74 @@ int test() {
     testCube.push_back(c122);
     testCube.push_back(c222);
 
-    Cube cube = Cube(testCube);
+    setPieces(testCube);
 
+}
+
+void Cube::createRandomCube() {
+    srand(time(NULL));
+    unsigned randomLoops = rand() % 40 + 12; // at least 12 moves
+    unsigned randomMove;
+    unsigned randomNrRotations;
+    unsigned randomLayer;
+    unsigned i, p;
+
+    cout << "started to rotate cube randomly...\n.\n." << endl;
+
+    for (i = 0; i < randomLoops; i++) {
+        randomMove = rand() % 6;
+        randomNrRotations = rand() % 3 + 1;
+        randomLayer = rand() % 3;
+        switch(randomMove) {
+            case 0:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerUp90AlongX(randomLayer);
+                cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 1:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerDown90AlongX(randomLayer);
+                cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 2:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerRight90AlongY(randomLayer);
+                cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 3:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerLeft90AlongY(randomLayer);
+                cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 4:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerRight90AlongZ(randomLayer);
+                cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 5:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerLeft90AlongZ(randomLayer);
+                cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+        }
+    }
+    cout << ".\n.\n...finished rotating cube randomly" << endl;
+
+}
+
+
+/**********************************************************************
+**                    GLOBAL FUNCTION DEFINITIONS                    **
+**********************************************************************/
+
+
+
+// testing function
+int test() {
+
+    Cube cube = Cube();
+
+    cube.initCube();
     cube.createRandomCube();
     // cube.printWholeCube();
 

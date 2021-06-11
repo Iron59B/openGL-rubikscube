@@ -67,8 +67,10 @@ private:
 public:
     Cube();
     Cube(vector<CubePiece> pieces);
+    void setPieces(vector<CubePiece> pieces);
     unsigned getNrMoves();
     void incrementMovesCounter();
+    void initCube();
     void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
@@ -100,7 +102,7 @@ public:
     void bringTopWhiteCornerFront();
     void dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y);
     void insertNextWhiteCornerPiece(unsigned x);
-    
+
     void turnCubeYellowTop();
     void turnCubeWhiteTop();
     int turnCubeUntilWhiteBottomCornerFront();
