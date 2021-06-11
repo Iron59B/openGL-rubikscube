@@ -22,9 +22,13 @@ public:
     };
     Cube(int position, GLfloat depth){
         this->position = position;
-        this->depth = depth; 
+        this->depth = depth;
     };
     GLfloat* createCubes();
+
+    GLfloat* getInitCube() {
+      return initCube;
+    }
 
 private:
     int position;
@@ -39,7 +43,7 @@ private:
     const int BOTTOM_LEFT = 7;
     const int BOTTOM_RIGHT = 8;
 
-    GLfloat* addCube(int position, GLfloat depth);
+    GLfloat* addCube(GLfloat vtx[], int position, GLfloat depth);
     GLfloat initCube[6*36] = {
         -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* bottom: blue */
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
@@ -77,7 +81,7 @@ private:
          1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
          1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
-    }; 
+    };
 };
 
 

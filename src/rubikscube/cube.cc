@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <array>
+#include <iostream>
+#include <vector>
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
 #include <GL/glew.h>
@@ -16,7 +18,7 @@
 
 #include "cube.h"
 
-GLfloat *Cube::createCubes()
+GLfloat* Cube::createCubes()
 {
     if (this->position == this->MIDDLE && this->depth == 0) {
         printf("START OF INIT CUBE \n");
@@ -24,20 +26,31 @@ GLfloat *Cube::createCubes()
     }
     else
     {
-        return addCube(this->position, this->depth);
+        static GLfloat vtx[6*36];
+        std::vector<GLfloat> rofl;
+        printf("vector: " );
+        std::cout << &rofl << std::endl;
+
+        std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
+        return addCube(vtx, this->position, this->depth);
     }
 }
 
-GLfloat *Cube::addCube(int position, GLfloat depth)
+GLfloat* Cube::addCube(GLfloat vtx[], int position, GLfloat depth)
 {
-    static GLfloat vtx[6*36];
-    std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
+
+    printf("Pointer: %u\n", *vtx);
+    std::cout << vtx << std::endl;
+
+    // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
+    // printf("Pointer before alg: %u\n", *vtx);
+    // printf("Pointer during alg: %u\n", *vtx);
 
     int elementsPerCube = 36 * 6;
 
     //left cube
-    printf("START OF CUBE \n");
-    for (int i = 0; i < elementsPerCube; i += 6)
+    // printf("START OF CUBE \n");
+    for (int i = 0; i+5 < elementsPerCube; i += 6)
     {
         vtx[i + 2] = vtx[i + 2] + depth;
 
@@ -89,15 +102,15 @@ GLfloat *Cube::addCube(int position, GLfloat depth)
         vtx[i + 4] = this->initCube[i + 4];
         vtx[i + 5] = this->initCube[i + 5];
         //printf("%f, %f, %f, %f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2], vtx[i+3], vtx[i+4], vtx[i+5]);
-        printf("x: %f ", vtx[i]);
-        printf("y: %f ", vtx[i+1]);
-        printf("z: %f \n", vtx[i+2]);
-        if(i+5 == elementsPerCube - 1) {
-            printf("END OF CUBE \n");
-        }
-    
+        // printf("x: %f ", vtx[i]);
+        // printf("y: %f ", vtx[i+1]);
+        // printf("z: %f \n", vtx[i+2]);
+        // if(i+5 == elementsPerCube - 1) {
+        //     printf("END OF CUBE \n");
+        // }
+
     }
 
-
+    // printf("Pointer after alg: %u\n", *vtx);
     return vtx;
 }

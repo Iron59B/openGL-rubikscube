@@ -1,6 +1,9 @@
 /* standard includes */
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <array>
+#include <vector>
+#include <iostream>
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
 #include <GL/glew.h>
@@ -187,6 +190,12 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 }
 
+void printCube(GLfloat* vtx) {
+  for(int i = 0; i+5 < 6*36; i+=6) {
+    printf("%f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2]);
+  }
+}
+
 
 int main()
 {
@@ -233,23 +242,32 @@ int main()
     }
 
     int vtxSize = 6*36;
-    int arraySize = 3;
+    int arraySize = 4;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
         Cube(RIGHT, 0.0f),
-        Cube(BOTTOM, 0.0f)
-        // Cube(TOP, 0.0f),
+        Cube(BOTTOM, 0.0f),
+        Cube(TOP, 0.0f)
         // Cube(BOTTOM, 0.0f)
     };
 
     GLfloat* vtxArray[arraySize];
+    //std::vector<GLfloat> vtxArray;
 
     GLuint VAOArray[arraySize];
     GLuint VBOArray[arraySize];
 
+
     for(int i = 0; i < arraySize; i++) {
-        GLfloat* vtx = cube[i].createCubes();
-        vtxArray[i] = vtx;
+        //GLfloat vtx[3*36];
+
+        //std::copy(std::begin(initCube), std::end(initCube), std::begin(vtx));
+        // printf("pointer: %u: \n", *cube[i].createCubes());
+        vtxArray[i] = cube[i].createCubes();
+        printf("Pointer then: %u \n", *vtxArray[i]);
+        std::cout << vtxArray[i] << std::endl;
+        printCube(vtxArray[i]);
+
         /* create and bind one Vertex Array Object */
         GLuint myVAO;
         glGenVertexArrays(1, &myVAO);
@@ -264,6 +282,11 @@ int main()
         VBOArray[i] = myVBO;
 
         printf("counter %u \n", i);
+    }
+
+    for(int i = 0; i < arraySize; i++){
+      printf("------------------------- \n");
+      printCube(vtxArray[i]);
     }
 
 
@@ -498,10 +521,11 @@ int main()
             //     createAnim(shaderProgram, anim2);
             //     anim2 = spinObj(anim2, state);
             // }
-            if(i == 1) {
-                createAnim(shaderProgram, anim3);
-                anim3 = spinObj2(anim3, state);
-            }
+            // if(i == 1) {
+            //     createAnim(shaderProgram, anim3);
+            //     anim3 = spinObj2(anim3, state);
+            // }
+
             glBufferData(GL_ARRAY_BUFFER, 6*36*4, vtxArray[i], GL_STATIC_DRAW);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -518,7 +542,7 @@ int main()
 
         // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         deltaTime = GLfloat(glfwGetTime() - lastTime);
-        lastTime = deltaTime; 
+        lastTime = deltaTime;
 
         look = getDirectionRightUp(myWindow, position, horizontalAngle, verticalAngle, initialFoV, speed, mouseSpeed, deltaTime);
         view = glm::lookAt(look[0], look[1], look[2]);
