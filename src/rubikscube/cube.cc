@@ -28,7 +28,7 @@ std::array<GLfloat, 6 * 36> Cube::createCubes()
 
     if (this->position == this->MIDDLE && this->depth == 0)
     {
-        printf("START OF INIT CUBE \n");
+        // printf("START OF INIT CUBE \n");
         return vtx;
     }
     else
@@ -42,7 +42,7 @@ std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int p
 {
 
     // printf("Pointer: %u\n", &vtx);
-    std::cout << &vtx << std::endl;
+    // std::cout << &vtx << std::endl;
 
     // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
     // printf("Pointer before alg: %u\n", *vtx);
