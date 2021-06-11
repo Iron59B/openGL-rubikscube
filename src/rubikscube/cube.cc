@@ -24,7 +24,7 @@ std::array<GLfloat, 6 * 36> Cube::createCubes()
     for (int i = 0; i < 6 * 36; i++)
     {
         vtx[i] = this->initCube[i];
-    }
+    }-
 
     if (this->position == this->MIDDLE && this->depth == 0)
     {

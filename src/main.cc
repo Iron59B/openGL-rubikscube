@@ -248,7 +248,7 @@ int main()
     }
 
     int vtxSize = 6*36;
-    int arraySize = 18;
+    const int arraySize = 27;
     static Cube cube[] ={
         Cube(MIDDLE, 0.0f),
         Cube(RIGHT, 0.0f),
@@ -259,19 +259,28 @@ int main()
         Cube(TOP_RIGHT, 0.0f),
         Cube(BOTTOM_LEFT, 0.0f),
         Cube(BOTTOM_RIGHT, 0.0f),
-        Cube(MIDDLE, -2.2f),
-        Cube(RIGHT, -2.2f),
-        Cube(BOTTOM, -2.2f),
-        Cube(TOP, -2.2f),
-        Cube(LEFT, -2.2f),
-        Cube(TOP_LEFT, -2.2f),
-        Cube(TOP_RIGHT, -2.2f),
-        Cube(BOTTOM_LEFT, -2.2f),
-        Cube(BOTTOM_RIGHT, -2.2f),
+        Cube(MIDDLE, -2.1f),
+        Cube(RIGHT, -2.1f),
+        Cube(BOTTOM, -2.1f),
+        Cube(TOP, -2.1f),
+        Cube(LEFT, -2.1f),
+        Cube(TOP_LEFT, -2.1f),
+        Cube(TOP_RIGHT, -2.1f),
+        Cube(BOTTOM_LEFT, -2.1f),
+        Cube(BOTTOM_RIGHT, -2.1f),
+        Cube(MIDDLE, -4.2f),
+        Cube(RIGHT, -4.2f),
+        Cube(BOTTOM, -4.2f),
+        Cube(TOP, -4.2f),
+        Cube(LEFT, -4.2f),
+        Cube(TOP_LEFT, -4.2f),
+        Cube(TOP_RIGHT, -4.2f),
+        Cube(BOTTOM_LEFT, -4.2f),
+        Cube(BOTTOM_RIGHT, -4.2f)
         // Cube(BOTTOM, 0.0f)
     };
 
-    std::array<std::array<GLfloat,6*36>,18> vtxArray;
+    std::array<std::array<GLfloat,6*36>,arraySize> vtxArray;
     //std::vector<GLfloat> vtxArray;
 
     GLuint VAOArray[arraySize];
