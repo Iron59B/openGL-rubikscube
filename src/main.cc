@@ -149,7 +149,7 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
     return look;
 }
 
-void createAnim(GLuint shaderProgram, glm::mat4 anim) {
+void createAnim(GLuint shaderProgram, glm::mat4 anim) { 
   const char* uniformName = "anim";
   uniformAnim = glGetUniformLocation(shaderProgram, uniformName);
   if (uniformAnim == -1) {
@@ -162,11 +162,8 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
 glm::mat4 spinObj(glm::mat4 anim, float orientation) {
     float angle = 0.1f * orientation;
 
-    // anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 1.0f) );
-        anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
-    // anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, 1.0f)) );
+    anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
     
-
     return anim;
 }
 
@@ -176,36 +173,42 @@ glm::mat4 spinObj2(glm::mat4 anim, float orientation) {
     anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
     anim = glm::rotate(anim, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
     anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
-    
+
 
     return anim;
 }
 
 glm::mat4 spinRight(glm::mat4 anim, GLuint shaderProgram, int i) {
-        if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT  
-            || i == RIGHT+9 || i == TOP_RIGHT+9 || i == BOTTOM_RIGHT+9  
-            || i == RIGHT+18 || i == TOP_RIGHT+18 || i == BOTTOM_RIGHT+18)
-        {
-            createAnim(shaderProgram, anim);
-            if(nrRotations <= 900) {
-                anim = spinObj2(anim, 1.0);
-                // cout << nrRotations << endl; 
-                nrRotations +=1; 
-            }
-        } 
+
+    if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT  
+        || i == RIGHT+9 || i == TOP_RIGHT+9 || i == BOTTOM_RIGHT+9  
+        || i == RIGHT+18 || i == TOP_RIGHT+18 || i == BOTTOM_RIGHT+18)
+    {
+        // createAnim(shaderProgram, anim);
+        if(nrRotations <= 900) {
+            anim = spinObj2(anim, 1.0);
+            // cout << nrRotations << endl; 
+            nrRotations +=1; 
+
+            glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
+        }
+    } 
 
     return anim;
 }
 
 glm::mat4 spinLeft(glm::mat4 anim, GLuint shaderProgram, int i) {
-     if(i < 9) {
-        createAnim(shaderProgram, anim);
+    if(i < 9) {
+
         if(nrRotations <= 900) {
             anim = spinObj(anim, 1.0);
             // cout << nrRotations << endl; 
-            nrRotations += 1;
+            nrRotations +=1; 
+           glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         }
     }
+    // } 
+
     return anim;
 } 
 
@@ -317,13 +320,10 @@ int main()
     std::array<std::array<GLfloat,6*36>,27> vtxArray;
     //std::vector<GLfloat> vtxArray;
 
-    GLuint VAOArray[arraySize/2];
-    GLuint VBOArray[arraySize/2];
+    std::array<GLuint, 27> VAOArray;
+    std::array<GLuint, 27> VBOArray;
 
-    GLuint VAOArray2[arraySize/2];
-    GLuint VBOArray2[arraySize/2];
-
-
+   
     for(int i = 0; i < arraySize; i++) {
 
         vtxArray[i] = cube[i].createCubes();
@@ -331,19 +331,22 @@ int main()
         // printCube(vtxArray[i]);
 
         /* create and bind one Vertex Array Object */
-       if(i < 1) {
-            GLuint myVAO;
-            glGenVertexArrays(1, &myVAO);
-            glBindVertexArray(myVAO);
+    //    if(i < 1) {
+       
+            
+    //    }
 
-            VAOArray[i] = myVAO;
+       GLuint myVAO;
+       glGenVertexArrays(1, &myVAO);
+       glBindVertexArray(myVAO);
+    
+       GLuint myVBO;
+       glGenBuffers(1, &myVBO);
 
             /* generate and bind one Vertex Buffer Object */
-            GLuint myVBO;
-            glGenBuffers(1, &myVBO);
-            glBindBuffer(GL_ARRAY_BUFFER, myVBO);
-            VBOArray[i] = myVBO;
-        } else {
+    
+        // } else {
+            
             // GLuint myVAO;
             // glGenVertexArrays(1, &myVAO);
             // glBindVertexArray(myVAO);
@@ -355,9 +358,14 @@ int main()
             // glGenBuffers(1, &myVBO);
             // glBindBuffer(GL_ARRAY_BUFFER, myVBO);
             // VBOArray2[i] = myVBO;
-        }
-
+        // }
+        glBindBuffer(GL_ARRAY_BUFFER, myVBO);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);  
+        // VBOArray[i] = myVBO;
+        VAOArray[i] = myVAO;
+        VBOArray[i] = myVBO;
     }
+
 
     /* copy the vertex data to it */
 
@@ -563,22 +571,26 @@ int main()
     glm::mat4 bAnim;
     nrRotations = 0;
 
-    std::vector<int> moves {0,1,2};
+    std::vector<int> moves {1,2,3};
     int move = 0;
+    glm::mat4 animArray[2];
+    move = 1;
 
+    // createAnim(shaderProgram, anim2);
+    createAnim(shaderProgram, anim);
     while (!glfwWindowShouldClose(myWindow)) {
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // createAnim(shaderProgram, anim);
         /* make the object spin around */
-
         // anim = glm::rotate(anim, glm::radians(0.5f),
         //  glm::vec3(0.0f, 0.0f, 1.0f));
         /*GLint rnd = rand() % 3;
          if (rnd == 0) {
          anim = glm::rotate(anim, glm::radians(0.5f),
-         glm::vec3(0.0f, 0.0f, 1.0f));
+         glm::vec3(0.0f, 0.0f, 1.0f));vinnie hacker
          }
          else if (rnd == 1) {
          anim = glm::rotate(anim, glm::radians(0.5f),
@@ -592,73 +604,55 @@ int main()
         // glDrawArrays(GL_TRIANGLES, 0, 36);
 
         for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE! 
+            // glBindVertexArray(VAOArray[i]);
+            // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
             createAnim(shaderProgram, anim);
-            if(i < 9) {
-                createAnim(shaderProgram, anim2);
-                if(nrRotations <= 900) {
-                    anim2 = spinObj(anim2, 1.0);
-                    // cout << nrRotations << endl; 
-                    nrRotations += 1;
-                }
-            } else if(i < 18) {
-                createAnim(shaderProgram, anim3);
-                // state = false;
-                if(nrRotations > 900 && nrRotations <= 1800){
-                    anim3 = spinObj(anim3, -1.0);
-                    nrRotations += 1;
-                }
+
+            if(move == 1) {
+                anim2 = spinLeft(anim2, shaderProgram, i);
+                if(nrRotations == 900) {
+                    move++;
+                    nrRotations = 0;
+                }                    
+                
+            } 
+            else if (move == 2) {
+                anim3 = spinRight(anim3, shaderProgram, i);
+                if(nrRotations == 900) {
+                    move++;
+                    nrRotations = 0;
+                }                     
             }
-          
-
-            glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            
+            glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_DYNAMIC_DRAW);
+            glDrawArrays(GL_TRIANGLES, 0, 6*36*4);
         }
-
         
 
-        // if(j < moves.size() ) {
-        //     move = moves.at(j);
-        // } else {
-        //     move = -1;
-        // }
-            
-        // if(move < 150) {
-        //     for(int i = 0; i < arraySize; i+=1) {
-        //         createAnim(shaderProgram, anim);
-        //         std::cout << "case: " << move << endl; 
 
-        //         anim2 = spinLeft(anim2, shaderProgram, i);
-        //         glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
-        //         glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        //     }
-        //     move ++;
-        // }
-        // else {
-        //     nrRotations = 0;
-        //     std::cout << "case: " << move << endl; 
-
-        //     for(int i = 0; i < arraySize; i+=1) {
-        //         if(i < 9)
-        //         {   
-        //             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim2));
-        //         } 
-        //         if(!(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT  
-        //             || i == RIGHT+9 || i == TOP_RIGHT+9 || i == BOTTOM_RIGHT+9  
-        //             || i == RIGHT+18 || i == TOP_RIGHT+18 || i == BOTTOM_RIGHT+18)) 
-        //         {
-        //             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-
-        //         } else {
-                   
-        //             anim3 = spinRight(anim3, shaderProgram, i);
+        // for(int i = 0; i < arraySize; i+=1) {
+        //     if(move == 1 ) {
+        //         std::cout << "move: " << move << endl; 
+        //         if(i < 9) {
+        //             anim2 = spinLeft(anim2, shaderProgram, i);
+        //             if(nrRotations == 900) {
+        //                 move = 2;
+        //                 nrRotations = 0;
+        //             }
         //         }
-                
-        //         glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
-        //         glDrawArrays(GL_TRIANGLES, 0, 36);
         //     }
-        //     move ++;
+        //     else if(move == 2) {
+        //         std::cout << "move: " << move << endl; 
+        //         anim2 = spinRight(anim2,shaderProgram, i);
+        //         if(nrRotations == 900) {
+        //             move = 3;
+        //         }                        
+        //     }
+
+        //     glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
+        //     glDrawArrays(GL_TRIANGLES, 0, 36);
         // }
+        // move ++;
         // } else if(move == 2) {
 
         //     std::cout << "case: " << move << endl; 
