@@ -37,8 +37,151 @@ const int BOTTOM_RIGHT = 8;
 static int nrRotations = 0;
 static int j = 0;
 
+
 static GLint uniformAnim; 
 static array<array<GLfloat,6*36>,27> vtxArray;
+
+static array<glm::mat4,27> tmpAnim; 
+static array<glm::mat4,27> animArray;
+
+static GLuint myVAO;
+// glBindVertexArray(myVAO[0]);
+
+/* generate and bind one Vertex Buffer Object */
+static GLuint myVBO;
+
+ static Cube cube[] ={
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0f),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        Cube(MIDDLE, 0.0),
+        // Cube(BOTTOM, 0.0f)
+    };
+
+void genBuffers() {
+    glGenVertexArrays(1, &myVAO);
+    glGenBuffers(1, &myVBO);
+
+}
+
+glm::mat4 doTranslate(glm::mat4 anim, int i) {
+    
+    if( i == MIDDLE) {
+        return anim;
+    } else if (i == LEFT) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, 0.0f));
+    } else if (i == RIGHT) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 0.0f, 0.0f));
+    } else if (i == TOP) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 2.1f, 0.0f));    
+    } else if (i == BOTTOM) {
+        anim = glm::translate(anim, glm::vec3(0.0f, -2.1, 0.0f));
+    } else if (i == TOP_LEFT) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 2.1, 0.0f));
+    } else if (i == TOP_RIGHT) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 2.1, 0.0f));
+    } else if (i == BOTTOM_LEFT) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, -2.1, 0.0f));
+    } else if (i == BOTTOM_RIGHT) {
+        anim = glm::translate(anim, glm::vec3(2.1f, -2.1, 0.0f));
+    } else if( i == MIDDLE + 9) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f));
+    } else if (i == LEFT + 9) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, -2.1f));
+    } else if (i == RIGHT + 9) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 0.0f, -2.1f));
+    } else if (i == TOP + 9) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 2.1f, -2.1f));    
+    } else if (i == BOTTOM + 9) {
+        anim = glm::translate(anim, glm::vec3(0.0f, -2.1, -2.1f));
+    } else if (i == TOP_LEFT + 9) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 2.1, -2.1f));
+    } else if (i == TOP_RIGHT + 9) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 2.1, -2.1f));
+    } else if (i == BOTTOM_LEFT + 9) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, -2.1, -2.1f));
+    } else if (i == BOTTOM_RIGHT + 9) {
+        anim = glm::translate(anim, glm::vec3(2.1f, -2.1, -2.1f));
+    } else if( i == MIDDLE + 18) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -4.2f));
+    } else if (i == LEFT + 18) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, -4.2f));
+    } else if (i == RIGHT + 18) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 0.0f, -4.2f));
+    } else if (i == TOP + 18) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 2.1f, -4.2f));    
+    } else if (i == BOTTOM + 18) {
+        anim = glm::translate(anim, glm::vec3(0.0f, -2.1, -4.2f));
+    } else if (i == TOP_LEFT + 18) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, 2.1, -4.2f));
+    } else if (i == TOP_RIGHT + 18) {
+        anim = glm::translate(anim, glm::vec3(2.1f, 2.1, -4.2f));
+    } else if (i == BOTTOM_LEFT + 18) {
+        anim = glm::translate(anim, glm::vec3(-2.1f, -2.1, -4.2f));
+    } else if (i == BOTTOM_RIGHT + 18) {
+        anim = glm::translate(anim, glm::vec3(2.1f, -2.1, -4.2f));
+    }
+    
+    return anim;
+}
+
+void createInitialCube(int arraySize) {
+
+    for(int i = 0; i < arraySize; i++) {
+
+       vtxArray[i] = cube[i].createCubes();
+
+        glBindVertexArray(myVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, myVBO);
+        glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+        
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    }
+
+    for(int i = 0; i < animArray.size(); i++) {
+        glm::mat4 myAnim = glm::mat4(1.0f);
+        myAnim = doTranslate(myAnim, i);
+        animArray[i] = myAnim;
+
+    }
+}
+
+void getColor(array<string,27> animCubes, move) {
+
+    for(int i = 0 ; i < animCubes.size(); i++) {
+        char[] color = animCubes[i];
+        if
+        Cube::addCube(i,)
+    }
+}
+
 /*                                                                           */
 /* GLFW callback functions for event handling                                */
 /*                                                                           */
@@ -163,18 +306,18 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
 
 glm::mat4 spinObj(glm::mat4 anim, float orientation) {
     float angle = 1.0f * orientation;
+    // anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 0.0f) );
+    anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.1f));
 
-    anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
-    
     return anim;
 }
 
 glm::mat4 spinObj2(glm::mat4 anim, float orientation) {
     float angle = 1.0f * orientation;
 
-    anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
+    anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, 0.0f) );
     anim = glm::rotate(anim, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-    anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
+    anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, 0.0f)) );
 
 
     return anim;
@@ -194,8 +337,18 @@ glm::mat4 spinRight(glm::mat4 anim, float orientation, int i) {
             nrRotations +=1; 
         // }
 
-        // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
+        // if(i == RIGHT) {
+        //     tmpAnim[RIGHT] = animArray[BOTTOM_RIGHT+9]; 
+        //     tmpAnim[TOP_RIGHT] = animArray[BOTTOM_RIGHT]; 
+        //     tmpAnim[BOTTOM_RIGHT] = animArray[BOTTOM_RIGHT+18]; 
+        //     tmpAnim[RIGHT+9] = animArray[RIGHT+9]; 
+        //     tmpAnim[TOP_RIGHT+9] = animArray[RIGHT]; 
+        //     tmpAnim[BOTTOM_RIGHT+9] = animArray[RIGHT+18]; 
+        //     tmpAnim[RIGHT+18] = animArray[TOP_RIGHT+9]; 
+        //     tmpAnim[TOP_RIGHT+18] = animArray[TOP_RIGHT]; 
+        //     tmpAnim[BOTTOM_RIGHT+18] = animArray[TOP_RIGHT+18]; 
         
+        // }        
     } 
 
     return anim;
@@ -209,11 +362,30 @@ glm::mat4 spinLeft(glm::mat4 anim, float orientation, int i) {
         nrRotations +=1; 
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         // }
+
+        // if(i == 0) {
+        //     tmpAnim[LEFT] = animArray[TOP]; 
+        //     tmpAnim[BOTTOM_LEFT] = animArray[TOP_LEFT]; 
+        //     tmpAnim[BOTTOM] = animArray[LEFT]; 
+        //     tmpAnim[BOTTOM_RIGHT] = animArray[BOTTOM_LEFT]; 
+        //     tmpAnim[RIGHT] = animArray[BOTTOM]; 
+        //     tmpAnim[TOP_RIGHT] = animArray[BOTTOM_RIGHT]; 
+        //     tmpAnim[TOP] = animArray[RIGHT]; 
+        //     tmpAnim[TOP_LEFT] = animArray[TOP_RIGHT]; 
+        // }
     }
+    // if(i == 0) {
+    //     nrRotations +=1;
     // } 
 
     return anim;
 } 
+
+glm::mat4 translateLeft(glm::mat4 anim) {
+    return glm::translate(anim, glm::vec3(-2.1f, 0.0f, 0.0f) );
+
+}
+
 
 // glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::mat4 anim, int arraySize, bool state) {
 //     for(int i = 0; i < arraySize; i+=1) {
@@ -289,56 +461,22 @@ int main()
 
     int vtxSize = 6*36;
     int arraySize = 27;
-    static Cube cube[] ={
-        Cube(MIDDLE, 0.0f),
-        Cube(LEFT, 0.0f),
-        Cube(RIGHT, 0.0f),
-        Cube(TOP, 0.0f),
-        Cube(BOTTOM, 0.0f),
-        Cube(TOP_LEFT, 0.0f),
-        Cube(TOP_RIGHT, 0.0f),
-        Cube(BOTTOM_LEFT, 0.0f),
-        Cube(BOTTOM_RIGHT, 0.0f),
-        Cube(MIDDLE, -2.2f),
-        Cube(LEFT, -2.2f),
-        Cube(RIGHT, -2.2f),
-        Cube(TOP, -2.2f),
-        Cube(BOTTOM, -2.2f),
-        Cube(TOP_LEFT, -2.2f),
-        Cube(TOP_RIGHT, -2.2f),
-        Cube(BOTTOM_LEFT, -2.2f),
-        Cube(BOTTOM_RIGHT, -2.2f),
-        Cube(MIDDLE, -4.4f),
-        Cube(LEFT, -4.4f),
-        Cube(RIGHT, -4.4f),
-        Cube(TOP, -4.4f),
-        Cube(BOTTOM, -4.4f),
-        Cube(TOP_LEFT, -4.4f),
-        Cube(TOP_RIGHT, -4.4f),
-        Cube(BOTTOM_LEFT, -4.4f),
-        Cube(BOTTOM_RIGHT, -4.4f),
-        // Cube(BOTTOM, 0.0f)
-    };
+   
 
     //std::vector<GLfloat> vtxArray;
-
-
-    GLuint myVAO[arraySize];
-    glGenVertexArrays(arraySize, &myVAO[0]);
-    // glBindVertexArray(myVAO[0]);
-
-    /* generate and bind one Vertex Buffer Object */
-    GLuint myVBO[arraySize];
-    glGenBuffers(arraySize, &myVBO[0]);
-
+    genBuffers();
+    createInitialCube(arraySize);
+  
     /* copy the vertex data to it */
-    
+
+
+   /* ------------- GEN a 
     for(int i = 0; i < arraySize; i++) {
 
        vtxArray[i] = cube[i].createCubes();
 
         glBindVertexArray(myVAO[i]);
-        glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, myVBO);
         glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
@@ -551,14 +689,27 @@ int main()
 
     std::vector<int> moves {1,2,3};
     int move = 0;
-    array<glm::mat4,27> animArray;
 
-    for(int i = 0; i < animArray.size(); i++) {
-        animArray[i] = anim;
-    }
+    vector<array<string,27>> vecAnimCubes;
+
+    array<string,27> first = {"r","rg","rb","ry","rw","ryg","ryb","rwg","rwb","-","w","y","g","b","gw","gy","bw","by","o","ow","oy","og","ob","ogw","ogy","obw","oby"};
+    array<string,27> second = {"r","rg","rb","ry","rw","ryg","ryb","rwg","rwb","-","w","y","g","b","gw","gy","bw","by","o","ow","oy","og","ob","ogw","ogy","obw","oby"};
+    // vecAnimCubes.push_back();
+
+
 
     move = 1;
 
+    // for(int i = 0; i < arraySize; i++) {
+    //     myAnim = animArray[i];
+    //     // glBindVertexArray(myVAO[i]);
+        
+    //     myAnim = doTranslate(myAnim, i);
+    //     animArray[i] = myAnim;
+    // }
+
+    createInitialCube(27);
+    tmpAnim = animArray;
     // createAnim(shaderProgram, anim2);
     while (!glfwWindowShouldClose(myWindow)) {
         /* set the window background to black */
@@ -566,8 +717,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE! 
-            glBindVertexArray(myVAO[i]);
-            glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+            // glBindVertexArray(myVAO);
+            // glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
@@ -576,12 +727,12 @@ int main()
                 myAnim = spinLeft(myAnim, 1.0, i);                 
                 animArray[i] = myAnim;
             } 
-            else if(move == 2) {
-                myAnim = spinRight(myAnim, -1.0, i);
-                // nrRotations = 0;        
-                animArray[i] = myAnim;
+            // else if(move == 2) {
+            //     myAnim = spinRight(myAnim, -1.0, i);
+            //     // nrRotations = 0;        
+            //     animArray[i] = myAnim;
 
-            }
+            // }
             // printf("/-----------------------------------------/ \n");
 
             // cout << glm::to_string(myAnim) << endl;
@@ -591,6 +742,8 @@ int main()
             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(myAnim));
             glDrawArrays(GL_TRIANGLES, 0, 6*36*4);
         }
+        
+        
         // printCube(vtxArray[1]);
         // printf("/-----------------------------------------/ \n");
         // printCube(vtxArray[2]);
@@ -600,6 +753,9 @@ int main()
         if(nrRotations == 90*9) {
             nrRotations = 0;
             move++;
+            // animArray = tmpAnim;
+            // createInitialCube(27);
+
         }
 
        
@@ -631,10 +787,10 @@ int main()
     glDeleteProgram(shaderProgram);
 
     for(int i = 0; i < 5; i+=1) {
-        glDeleteBuffers(arraySize,myVBO);
-        // glDeleteBuffers(1, &myVBO);
+        // glDeleteBuffers(arraySize,myVBO);
+        glDeleteBuffers(1, &myVBO);
 
-        glDeleteVertexArrays(arraySize, myVAO);
+        glDeleteVertexArrays(1, &myVAO);
     }
 
 
