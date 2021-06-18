@@ -203,7 +203,6 @@ glm::mat4 spinRight(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinLeft(glm::mat4 anim, float orientation, int i) {
     if(i < 9) {
-
         // if(nrRotations <= 90*9) {
         anim = spinObj(anim, orientation);
         // cout << nrRotations << endl; 
@@ -323,28 +322,31 @@ int main()
 
     //std::vector<GLfloat> vtxArray;
 
-    std::array<GLuint, 27> VAOArray;
-    std::array<GLuint, 27> VBOArray;
 
-   
-    for(int i = 0; i < arraySize; i++) {
-
-        vtxArray[i] = cube[i].createCubes();
-            
-    }
-
-
-    GLuint myVAO;
-    glGenVertexArrays(1, &myVAO);
-    glBindVertexArray(myVAO);
+    GLuint myVAO[arraySize];
+    glGenVertexArrays(arraySize, &myVAO[0]);
+    // glBindVertexArray(myVAO[0]);
 
     /* generate and bind one Vertex Buffer Object */
-    GLuint myVBO;
-    glGenBuffers(1, &myVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, myVBO);
+    GLuint myVBO[arraySize];
+    glGenBuffers(arraySize, &myVBO[0]);
 
     /* copy the vertex data to it */
+    
+    for(int i = 0; i < arraySize; i++) {
 
+       vtxArray[i] = cube[i].createCubes();
+
+        glBindVertexArray(myVAO[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+        glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+        
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    }
 
     /* OpenGL settings */
     glEnable(GL_DEPTH_TEST);
@@ -354,9 +356,9 @@ int main()
 
     /* define and compile the vertex shader */
     const char* vertexShaderSource = GLSL(
-      in vec3 position;
+      layout(location=0) in vec3 position;
       //in vec2 textureCoordIn;
-      in vec3 colorVtxIn;
+      layout(location=1) in vec3 colorVtxIn;
       uniform mat4 proj;
       uniform mat4 view;
       uniform mat4 anim;
@@ -421,18 +423,18 @@ int main()
         fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
         exit(EXIT_FAILURE);
     }
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,
-                          6 * sizeof(GLfloat), 0);
+    // glEnableVertexAttribArray(posAttrib);
+    // glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,
+    //                       6 * sizeof(GLfloat), 0);
 
     attributeName = "colorVtxIn";
     GLint colAttrib = glGetAttribLocation(shaderProgram, attributeName);
     if (colAttrib == -1) {
         fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
     }
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
-                          6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    // glEnableVertexAttribArray(colAttrib);
+    // glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
+    //                       6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
 
     /*attributeName = "textureCoordIn";
      GLint texAttrib = glGetAttribLocation(shaderProgram, attributeName);
@@ -558,15 +560,14 @@ int main()
     move = 1;
 
     // createAnim(shaderProgram, anim2);
-    createAnim(shaderProgram, anim);
     while (!glfwWindowShouldClose(myWindow)) {
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE! 
-            glBindVertexArray(myVAO);
-
+            glBindVertexArray(myVAO[i]);
+            glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
@@ -574,27 +575,21 @@ int main()
             if(move == 1) {
                 myAnim = spinLeft(myAnim, 1.0, i);                 
                 animArray[i] = myAnim;
-                // vtxArray[i] = vtxArray[i];
             } 
             else if(move == 2) {
                 myAnim = spinRight(myAnim, -1.0, i);
                 // nrRotations = 0;        
                 animArray[i] = myAnim;
-                // vtxArray[i] = vtxArray[i] * myAnim;
 
             }
             // printf("/-----------------------------------------/ \n");
 
             // cout << glm::to_string(myAnim) << endl;
             // printf("/-----------------------------------------/ \n");
-            
+
 
             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(myAnim));
-            glBufferData(GL_ARRAY_BUFFER, 6*36*4, &vtxArray[i], GL_STATIC_DRAW);
-
             glDrawArrays(GL_TRIANGLES, 0, 6*36*4);
-        
-            
         }
         // printCube(vtxArray[1]);
         // printf("/-----------------------------------------/ \n");
@@ -636,9 +631,10 @@ int main()
     glDeleteProgram(shaderProgram);
 
     for(int i = 0; i < 5; i+=1) {
-        glDeleteBuffers(1, &VBOArray[i]);
+        glDeleteBuffers(arraySize,myVBO);
+        // glDeleteBuffers(1, &myVBO);
 
-        glDeleteVertexArrays(1, &VAOArray[i]);
+        glDeleteVertexArrays(arraySize, myVAO);
     }
 
 
