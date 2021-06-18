@@ -18,7 +18,7 @@
 
 #include "cube.h"
 
-std::array<GLfloat, 6 * 36> Cube::createCubes()
+std::array<GLfloat, 6 * 36> Cube::createCubes(int position, char c1, char c2, char c3)
 {
     std::array<GLfloat, 6 * 36> vtx;
     for (int i = 0; i < 6 * 36; i++)
@@ -26,7 +26,7 @@ std::array<GLfloat, 6 * 36> Cube::createCubes()
         vtx[i] = this->initCube[i];
     }
 
-    if (this->position == this->MIDDLE && this->depth == 0)
+    if (this->position == this->MIDDLE)
     {
         printf("START OF INIT CUBE \n");
         return vtx;
@@ -34,7 +34,7 @@ std::array<GLfloat, 6 * 36> Cube::createCubes()
     else
     {
         // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
-        //return addCube(vtx, this->position, 'b', 'y', 'w');
+        return addCube(vtx, position, c1, c2, c3);
     }
 }
 

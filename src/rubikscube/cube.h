@@ -23,19 +23,14 @@ public:
     Cube(){
 
     };
-    Cube(int position, GLfloat depth){
-        this->position = position;
-        this->depth = depth;
-    };
-    array<GLfloat,6*36> createCubes();
+    array<GLfloat,6*36> createCubes(int position, char c1, char c2, char c3);
+    array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
 
     // array<GLfloat,6*36> getInitCube() {
     //   return initCube;
     // }
 
 private:
-    int position;
-    GLfloat depth;
     const int MIDDLE = 0;
     const int LEFT = 1;
     const int RIGHT = 2;
@@ -55,7 +50,6 @@ private:
     const int BLACK = 6;
 
     array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, char c1, char c2, char c3);
-    array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
     int getColor(char color);
     GLfloat initCube[6*36] = {
         -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* 0 bottom: blue */
