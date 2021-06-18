@@ -52,41 +52,43 @@ private:
     const int GREEN = 3;
     const int ORANGE = 4;
     const int WHITE = 5;
+    const int BLACK = 6;
 
-    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, GLfloat depth);
+    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, char c1, char c2, char c3);
     array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
+    int getColor(char color);
     GLfloat initCube[6*36] = {
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* bottom: blue */
+        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* 0 bottom: blue */
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
          1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f, /* top: green */
+        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f, /* 1 top: green */
         -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f, /* front: red */
+        -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f, /* 2 front: red */
          1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
          1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
          1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-        -1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f, /* back: orange */
+        -1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f, /* 3 back: orange */
         -1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
         -1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f, /* left: white */
+        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f, /* 4 left: white */
         -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f, /* right: yellow */
+         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f, /* 5 right: yellow */
          1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
          1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
