@@ -23,19 +23,14 @@ public:
     Cube(){
 
     };
-    Cube(int position, GLfloat depth){
-        this->position = position;
-        this->depth = depth;
-    };
-    array<GLfloat,6*36> createCubes();
+    array<GLfloat,6*36> createCubes(int position, char c1, char c2, char c3);
+    array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
 
     // array<GLfloat,6*36> getInitCube() {
     //   return initCube;
     // }
 
 private:
-    int position;
-    GLfloat depth;
     const int MIDDLE = 0;
     const int LEFT = 1;
     const int RIGHT = 2;
@@ -46,39 +41,48 @@ private:
     const int BOTTOM_LEFT = 7;
     const int BOTTOM_RIGHT = 8;
 
-    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, GLfloat depth);
+    const int YELLOW = 0;
+    const int RED = 1;
+    const int BLUE = 2;
+    const int GREEN = 3;
+    const int ORANGE = 4;
+    const int WHITE = 5;
+    const int BLACK = 6;
+
+    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, char c1, char c2, char c3);
+    int getColor(char color);
     GLfloat initCube[6*36] = {
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* bottom: blue */
+        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* 0 bottom: blue */
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
          1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
          1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f, /* top: green */
+        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f, /* 1 top: green */
         -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
          1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f, /* front: red */
+        -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f, /* 2 front: red */
          1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
          1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
          1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-        -1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f, /* back: orange */
+        -1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f, /* 3 back: orange */
         -1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
         -1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f, /* left: white */
+        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f, /* 4 left: white */
         -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f, /* right: yellow */
+         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f, /* 5 right: yellow */
          1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
          1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
