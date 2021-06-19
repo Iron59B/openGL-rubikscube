@@ -23,7 +23,8 @@ public:
     Cube(){
 
     };
-    array<GLfloat,6*36> createCubes(int position, char c1, char c2, char c3);
+    // array<GLfloat,6*36> createCubes(int position, char c1, char c2, char c3);
+    array<GLfloat,6*36> createCubes(int position);
     array<GLfloat,6*36> addColor(int color, std::array<GLfloat, 6*36> vtx, int i);
 
     // array<GLfloat,6*36> getInitCube() {
@@ -49,7 +50,7 @@ private:
     const int WHITE = 5;
     const int BLACK = 6;
 
-    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, char c1, char c2, char c3);
+    // array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, char c1, char c2, char c3);
     int getColor(char color);
     GLfloat initCube[6*36] = {
         -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* 0 bottom: blue */

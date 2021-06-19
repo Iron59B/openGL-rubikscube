@@ -50,37 +50,6 @@ static GLuint myVAO;
 /* generate and bind one Vertex Buffer Object */
 static GLuint myVBO;
 
- static Cube cube[] ={
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0f),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        Cube(MIDDLE, 0.0),
-        // Cube(BOTTOM, 0.0f)
-    };
-
 void genBuffers() {
     glGenVertexArrays(1, &myVAO);
     glGenBuffers(1, &myVBO);
@@ -149,38 +118,38 @@ glm::mat4 doTranslate(glm::mat4 anim, int i) {
 }
 
 void createInitialCube(int arraySize) {
+    Cube myCube = Cube();
 
-    for(int i = 0; i < arraySize; i++) {
+    // for(int i = 0; i < arraySize; i++) {
+       vtxArray[0] = myCube.createCubes(0);
 
-       vtxArray[i] = cube[i].createCubes();
+        // glBindVertexArray(myVAO);
+        // glBindBuffer(GL_ARRAY_BUFFER, myVBO);
+        // glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
 
-        glBindVertexArray(myVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, myVBO);
-        glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+        // glEnableVertexAttribArray(0);
+        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
         
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
-    }
+        // glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    // }
 
-    for(int i = 0; i < animArray.size(); i++) {
-        glm::mat4 myAnim = glm::mat4(1.0f);
-        myAnim = doTranslate(myAnim, i);
-        animArray[i] = myAnim;
+    // for(int i = 0; i < animArray.size(); i++) {
+    //     glm::mat4 myAnim = glm::mat4(1.0f);
+    //     myAnim = doTranslate(myAnim, i);
+    //     animArray[i] = myAnim;
 
-    }
+    // }
 }
 
-void getColor(array<string,27> animCubes, move) {
+// void getColor(array<string,27> animCubes, move) {
 
-    for(int i = 0 ; i < animCubes.size(); i++) {
-        char[] color = animCubes[i];
-        if
-        Cube::addCube(i,)
-    }
-}
+//     for(int i = 0 ; i < animCubes.size(); i++) {
+//         char[] color = animCubes[i];
+//         if
+//         Cube::addCube(i,)
+//     }
+// }
 
 /*                                                                           */
 /* GLFW callback functions for event handling                                */
@@ -465,7 +434,7 @@ int main()
 
     //std::vector<GLfloat> vtxArray;
     genBuffers();
-    createInitialCube(arraySize);
+    // createInitialCube(arraySize);
   
     /* copy the vertex data to it */
 
