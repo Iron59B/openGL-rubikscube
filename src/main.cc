@@ -18,6 +18,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "rubikscube/cube.h"
+#include "rubikscube/rubikscube.h"
 
 #define GLSL(src) "#version 330 core\n" #src
 #define GLM_FORCE_RADIANS
@@ -59,6 +60,53 @@ static int j = 0;
 
 static GLint uniformAnim;
 static array<array<GLfloat,6*36>,27> vtxArray;
+
+static int positionArray[3][3][3];
+
+static void initPositionArray() {
+    unsigned x, y, z, depth;
+
+    for (y = 0; y < 3; y++) {
+        depth = 9*y;
+        for (z = 0; z < 3; z++) {
+            for (x = 0; x < 3; x++) {
+                if (z == 0) {
+                    if (x == 0) {
+                        positionArray[x][y][z] = BOTTOM_LEFT + depth;
+                    }
+                    else if (x == 1) {
+                        positionArray[x][y][z] = BOTTOM + depth;
+                    }
+                    else if (x == 2) {
+                        positionArray[x][y][z] = BOTTOM_RIGHT + depth;
+                    }
+                }
+                else if (z == 1) {
+                    if (x == 0) {
+                        positionArray[x][y][z] = LEFT + depth;
+                    }
+                    else if (x == 1) {
+                        positionArray[x][y][z] = MIDDLE + depth;
+                    }
+                    else if (x == 2) {
+                        positionArray[x][y][z] = RIGHT + depth;
+                    }
+                }
+                else if (z == 2) {
+                    if (x == 0) {
+                        positionArray[x][y][z] = TOP_LEFT + depth;
+                    }
+                    else if (x == 1) {
+                        positionArray[x][y][z] = TOP + depth;
+                    }
+                    else if (x == 2) {
+                        positionArray[x][y][z] = TOP_RIGHT + depth;
+                    }
+                }
+            }
+        }
+    }
+}
 /*                                                                           */
 /* GLFW callback functions for event handling                                */
 /*                                                                           */
@@ -171,30 +219,322 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
     return look;
 }
 
-void changeCubePositions(int row, int direction) {
-  int tmp_top = TOP;
-  int tmp_topleft = TOP_LEFT;
-  int tmp_topright = TOP_RIGHT;
+void changeCubePositions(int move) {
+  // int tmp_top = TOP;
+  // int tmp_topleft = TOP_LEFT;
+  // int tmp_topright = TOP_RIGHT;
+  //
+  // if (direction == 1 && row == 0) {
+  //
+  //   TOP_RIGHT = BOTTOM_RIGHT;
+  //   std::cout << "TOPRIGHT: " << TOP_RIGHT << std::endl;
+  //   TOP_LEFT = tmp_topright;
+  //   std::cout << "TOPLEFT: " << TOP_LEFT << std::endl;
+  //   TOP = RIGHT;
+  //   std::cout << "TOP: " << TOP << std::endl;
+  //   BOTTOM_RIGHT = BOTTOM_LEFT;
+  //   std::cout << "BOTTOMRIGHT: " << BOTTOM_RIGHT << std::endl;
+  //   BOTTOM_LEFT = tmp_topleft;
+  //   std::cout << "BOTTOMLEFT: " << BOTTOM_LEFT << std::endl;
+  //   RIGHT = BOTTOM;
+  //   std::cout << "RIGHT: " << RIGHT << std::endl;
+  //   BOTTOM = LEFT;
+  //   std::cout << "BOTTOM: " << BOTTOM << std::endl;
+  //   LEFT = tmp_top;
+  //   std::cout << "LEFT: " << LEFT << std::endl;
+  // }
+  unsigned x, y, z;
+  int tmp;
 
-  if (direction == 1 && row == 0) {
+  if (move == 6) {
+      x = 0;
+      // moving corner pieces
+      tmp = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
 
-    TOP_RIGHT = BOTTOM_RIGHT;
-    std::cout << "TOPRIGHT: " << TOP_RIGHT << std::endl;
-    TOP_LEFT = tmp_topright;
-    std::cout << "TOPLEFT: " << TOP_LEFT << std::endl;
-    TOP = RIGHT;
-    std::cout << "TOP: " << TOP << std::endl;
-    BOTTOM_RIGHT = BOTTOM_LEFT;
-    std::cout << "BOTTOMRIGHT: " << BOTTOM_RIGHT << std::endl;
-    BOTTOM_LEFT = tmp_topleft;
-    std::cout << "BOTTOMLEFT: " << BOTTOM_LEFT << std::endl;
-    RIGHT = BOTTOM;
-    std::cout << "RIGHT: " << RIGHT << std::endl;
-    BOTTOM = LEFT;
-    std::cout << "BOTTOM: " << BOTTOM << std::endl;
-    LEFT = tmp_top;
-    std::cout << "LEFT: " << LEFT << std::endl;
+      // moving edge positionArray
+      tmp = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][2][1];
+      positionArray[x][2][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = tmp;
   }
+  else if (move == 7) {
+      x = 1;
+      // moving corner pieces
+      tmp = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][2][1];
+      positionArray[x][2][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = tmp;
+  }
+  else if (move == 8) {
+      x = 2;
+      // moving corner pieces
+      tmp = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][2][1];
+      positionArray[x][2][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = tmp;
+  }
+  else if (move == 9) {
+      x = 0;
+      // moving corner pieces
+      tmp = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = positionArray[x][2][1];
+      positionArray[x][2][1] = tmp;
+  }
+  else if (move == 10) {
+      x = 1;
+      // moving corner pieces
+      tmp = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = positionArray[x][2][1];
+      positionArray[x][2][1] = tmp;
+  }
+  else if (move == 11) {
+      x = 2;
+      // moving corner pieces
+      tmp = positionArray[x][2][0];
+      positionArray[x][2][0] = positionArray[x][0][0];
+      positionArray[x][0][0] = positionArray[x][0][2];
+      positionArray[x][0][2] = positionArray[x][2][2];
+      positionArray[x][2][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[x][1][0];
+      positionArray[x][1][0] = positionArray[x][0][1];
+      positionArray[x][0][1] = positionArray[x][1][2];
+      positionArray[x][1][2] = positionArray[x][2][1];
+      positionArray[x][2][1] = tmp;
+  }
+  else if (move == 12) {
+      y = 0;
+      // moving corner pieces
+      tmp = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[2][y][1];
+      positionArray[2][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = tmp;
+  }
+  else if (move == 13) {
+      y = 1;
+      // moving corner pieces
+      tmp = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[2][y][1];
+      positionArray[2][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = tmp;
+  }
+  else if (move == 14) {
+      y = 2;
+      // moving corner pieces
+      tmp = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[2][y][1];
+      positionArray[2][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = tmp;
+  }
+  else if (move == 15) {
+      y = 0;
+      // moving corner pieces
+      tmp = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = positionArray[2][y][1];
+      positionArray[2][y][1] = tmp;
+  }
+  else if (move == 16) {
+      y = 1;
+      // moving corner pieces
+      tmp = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = positionArray[2][y][1];
+      positionArray[2][y][1] = tmp;
+  }
+  else if (move == 17) {
+      y = 2;
+      // moving corner pieces
+      tmp = positionArray[2][y][0];
+      positionArray[2][y][0] = positionArray[0][y][0];
+      positionArray[0][y][0] = positionArray[0][y][2];
+      positionArray[0][y][2] = positionArray[2][y][2];
+      positionArray[2][y][2] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][y][0];
+      positionArray[1][y][0] = positionArray[0][y][1];
+      positionArray[0][y][1] = positionArray[1][y][2];
+      positionArray[1][y][2] = positionArray[2][y][1];
+      positionArray[2][y][1] = tmp;
+  }
+  else if (move == 18) {
+      z = 0;
+      // moving corner pieces
+      tmp = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = tmp;
+  }
+  else if (move == 19) {
+      z = 1;
+      // moving corner pieces
+      tmp = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = tmp;
+  }
+  else if (move == 20) {
+      z = 2;
+      // moving corner pieces
+      tmp = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = tmp;
+  }
+  else if (move == 21) {
+      z = 0;
+      // moving corner pieces
+      tmp = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = tmp;
+  }
+  else if (move == 22) {
+      z = 1;
+      // moving corner pieces
+      tmp = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = tmp;
+  }
+  else if (move == 23) {
+      z = 2;
+      // moving corner pieces
+      tmp = positionArray[2][0][z];
+      positionArray[2][0][z] = positionArray[0][0][z];
+      positionArray[0][0][z] = positionArray[0][2][z];
+      positionArray[0][2][z] = positionArray[2][2][z];
+      positionArray[2][2][z] = tmp;
+
+      // moving edge positionArray
+      tmp = positionArray[1][0][z];
+      positionArray[1][0][z] = positionArray[0][1][z];
+      positionArray[0][1][z] = positionArray[1][2][z];
+      positionArray[1][2][z] = positionArray[2][1][z];
+      positionArray[2][1][z] = tmp;
+  }
+
 }
 
 void createAnim(GLuint shaderProgram, glm::mat4 anim) {
@@ -601,7 +941,7 @@ int main()
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    std::vector<int> moves {1,2,3};
+    std::vector<int> moves {15, 9, 6};
     int move = 0;
     array<glm::mat4,27> animArray;
 
@@ -609,10 +949,14 @@ int main()
         animArray[i] = anim;
     }
 
-    move = 1;
+    int vecCounter = 0;
 
     // createAnim(shaderProgram, anim2);
     while (!glfwWindowShouldClose(myWindow)) {
+        if (vecCounter < moves.size()) {
+            move = moves.at(vecCounter);
+        }
+
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -624,11 +968,11 @@ int main()
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
 
-            if(move == 1) {
+            if(move == 15) {
                 myAnim = spinLeft(myAnim, 1.0, i);
                 animArray[i] = myAnim;
             }
-            else if(move == 2) {
+            else if(move == 9) {
                 myAnim = spinRight(myAnim, -1.0, i);
                 // nrRotations = 0;
                 animArray[i] = myAnim;
@@ -650,9 +994,9 @@ int main()
         // break;
         // move ++;
         if(nrRotations == 90*9) {
-            changeCubePositions(0, 1);
+            changeCubePositions(6);
             nrRotations = 0;
-            move++;
+            vecCounter += 1;
         }
 
 
