@@ -555,11 +555,11 @@ glm::mat4 spinObj(glm::mat4 anim, float orientation) {
     return anim;
 }
 
-glm::mat4 spinObj2(glm::mat4 anim, float orientation, glm::vec3 rot) {
+glm::mat4 spinObj2(glm::mat4 anim, float orientation, glm::vec3 axis) {
     float angle = 1.0f * orientation;
 
     anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
-    anim = glm::rotate(anim, glm::radians(angle), rot);
+    anim = glm::rotate(anim, glm::radians(angle), axis);
     anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
 
 
@@ -569,21 +569,20 @@ glm::mat4 spinObj2(glm::mat4 anim, float orientation, glm::vec3 rot) {
 glm::mat4 spinRight(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
 
-    if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT
-        || i == RIGHT_MIDDLE || i == TOP_RIGHT_MIDDLE || i == BOTTOM_RIGHT_MIDDLE
-        || i == RIGHT_BACK || i == TOP_RIGHT_BACK || i == BOTTOM_RIGHT_BACK)
-    {
+    if(i == positionArray[2][0][0] || i == positionArray[2][0][1] || i == positionArray[2][0][2] 
+        || i == positionArray[2][1][0] || i == positionArray[2][1][1] || i == positionArray[2][1][2] 
+        || i == positionArray[2][2][0] || i == positionArray[2][2][1] || i == positionArray[2][2][2]) {
         // createAnim(shaderProgram, anim);
         // if(nrRotations <= 90*9) {
         if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT) {
-            rot = glm::vec3(0.0f, 1.0f, 0.0f);
+            rot = glm::vec3(0.0f, 2.0f, 0.0f);
             orientation *= -1;
         } else {
             rot = glm::vec3(1.0f, 0.0f, 0.0f);
         }
         anim = spinObj2(anim, orientation, rot);
             // cout << nrRotations << endl;
-            nrRotations +=1;
+        nrRotations +=1;
         // }
 
         // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -594,7 +593,9 @@ glm::mat4 spinRight(glm::mat4 anim, float orientation, int i) {
 }
 
 glm::mat4 spinLeft(glm::mat4 anim, float orientation, int i) {
-    if(i < 9) {
+    if(i == positionArray[0][0][0] || i == positionArray[1][0][0] || i == positionArray[2][0][0] 
+        || i == positionArray[0][0][1] || i == positionArray[1][0][1] || i == positionArray[2][0][1] 
+        || i == positionArray[0][0][2] || i == positionArray[1][0][2] || i == positionArray[2][0][2]) {
         // if(nrRotations <= 90*9) {
         anim = spinObj(anim, orientation);
         // cout << nrRotations << endl;
@@ -950,7 +951,7 @@ int main()
     }
 
     int vecCounter = 0;
-
+    initPositionArray();
     // createAnim(shaderProgram, anim2);
     while (!glfwWindowShouldClose(myWindow)) {
         if (vecCounter < moves.size()) {
@@ -994,7 +995,7 @@ int main()
         // break;
         // move ++;
         if(nrRotations == 90*9) {
-            changeCubePositions(6);
+            changeCubePositions(move);
             nrRotations = 0;
             vecCounter += 1;
         }
