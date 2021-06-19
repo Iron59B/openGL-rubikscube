@@ -24,20 +24,40 @@
 
 using namespace std;
 
-const int MIDDLE = 0;
-const int LEFT = 1;
-const int RIGHT = 2;
-const int TOP = 3;
-const int BOTTOM = 4;
-const int TOP_LEFT = 5;
-const int TOP_RIGHT = 6;
-const int BOTTOM_LEFT = 7;
-const int BOTTOM_RIGHT = 8;
+int MIDDLE = 0; //+0 -> Front, +9 -> Middle, +18 -> Back
+int LEFT = 1;
+int RIGHT = 2;
+int TOP = 3;
+int BOTTOM = 4;
+int TOP_LEFT = 5;
+int TOP_RIGHT = 6;
+int BOTTOM_LEFT = 7;
+int BOTTOM_RIGHT = 8;
+
+static int MIDDLE_MIDDLE = MIDDLE+9; //+0 -> Front, +9 -> Middle, +18 -> Back
+static int LEFT_MIDDLE = LEFT+9;
+static int RIGHT_MIDDLE = RIGHT+9;
+static int TOP_MIDDLE = TOP+9;
+static int BOTTOM_MIDDLE = BOTTOM+9;
+static int TOP_LEFT_MIDDLE = TOP_LEFT+9;
+static int TOP_RIGHT_MIDDLE = TOP_RIGHT+9;
+static int BOTTOM_LEFT_MIDDLE = BOTTOM_LEFT+9;
+static int BOTTOM_RIGHT_MIDDLE = BOTTOM_RIGHT+9;
+
+static int MIDDLE_BACK = MIDDLE+18; //+0 -> Front, +9 -> Middle, +18 -> Back
+static int LEFT_BACK = LEFT+18;
+static int RIGHT_BACK = RIGHT+18;
+static int TOP_BACK = TOP+18;
+static int BOTTOM_BACK = BOTTOM+18;
+static int TOP_LEFT_BACK = TOP_LEFT+18;
+static int TOP_RIGHT_BACK = TOP_RIGHT+18;
+static int BOTTOM_LEFT_BACK = BOTTOM_LEFT+18;
+static int BOTTOM_RIGHT_BACK = BOTTOM_RIGHT+18;
 
 static int nrRotations = 0;
 static int j = 0;
 
-static GLint uniformAnim; 
+static GLint uniformAnim;
 static array<array<GLfloat,6*36>,27> vtxArray;
 /*                                                                           */
 /* GLFW callback functions for event handling                                */
@@ -151,7 +171,33 @@ glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat
     return look;
 }
 
-void createAnim(GLuint shaderProgram, glm::mat4 anim) { 
+void changeCubePositions(int row, int direction) {
+  int tmp_top = TOP;
+  int tmp_topleft = TOP_LEFT;
+  int tmp_topright = TOP_RIGHT;
+
+  if (direction == 1 && row == 0) {
+
+    TOP_RIGHT = BOTTOM_RIGHT;
+    std::cout << "TOPRIGHT: " << TOP_RIGHT << std::endl;
+    TOP_LEFT = tmp_topright;
+    std::cout << "TOPLEFT: " << TOP_LEFT << std::endl;
+    TOP = RIGHT;
+    std::cout << "TOP: " << TOP << std::endl;
+    BOTTOM_RIGHT = BOTTOM_LEFT;
+    std::cout << "BOTTOMRIGHT: " << BOTTOM_RIGHT << std::endl;
+    BOTTOM_LEFT = tmp_topleft;
+    std::cout << "BOTTOMLEFT: " << BOTTOM_LEFT << std::endl;
+    RIGHT = BOTTOM;
+    std::cout << "RIGHT: " << RIGHT << std::endl;
+    BOTTOM = LEFT;
+    std::cout << "BOTTOM: " << BOTTOM << std::endl;
+    LEFT = tmp_top;
+    std::cout << "LEFT: " << LEFT << std::endl;
+  }
+}
+
+void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   const char* uniformName = "anim";
   uniformAnim = glGetUniformLocation(shaderProgram, uniformName);
   if (uniformAnim == -1) {
@@ -165,15 +211,15 @@ glm::mat4 spinObj(glm::mat4 anim, float orientation) {
     float angle = 1.0f * orientation;
 
     anim = glm::rotate(anim, glm::radians(angle), glm::vec3(0.0f, 0.0f, 2.0f));
-    
+
     return anim;
 }
 
-glm::mat4 spinObj2(glm::mat4 anim, float orientation) {
+glm::mat4 spinObj2(glm::mat4 anim, float orientation, glm::vec3 rot) {
     float angle = 1.0f * orientation;
 
     anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
-    anim = glm::rotate(anim, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+    anim = glm::rotate(anim, glm::radians(angle), rot);
     anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
 
 
@@ -181,22 +227,28 @@ glm::mat4 spinObj2(glm::mat4 anim, float orientation) {
 }
 
 glm::mat4 spinRight(glm::mat4 anim, float orientation, int i) {
+    glm::vec3 rot;
 
-    if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT  
-        || i == RIGHT+9 || i == TOP_RIGHT+9 || i == BOTTOM_RIGHT+9  
-        || i == RIGHT+18 || i == TOP_RIGHT+18 || i == BOTTOM_RIGHT+18)
+    if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT
+        || i == RIGHT_MIDDLE || i == TOP_RIGHT_MIDDLE || i == BOTTOM_RIGHT_MIDDLE
+        || i == RIGHT_BACK || i == TOP_RIGHT_BACK || i == BOTTOM_RIGHT_BACK)
     {
         // createAnim(shaderProgram, anim);
         // if(nrRotations <= 90*9) {
-
-            anim = spinObj2(anim, orientation);
-            // cout << nrRotations << endl; 
-            nrRotations +=1; 
+        if(i == RIGHT || i == TOP_RIGHT || i == BOTTOM_RIGHT) {
+            rot = glm::vec3(0.0f, 1.0f, 0.0f);
+            orientation *= -1;
+        } else {
+            rot = glm::vec3(1.0f, 0.0f, 0.0f);
+        }
+        anim = spinObj2(anim, orientation, rot);
+            // cout << nrRotations << endl;
+            nrRotations +=1;
         // }
 
         // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-        
-    } 
+
+    }
 
     return anim;
 }
@@ -205,15 +257,15 @@ glm::mat4 spinLeft(glm::mat4 anim, float orientation, int i) {
     if(i < 9) {
         // if(nrRotations <= 90*9) {
         anim = spinObj(anim, orientation);
-        // cout << nrRotations << endl; 
-        nrRotations +=1; 
+        // cout << nrRotations << endl;
+        nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         // }
     }
-    // } 
+    // }
 
     return anim;
-} 
+}
 
 // glm::mat4 handleCube(GLfloat* vtx[], GLuint VAOArray[], GLuint VBOArray[], glm::mat4 anim, int arraySize, bool state) {
 //     for(int i = 0; i < arraySize; i+=1) {
@@ -332,7 +384,7 @@ int main()
     glGenBuffers(arraySize, &myVBO[0]);
 
     /* copy the vertex data to it */
-    
+
     for(int i = 0; i < arraySize; i++) {
 
        vtxArray[i] = cube[i].createCubes();
@@ -343,7 +395,7 @@ int main()
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-        
+
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
     }
@@ -565,20 +617,20 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE! 
+        for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE!
             glBindVertexArray(myVAO[i]);
-            glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+            //glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
 
             if(move == 1) {
-                myAnim = spinLeft(myAnim, 1.0, i);                 
+                myAnim = spinLeft(myAnim, 1.0, i);
                 animArray[i] = myAnim;
-            } 
+            }
             else if(move == 2) {
                 myAnim = spinRight(myAnim, -1.0, i);
-                // nrRotations = 0;        
+                // nrRotations = 0;
                 animArray[i] = myAnim;
 
             }
@@ -598,11 +650,12 @@ int main()
         // break;
         // move ++;
         if(nrRotations == 90*9) {
+            changeCubePositions(0, 1);
             nrRotations = 0;
             move++;
         }
 
-       
+
         deltaTime = GLfloat(glfwGetTime() - lastTime);
         lastTime = deltaTime;
 
