@@ -61,7 +61,7 @@ public:
 
 };
 
-class Cube {
+class AlgoCube {
 private:
     //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
@@ -70,11 +70,11 @@ private:
 
 public:
     vector<array<string, 27>> vecAnimCubes;
-    Cube();
-    Cube(vector<CubePiece> pieces);
+    AlgoCube();
+    AlgoCube(vector<CubePiece> pieces);
     void setPieces(vector<CubePiece> pieces);
     void initCube();
-    Cube getCube();
+    AlgoCube getCube();
     vector<int> getMoves();
     void updateAnimCubes();
     vector<array<string, 27>> getVecAnimCubes();
