@@ -971,7 +971,7 @@ glm::mat4 rotLeftZ(glm::mat4 anim, float orientation, glm::vec3 axis) {
 
 glm::mat4 spinX2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
+    //glm::vec3 new_rot;
     int sign = 1;
     //right Row
     if(i == positionArray[2][0][0] || i == positionArray[2][0][1] || i == positionArray[2][0][2]
@@ -992,7 +992,7 @@ glm::mat4 spinX2(glm::mat4 anim, float orientation, int i) {
             }
 
             if(nrRotations >= 90*9-9) {
-
+                setAxis(i, rot, UP_X);
 
             }
         } else {
@@ -1015,7 +1015,7 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
 
-    //right Row
+    
     if(i == positionArray[1][0][0] || i == positionArray[1][0][1] || i == positionArray[1][0][2]
         || i == positionArray[1][1][0] || i == positionArray[1][1][1] || i == positionArray[1][1][2]
         || i == positionArray[1][2][0] || i == positionArray[1][2][1] || i == positionArray[1][2][2]) {
@@ -1093,7 +1093,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
             rot = calcAxis(i, rot, LEFT_Z);
 
             if(nrRotations >= 90*9-9) {
-               setAxis(i,rot, LEFT_Z);
+               setAxis(i, rot, LEFT_Z);
             //    if(i == BOTTOM_LEFT)
             //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
             }
@@ -1174,6 +1174,16 @@ glm::mat4 spinY2(glm::mat4 anim, float orientation, int i) {
         // if(nrRotations <= 90*9) {
 
         rot = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        if (orientation == -1.0) { // counter clockwise
+            rot = calcAxis(i, rot, LEFT_Y);
+
+            if(nrRotations >= 90*9-9) {
+               setAxis(i, rot, LEFT_Y);
+            //    if(i == BOTTOM_LEFT)
+            //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+            }
+        }
 
         anim = rotLeftZ(anim, orientation, rot);
         // cout << nrRotations << endl;
