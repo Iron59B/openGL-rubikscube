@@ -1248,7 +1248,7 @@ int main()
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    std::vector<int> moves { 21, 22, 23, 0};
+    std::vector<int> moves { 9, 10, 11, 0};
     int move = 0;
     array<glm::mat4,27> animArray;
 
@@ -1287,6 +1287,29 @@ int main()
                 myAnim = spinUpX2(myAnim, -1.0, i);
                 // nrRotations = 0;
                 animArray[i] = myAnim;
+            }else if(move == 9) {
+                myAnim = spinUpX0(myAnim, 1.0, i);
+                // nrRotations = 0;
+                animArray[i] = myAnim;
+            } else if(move == 10) {
+                myAnim = spinUpX1(myAnim, 1.0, i);
+                // nrRotations = 0;
+                animArray[i] = myAnim;
+            } else if(move == 11) {
+                myAnim = spinUpX2(myAnim, 1.0, i);
+                // nrRotations = 0;
+                animArray[i] = myAnim;
+            } else if(move == 12) {
+                myAnim = spinLeftY0(myAnim, -1.0, i);
+                animArray[i] = myAnim;
+            } else if(move == 13) {
+                myAnim = spinLeftY1(myAnim, -1.0, i);
+                // nrRotations = 0;
+                animArray[i] = myAnim;
+            } else if(move == 14) {
+                myAnim = spinLeftY2(myAnim, -1.0, i);
+                // nrRotations = 0;
+                animArray[i] = myAnim;
             } else if(move == 15) {
                 myAnim = spinLeftY0(myAnim, 1.0, i);
                 animArray[i] = myAnim;
@@ -1297,6 +1320,15 @@ int main()
             } else if(move == 17) {
                 myAnim = spinLeftY2(myAnim, 1.0, i);
                 // nrRotations = 0;
+                animArray[i] = myAnim;
+            } else if(move == 18) {
+                myAnim = spinLeftZ0(myAnim, -1.0, i);
+                animArray[i] = myAnim;
+            } else if(move == 19) {
+                myAnim = spinLeftZ1(myAnim, -1.0, i);
+                animArray[i] = myAnim;
+            } else if(move == 20) {
+                myAnim = spinLeftZ2(myAnim, -1.0, i);
                 animArray[i] = myAnim;
             } else if(move == 21) {
                 myAnim = spinLeftZ0(myAnim, 1.0, i);
