@@ -81,7 +81,7 @@ static int nrRotations = 0;
 static int key_move = -1;
 
 static GLint uniformAnim;
-static array<array<GLfloat,6*36>,27> vtxArray;  
+static array<array<GLfloat,6*36>,27> vtxArray;
 
 static int xAxisArray[27];
 static int yAxisArray[27];
@@ -97,9 +97,9 @@ static void initAxisArray() {
     // }
 
     for (int i = 0; i < 27; i++ ) {
-        xAxisArray[i] = AXIS_RIGHT;         
-        yAxisArray[i] = AXIS_UP;         
-        zAxisArray[i] = AXIS_FRONT;         
+        xAxisArray[i] = AXIS_RIGHT;
+        yAxisArray[i] = AXIS_UP;
+        zAxisArray[i] = AXIS_FRONT;
     }
 
 }
@@ -159,53 +159,104 @@ static glm::vec3 calcAxis(int i, glm::vec3 axis, int direction) {
     if(direction == LEFT_Z)  {
         if(x == AXIS_FRONT || x == AXIS_BACK) {
            axis.x = 1.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 0.0f;
-           return axis; 
+           return axis;
         } else if( y == AXIS_FRONT || y == AXIS_BACK) {
            axis.x = 0.0f;
-           axis.y = 1.0f; 
+           axis.y = 1.0f;
            axis.z = 0.0f;
-           return axis; 
+           return axis;
         } else if( z == AXIS_FRONT || z == AXIS_BACK) {
            axis.x = 0.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 1.0f;
-           return axis; 
+           return axis;
         }
     } else if(direction == RIGHT_Z) {
-        if(x == AXIS_LEFT || x == AXIS_RIGHT) {
+        if(x == AXIS_FRONT || x == AXIS_BACK) {
            axis.x = 1.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 0.0f;
-           return axis; 
-        } else if( y == AXIS_LEFT || y == AXIS_RIGHT) {
+           return axis;
+        } else if( y == AXIS_FRONT || y == AXIS_BACK) {
            axis.x = 0.0f;
-           axis.y = 1.0f; 
+           axis.y = 1.0f;
            axis.z = 0.0f;
-           return axis; 
-        } else if( z == AXIS_LEFT || z == AXIS_RIGHT) {
+           return axis;
+        } else if( z == AXIS_FRONT || z == AXIS_BACK) {
            axis.x = 0.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 1.0f;
-           return axis; 
+           return axis;
         }
     } else if(direction == UP_X) {
         if(x == AXIS_LEFT || x == AXIS_RIGHT) {
            axis.x = 1.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 0.0f;
-           return axis; 
+           return axis;
         } else if( y == AXIS_LEFT || y == AXIS_RIGHT) {
            axis.x = 0.0f;
-           axis.y = 1.0f; 
+           axis.y = 1.0f;
            axis.z = 0.0f;
-           return axis; 
+           return axis;
         } else if( z == AXIS_LEFT || z == AXIS_RIGHT) {
            axis.x = 0.0f;
-           axis.y = 0.0f; 
+           axis.y = 0.0f;
            axis.z = 1.0f;
-           return axis; 
+           return axis;
+        }
+    } else if(direction == DOWN_X) {
+        if(x == AXIS_LEFT || x == AXIS_RIGHT) {
+           axis.x = 1.0f;
+           axis.y = 0.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( y == AXIS_LEFT || y == AXIS_RIGHT) {
+           axis.x = 0.0f;
+           axis.y = 1.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( z == AXIS_LEFT || z == AXIS_RIGHT) {
+           axis.x = 0.0f;
+           axis.y = 0.0f;
+           axis.z = 1.0f;
+           return axis;
+        }
+    } else if(direction == LEFT_Y) {
+        if(x == AXIS_UP || x == AXIS_DOWN) {
+           axis.x = 1.0f;
+           axis.y = 0.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( y == AXIS_UP || y == AXIS_DOWN) {
+           axis.x = 0.0f;
+           axis.y = 1.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( z == AXIS_UP || z == AXIS_DOWN) {
+           axis.x = 0.0f;
+           axis.y = 0.0f;
+           axis.z = 1.0f;
+           return axis;
+        }
+    } else if(direction == RIGHT_Y) {
+        if(x == AXIS_UP || x == AXIS_DOWN) {
+           axis.x = 1.0f;
+           axis.y = 0.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( y == AXIS_UP || y == AXIS_DOWN) {
+           axis.x = 0.0f;
+           axis.y = 1.0f;
+           axis.z = 0.0f;
+           return axis;
+        } else if( z == AXIS_UP || z == AXIS_DOWN) {
+           axis.x = 0.0f;
+           axis.y = 0.0f;
+           axis.z = 1.0f;
+           return axis;
         }
     }
 
@@ -222,7 +273,7 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
     int z = zAxisArray[i];
     // (vx, vy, vz)
     // _____________
-    // ( 1, 0,  0) -> 
+    // ( 1, 0,  0) ->
     // ( 0, 1,  0)
     // ( 0, 0,  1)
 
@@ -251,10 +302,10 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
             } else if(z == AXIS_BACK) {
                 xAxisArray[i] = -y;
                 yAxisArray[i] = x;
-            }        
+            }
         }
     } else if(direction == RIGHT_Z) {
-         if(vX == 1.0f) {
+        if(vX == 1.0f) {
             if(x == AXIS_FRONT) {
                 yAxisArray[i] = -z;
                 zAxisArray[i] = y;
@@ -277,23 +328,114 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
             } else if(z == AXIS_BACK) {
                 xAxisArray[i] = y;
                 yAxisArray[i] = -x;
-            }        
+            }
         }
     } else if(direction == UP_X) {
-        if(x == AXIS_LEFT || x == AXIS_RIGHT) {
-           axis.x = 1.0f;
-           axis.y = 0.0f; 
-           axis.z = 0.0f;
-        } else if( y == AXIS_LEFT || y == AXIS_RIGHT) {
-           axis.x = 0.0f;
-           axis.y = 1.0f; 
-           axis.z = 0.0f;
-        } else if( z == AXIS_LEFT || z == AXIS_RIGHT) {
-           axis.x = 0.0f;
-           axis.y = 0.0f; 
-           axis.z = 1.0f;
+        if(vX == 1.0f) {
+            if(x == AXIS_LEFT) {
+                yAxisArray[i] = z;
+                zAxisArray[i] = -y;
+            } else if(x == AXIS_RIGHT) {
+                yAxisArray[i] = -z;
+                zAxisArray[i] = y;
+            }
+        } else if( vY == 1.0f) {
+            if(y == AXIS_LEFT) {
+                xAxisArray[i] = -z;
+                zAxisArray[i] = x;
+            } else if(y == AXIS_RIGHT) { // not validated
+                xAxisArray[i] = z;
+                zAxisArray[i] = -x;
+            }
+        } else if( vZ == 1.0f) { 
+            if(z == AXIS_LEFT) {
+                xAxisArray[i] = y;
+                yAxisArray[i] = -x;
+            } else if(z == AXIS_RIGHT) {
+                xAxisArray[i] = -y;
+                yAxisArray[i] = x;
+            }
+        }
+    } else if(direction == DOWN_X) { // not validated
+        if(vX == 1.0f) {
+            if(x == AXIS_LEFT) {
+                yAxisArray[i] = -z;
+                zAxisArray[i] = y;
+            } else if(x == AXIS_RIGHT) {
+                yAxisArray[i] = z;
+                zAxisArray[i] = -y;
+            }
+        } else if( vY == 1.0f) {
+            if(y == AXIS_LEFT) {
+                xAxisArray[i] = z;
+                zAxisArray[i] = -x;
+            } else if(y == AXIS_RIGHT) {
+                xAxisArray[i] = -z;
+                zAxisArray[i] = x;
+            }
+        } else if( vZ == 1.0f) { 
+            if(z == AXIS_LEFT) {
+                xAxisArray[i] = -y;
+                yAxisArray[i] = x;
+            } else if(z == AXIS_RIGHT) {
+                xAxisArray[i] = y;
+                yAxisArray[i] = -x;
+            }
+        }
+    } else if(direction == LEFT_Y) {
+        if(vX == 1.0f) {
+            if(x == AXIS_UP) {
+                yAxisArray[i] = z;
+                zAxisArray[i] = -y;
+            } else if(x == AXIS_DOWN) { // not validated
+                yAxisArray[i] = -z;
+                zAxisArray[i] = y;
+            }
+        } else if( vY == 1.0f) {
+            if(y == AXIS_UP) {
+                xAxisArray[i] = -z;
+                zAxisArray[i] = x;
+            } else if(y == AXIS_DOWN) {
+                xAxisArray[i] = z;
+                zAxisArray[i] = -x;
+            }
+        } else if( vZ == 1.0f) { 
+            if(z == AXIS_UP) {
+                xAxisArray[i] = y;
+                yAxisArray[i] = -x;
+            } else if(z == AXIS_DOWN) {
+                xAxisArray[i] = -y;
+                yAxisArray[i] = x;
+            }
+        }
+    } else if(direction == RIGHT_Y) { // not validated
+        if(vX == 1.0f) {
+            if(x == AXIS_UP) {
+                yAxisArray[i] = -z;
+                zAxisArray[i] = y;
+            } else if(x == AXIS_DOWN) {
+                yAxisArray[i] = z;
+                zAxisArray[i] = -y;
+            }
+        } else if( vY == 1.0f) {
+            if(y == AXIS_UP) {
+                xAxisArray[i] = z;
+                zAxisArray[i] = -x;
+            } else if(y == AXIS_DOWN) {
+                xAxisArray[i] = -z;
+                zAxisArray[i] = x;
+            }
+        } else if( vZ == 1.0f) { 
+            if(z == AXIS_UP) {
+                xAxisArray[i] = -y;
+                yAxisArray[i] = x;
+            } else if(z == AXIS_DOWN) {
+                xAxisArray[i] = y;
+                yAxisArray[i] = -x;
+            }
         }
     }
+
 
 }
 
@@ -836,22 +978,22 @@ glm::mat4 spinX2(glm::mat4 anim, float orientation, int i) {
         || i == positionArray[2][1][0] || i == positionArray[2][1][1] || i == positionArray[2][1][2]
         || i == positionArray[2][2][0] || i == positionArray[2][2][1] || i == positionArray[2][2][2]) {
 
-        rot = glm::vec3(1.0f, 0.0f, 0.0f);        
+        rot = glm::vec3(1.0f, 0.0f, 0.0f);
 
         if(orientation == -1.0) {
-            
+
             rot = calcAxis(i, rot, UP_X);
-            
+
             sign = getOrientationFromAxis(i, rot, UP_X);
 
-            if(i == 7) {
+            if(i == BOTTOM_LEFT) {
                 cout << i << ": " << rot.x << rot.y << rot.z << endl;
                 cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
             }
 
             if(nrRotations >= 90*9-9) {
 
-               
+
             }
         } else {
             rot = calcAxis(i, rot, UP_X);
@@ -936,7 +1078,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
         || i == positionArray[0][0][2] || i == positionArray[1][0][2] || i == positionArray[2][0][2]) {
         // if(nrRotations <= 90*9) {
 
-       
+
 
         // if (numCalculated < 9){
         //     fillRotationsArray(i, LEFT_Y);
@@ -944,24 +1086,23 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
         // }
 
         rot = glm::vec3(0.0f, 0.0f, 1.0f); //TODO: initial
-        
+
 
         if(orientation == 1.0) {
-            
+
             rot = calcAxis(i, rot, LEFT_Z);
-        
+
             if(nrRotations >= 90*9-9) {
-               cout << "ROTATE URSELF MOFUCKER: "<< i << endl;
                setAxis(i,rot, LEFT_Z);
             //    if(i == BOTTOM_LEFT)
             //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
             }
         } else {
             rot = calcAxis(i, rot, RIGHT_Z);
-            if(nrRotations == 90*9-1) {
+            if(nrRotations >= 90*9-9) {
                setAxis(i,rot, RIGHT_Z);
-               
-            }        
+
+            }
         }
 
         anim = rotLeftY(anim, orientation, rot);
@@ -984,7 +1125,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
         || i == positionArray[0][1][2] || i == positionArray[1][1][2] || i == positionArray[2][1][2]) {
         // if(nrRotations <= 90*9) {
 
-      
+
         rot = glm::vec3(0.0f, 0.0f, 1.0f);
 
 
@@ -1008,7 +1149,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
         || i == positionArray[0][2][2] || i == positionArray[1][2][2] || i == positionArray[2][2][2]) {
         // if(nrRotations <= 90*9) {
 
-       
+
 
         rot = glm::vec3(0.0f, 0.0f, 1.0f);
 
@@ -1032,7 +1173,7 @@ glm::mat4 spinY2(glm::mat4 anim, float orientation, int i) {
         || i == positionArray[0][2][2] || i == positionArray[1][2][2] || i == positionArray[2][2][2]) {
         // if(nrRotations <= 90*9) {
 
-        rot = glm::vec3(0.0f, 1.0f, 0.0f);      
+        rot = glm::vec3(0.0f, 1.0f, 0.0f);
 
         anim = rotLeftZ(anim, orientation, rot);
         // cout << nrRotations << endl;
@@ -1054,7 +1195,7 @@ glm::mat4 spinY1(glm::mat4 anim, float orientation, int i) {
         // if(nrRotations <= 90*9) {
 
         rot = glm::vec3(0.0f, 1.0f, 0.0f);
-     
+
         anim = rotLeftZ(anim, orientation, rot);
         // cout << nrRotations << endl;
         nrRotations +=1;
@@ -1075,7 +1216,7 @@ glm::mat4 spinY0(glm::mat4 anim, float orientation, int i) {
         // if(nrRotations <= 90*9) {
 
         rot = glm::vec3(0.0f, 1.0f, 0.0f);
-     
+
         anim = rotLeftZ(anim, orientation, rot);
         // cout << nrRotations << endl;
         nrRotations +=1;
