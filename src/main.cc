@@ -36,26 +36,6 @@ int TOP_RIGHT = 6;
 int BOTTOM_LEFT = 7;
 int BOTTOM_RIGHT = 8;
 
-static int MIDDLE_MIDDLE = MIDDLE+9; //+0 -> Front, +9 -> Middle, +18 -> Back
-static int LEFT_MIDDLE = LEFT+9;
-static int RIGHT_MIDDLE = RIGHT+9;
-static int TOP_MIDDLE = TOP+9;
-static int BOTTOM_MIDDLE = BOTTOM+9;
-static int TOP_LEFT_MIDDLE = TOP_LEFT+9;
-static int TOP_RIGHT_MIDDLE = TOP_RIGHT+9;
-static int BOTTOM_LEFT_MIDDLE = BOTTOM_LEFT+9;
-static int BOTTOM_RIGHT_MIDDLE = BOTTOM_RIGHT+9;
-
-static int MIDDLE_BACK = MIDDLE+18; //+0 -> Front, +9 -> Middle, +18 -> Back
-static int LEFT_BACK = LEFT+18;
-static int RIGHT_BACK = RIGHT+18;
-static int TOP_BACK = TOP+18;
-static int BOTTOM_BACK = BOTTOM+18;
-static int TOP_LEFT_BACK = TOP_LEFT+18;
-static int TOP_RIGHT_BACK = TOP_RIGHT+18;
-static int BOTTOM_LEFT_BACK = BOTTOM_LEFT+18;
-static int BOTTOM_RIGHT_BACK = BOTTOM_RIGHT+18;
-
 const int AXIS_UP = 1;
 const int AXIS_DOWN = -1;
 const int AXIS_LEFT = 2;
@@ -70,19 +50,11 @@ const int RIGHT_Y = -2;
 const int LEFT_Z = 3;
 const int RIGHT_Z = -3;
 
-const int X_AXIS = 1;
-const int Y_AXIS = 2;
-const int Z_AXIS = 3;
-// const int X_AXIS_NEG = 3;
-// const int Y_AXIS_NEG = 4;
-// const int Z_AXIS_NEG = 5;
-
 static glm::vec3 position = glm::vec3(4.0f, 4.0f, 6.0f);
 static GLfloat theta=0, phi=0;
 static GLfloat x_pos_old, y_pos_old;
 static GLfloat fov = 100.0f;
 static int nrRotations = 0;
-static int key_move = -1;
 static int key_row = -1;
 static int key_axis = -1;
 static bool rotating = false;
@@ -606,49 +578,50 @@ static void keyCallback(GLFWwindow* myWindow, int key, int scanCode,
 static int getMove() {
     if(key_row != -1 && key_axis != -1) {
         if (key_axis == 0) {
-          if (key_row == 0) {
-              return 6;
-          } else if (key_row == 1) {
-              return 7;
-          } else if (key_row == 2) {
-              return 8;
-          } else if (key_row == 3) {
-              return 9;
-          } else if (key_row == 4) {
-              return 10;
-          } else if (key_row == 5) {
-              return 11;
-          }
-        } else if (key_axis == 2) {
-          if (key_row == 0) {
-              return 12;
-          } else if (key_row == 1) {
-              return 13;
-          } else if (key_row == 2) {
-              return 14;
-          } else if (key_row == 3) {
-              return 15;
-          } else if (key_row == 4) {
-              return 16;
-          } else if (key_row == 5) {
-              return 17;
-          }
-        } else if (key_axis == 1) {
-          if (key_row == 0) {
-              return 18;
-          } else if (key_row == 1) {
-              return 19;
-          } else if (key_row == 2) {
-              return 20;
-          } else if (key_row == 3) {
-              return 21;
-          } else if (key_row == 4) {
-              return 22;
-          } else if (key_row == 5) {
-              return 23;
-          }
+            if (key_row == 0) {
+                return 6;
+            } else if (key_row == 1) {
+                return 7;
+            } else if (key_row == 2) {
+                return 8;
+            } else if (key_row == 3) {
+                return 9;
+            } else if (key_row == 4) {
+                return 10;
+            } else if (key_row == 5) {
+                return 11;
+            }
+          } else if (key_axis == 2){
+              if (key_row == 0) {
+                  return 12;
+              } else if (key_row == 1) {
+                  return 13;
+              } else if (key_row == 2) {
+                  return 14;
+              } else if (key_row == 3) {
+                  return 15;
+              } else if (key_row == 4) {
+                  return 16;
+              } else if (key_row == 5) {
+                  return 17;
+              }
+          } else if (key_axis == 1){
+              if (key_row == 0) {
+                  return 18;
+              } else if (key_row == 1) {
+                  return 19;
+              } else if (key_row == 2) {
+                  return 20;
+              } else if (key_row == 3) {
+                  return 21;
+              } else if (key_row == 4) {
+                  return 22;
+              } else if (key_row == 5) {
+                  return 23;
+              }
         }
     }
+    return -1;
 }
 
 static void cursorPosCallBack (GLFWwindow* myWindow, double x_pos, double y_pos)
@@ -687,17 +660,21 @@ void scrollCallback(GLFWwindow* mywindow, double xoffset, double yoffset)
 void lookAtCallBack(GLFWwindow* myWindow)
 {
     GLfloat radius = 10.0f;
+    GLfloat tmp_x, tmp_y, tmp_z;
     if (cam_move) {
-        theta += (position.x - x_pos_old) * 0.0001f;
-        phi += (position.y - y_pos_old) * 0.0001f;
+        theta += (800/2 - x_pos_old) * 0.0001f;
+        phi += (600/2 - y_pos_old) * 0.00005f;
 
-        position.x = radius*sin(theta);
-        //position.y = radius*cos(theta);
-        position.z = radius*cos(theta);
+        tmp_x = radius*cos(phi)*sin(theta);
+        tmp_y = radius*sin(phi);
+        tmp_z = radius*cos(theta)*cos(phi);
+
+        position.x = tmp_x;
+        position.y = tmp_y;
+        position.z = tmp_z;
+
+        // cout << position.x << ", " << position.y << ", " << position.z << endl;
     }
-    x_pos_old = position.x;
-    y_pos_old = position.y;
-
 }
 
 bool checkShaderCompileStatus(GLuint shaderID)
@@ -1080,7 +1057,6 @@ glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis) {
 
 glm::mat4 spinX2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    //glm::vec3 new_rot;
     int sign = 1;
     //right Row
     if(i == positionArray[2][0][0] || i == positionArray[2][0][1] || i == positionArray[2][0][2]
@@ -1188,7 +1164,6 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinX0(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
 
     //right Row
@@ -1247,7 +1222,6 @@ glm::mat4 spinX0(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
@@ -1303,7 +1277,6 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
@@ -1353,7 +1326,6 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
@@ -1403,7 +1375,6 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinY2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
     if(i == positionArray[0][0][2] || i == positionArray[1][0][2] || i == positionArray[2][0][2]
         || i == positionArray[0][1][2] || i == positionArray[1][1][2] || i == positionArray[2][1][2]
@@ -1450,7 +1421,6 @@ glm::mat4 spinY2(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinY1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
     if(i == positionArray[0][0][1] || i == positionArray[1][0][1] || i == positionArray[2][0][1]
         || i == positionArray[0][1][1] || i == positionArray[1][1][1] || i == positionArray[2][1][1]
@@ -1498,7 +1468,6 @@ glm::mat4 spinY1(glm::mat4 anim, float orientation, int i) {
 
 glm::mat4 spinY0(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
 
     if(i == positionArray[0][0][0] || i == positionArray[1][0][0] || i == positionArray[2][0][0]
@@ -1803,21 +1772,12 @@ int main()
 
     /* define a view transformation */
 
-
-    // horizontal angle : toward -Z
-    GLfloat horizontalAngle = 3.14f;
-    // vertical angle : 0, look at the horizon
-    GLfloat verticalAngle = 0.0f;
-
-    //GLfloat speed = 3.0f; // 3 units / second
-    GLfloat mouseSpeed = 0.005f;
     GLfloat lastTime = 0;
     GLfloat currentTime = 0;
-    glm::vec3* look;
 
 
     glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
-                                 glm::vec3(0.0f, 0.0f, 0.0f),
+                                 glm::vec3(0.0f, 0.0f, -2.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
 
     //glm::mat4 view = glm::lookAt(look[0], look[1], look[2]);
@@ -2013,7 +1973,7 @@ int main()
         lastTime = currentTime;
 
         lookAtCallBack(myWindow);
-        view = glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::lookAt(position, glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
         // printf("%f, %f, %f \n", position.x, position.y, position.z);
 
