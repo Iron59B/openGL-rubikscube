@@ -1881,8 +1881,6 @@ int main()
     initAxisArray();
     // createAnim(shaderProgram, anim2);
 
-    cout << glGetString(GL_VERSION) << endl;
-
     while (!glfwWindowShouldClose(myWindow)) {
         if (vecCounter < (int) moves.size()) {
             move = moves.at(vecCounter);
