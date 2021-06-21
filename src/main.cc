@@ -997,7 +997,7 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
 
 glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans) {
     float angle = 1.0f * orientation;
-    
+
     if(trans == true) {
         anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
         anim = glm::rotate(anim, glm::radians(angle), rot);
@@ -1295,7 +1295,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
          if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
           trans = false;
         }
-        
+
         anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
@@ -1846,8 +1846,6 @@ int main()
     initPositionArray();
     initAxisArray();
     // createAnim(shaderProgram, anim2);
-
-    cout << glGetString(GL_VERSION) << endl;
 
     while (!glfwWindowShouldClose(myWindow)) {
         if (vecCounter < (int) moves.size()) {
