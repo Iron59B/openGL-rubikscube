@@ -1034,8 +1034,8 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
 }
 
 glm::mat4 rotLeftY(glm::mat4 anim, float orientation, glm::vec3 rot) {
-    //float angle = 0.1f * orientation;
-    float angle = 1.0f * deltaTime*speed * orientation;
+    float angle = 1.0f * orientation;
+    // float angle = 1.0f * deltaTime*speed * orientation;
 
     anim = glm::rotate(anim, glm::radians(angle), rot);
 
@@ -1043,8 +1043,8 @@ glm::mat4 rotLeftY(glm::mat4 anim, float orientation, glm::vec3 rot) {
 }
 
 glm::mat4 rotUpX(glm::mat4 anim, float orientation, glm::vec3 axis) {
-    // float angle = 0.1f * orientation;
-    float angle = 1.0f * deltaTime*speed * orientation;
+    float angle = 1.0f * orientation;
+    // float angle = 1.0f * deltaTime*speed * orientation;
 
     anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
     anim = glm::rotate(anim, glm::radians(angle), axis);
@@ -1055,8 +1055,8 @@ glm::mat4 rotUpX(glm::mat4 anim, float orientation, glm::vec3 axis) {
 }
 
 glm::mat4 rotLeftZ(glm::mat4 anim, float orientation, glm::vec3 axis) {
-    // float angle = 0.1f * orientation;
-    float angle = 1.0f * deltaTime*speed * orientation;
+    float angle = 1.0f * orientation;
+    // float angle = 1.0f * deltaTime*speed * orientation;
 
     anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, -4.2f));
     anim = glm::translate(anim, glm::vec3(2.1f, 0.0f, 2.1f));
@@ -1913,7 +1913,7 @@ int main()
         // printf("/-----------------------------------------/ \n");
         // break;
         // move ++;
-        if(nrRotations == 9*180) {
+        if(nrRotations == 9*90) {
             changeCubePositions(move);
             nrRotations = 0;
             vecCounter += 1;
