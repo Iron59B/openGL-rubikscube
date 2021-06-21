@@ -327,7 +327,7 @@ static glm::vec3 calcAxis(int i, glm::vec3 axis, int direction) {
            return axis;
         }
     }
-
+    return axis;
 }
 
 static void setAxis(int i, glm::vec3 axis, int direction) {
@@ -568,35 +568,38 @@ static void keyCallback(GLFWwindow* myWindow, int key, int scanCode,
     /* close window upon hitting the escape key or Q/q */
         glfwSetWindowShouldClose(myWindow, GL_TRUE);
     }
+    if (rotating == true)
+      cout << "wait until current roation is finished!" << endl;
+
     if (rotating == false) {
-      if ((key == GLFW_KEY_X) && action == GLFW_PRESS) {
-          key_axis = 0;
-          cout << "X" << endl;
-      } else if ((key == GLFW_KEY_Z) && action == GLFW_PRESS) {
-          cout << "Y" << endl;
-          key_axis = 1;
-      } else if ((key == GLFW_KEY_C) && action == GLFW_PRESS) {
-          cout << "Z" << endl;
-          key_axis = 2;
-      } else if ((key == GLFW_KEY_1) && action == GLFW_PRESS) {
-          cout << "1.Row Right" << endl;
-          key_row = 0;
-      } else if ((key == GLFW_KEY_2) && action == GLFW_PRESS) {
-          cout << "2.Row Right" << endl;
-          key_row = 1;
-      } else if ((key == GLFW_KEY_3) && action == GLFW_PRESS) {
-          cout << "3.Row Right" << endl;
-          key_row = 2;
-      } else if ((key == GLFW_KEY_4) && action == GLFW_PRESS) {
-          cout << "1.Row Left" << endl;
-          key_row = 3;
-      } else if ((key == GLFW_KEY_5) && action == GLFW_PRESS) {
-          cout << "2.Row Left" << endl;
-          key_row = 4;
-      } else if ((key == GLFW_KEY_6) && action == GLFW_PRESS) {
-          cout << "3.Row Left" << endl;
-          key_row = 5;
-      }
+        if ((key == GLFW_KEY_X) && action == GLFW_PRESS) {
+            key_axis = 0;
+            cout << "X" << endl;
+        } else if ((key == GLFW_KEY_Z) && action == GLFW_PRESS) {
+            cout << "Y" << endl;
+            key_axis = 1;
+        } else if ((key == GLFW_KEY_C) && action == GLFW_PRESS) {
+            cout << "Z" << endl;
+            key_axis = 2;
+        } else if ((key == GLFW_KEY_1) && action == GLFW_PRESS) {
+            cout << "1.Row Right" << endl;
+            key_row = 0;
+        } else if ((key == GLFW_KEY_2) && action == GLFW_PRESS) {
+            cout << "2.Row Right" << endl;
+            key_row = 1;
+        } else if ((key == GLFW_KEY_3) && action == GLFW_PRESS) {
+            cout << "3.Row Right" << endl;
+            key_row = 2;
+        } else if ((key == GLFW_KEY_4) && action == GLFW_PRESS) {
+            cout << "1.Row Left" << endl;
+            key_row = 3;
+        } else if ((key == GLFW_KEY_5) && action == GLFW_PRESS) {
+            cout << "2.Row Left" << endl;
+            key_row = 4;
+        } else if ((key == GLFW_KEY_6) && action == GLFW_PRESS) {
+            cout << "3.Row Left" << endl;
+            key_row = 5;
+        }
     }
 }
 
@@ -1033,13 +1036,18 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 }
 
-glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot) {
+glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans) {
     float angle = 1.0f * orientation;
     // float angle = 1.0f * deltaTime*speed * orientation;
 
-    //anim = glm::translate(anim, glm::vec3(-4.2f, 0.0f, 0.0f) );
-    anim = glm::rotate(anim, glm::radians(angle), rot);
-    //anim = glm::translate(anim, -(glm::vec3(-4.2f, 0.0f, 0.0f)) );
+    if(trans == true) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
+        anim = glm::rotate(anim, glm::radians(angle), rot);
+        anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
+    } else {
+        anim = glm::rotate(anim, glm::radians(angle), rot);
+    }
+
 
     return anim;
 }
@@ -1241,7 +1249,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
-    bool trans = false;
+    bool trans = true;
 
     if(i == positionArray[0][0][0] || i == positionArray[1][0][0] || i == positionArray[2][0][0]
         || i == positionArray[0][0][1] || i == positionArray[1][0][1] || i == positionArray[2][0][1]
@@ -1277,12 +1285,12 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
             }
         }
 
-        if (i == positionArray[1][0][0] || i == positionArray[1][0][1] || i == positionArray[1][0][2]) {
-          trans = true;
+        if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
         }
 
         // cout << sign << endl;
-        anim = rotZ(anim, orientation*sign, rot);
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1297,6 +1305,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
+    bool trans = true;
 
     if(i == positionArray[0][1][0] || i == positionArray[1][1][0] || i == positionArray[2][1][0]
         || i == positionArray[0][1][1] || i == positionArray[1][1][1] || i == positionArray[2][1][1]
@@ -1326,7 +1335,12 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
 
             }
         }
-        anim = rotZ(anim, orientation*sign, rot);
+
+         if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
+        }
+
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1341,6 +1355,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
+    bool trans = true;
 
     if(i == positionArray[0][2][0] || i == positionArray[1][2][0] || i == positionArray[2][2][0]
         || i == positionArray[0][2][1] || i == positionArray[1][2][1] || i == positionArray[2][2][1]
@@ -1372,7 +1387,10 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
             }
         }
 
-        anim = rotZ(anim, orientation*sign, rot);
+        if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
+        }
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1857,7 +1875,7 @@ int main()
     nrRotations = 0;
 
     // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
-    std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 0};
+    std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
     int move = 0;
     array<glm::mat4,27> animArray;
 
@@ -1869,6 +1887,7 @@ int main()
     initPositionArray();
     initAxisArray();
     // createAnim(shaderProgram, anim2);
+
     while (!glfwWindowShouldClose(myWindow)) {
         if (vecCounter < (int) moves.size()) {
             move = moves.at(vecCounter);
@@ -1878,8 +1897,9 @@ int main()
             move = getMove();
             if (move != -1)
               rotating = true;
-        } if (key_row != -1 && key_axis == -1) {
+        } else if (key_row != -1 && key_axis == -1) {
             key_row = -1;
+            cout << "please choose a axis first!" << endl;
         }
 
         /* set the window background to black */
@@ -1892,6 +1912,7 @@ int main()
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
+            rotating = true;
 
             if(move == 6) {
                 myAnim = spinX0(myAnim, -1.0, i);
@@ -1957,6 +1978,8 @@ int main()
             } else if(move == 23) {
                 myAnim = spinY2(myAnim, 1.0, i);
                 animArray[i] = myAnim;
+            } else {
+              rotating = false;
             }
             // printf("/-----------------------------------------/ \n");
 
