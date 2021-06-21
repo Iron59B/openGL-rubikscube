@@ -15,15 +15,6 @@
 
 using namespace std;
 
-const int MIDDLE = 0;
-const int LEFT = 1;
-const int RIGHT = 2;
-const int TOP = 3;
-const int BOTTOM = 4;
-const int TOP_LEFT = 5;
-const int TOP_RIGHT = 6;
-const int BOTTOM_LEFT = 7;
-const int BOTTOM_RIGHT = 8;
 
 /**********************************************************************
 **                      CLASS MEMBER DEFINITIONS                     **
@@ -252,13 +243,9 @@ vector<int> AlgoCube::getMoves() {
     return moves;
 }
 
-array<string, 27> AlgoCube::getAnimCubes() {
-    return animCubes;
+vector<int> AlgoCube::getRandomizeCubeMoves() {
+    return randomizeCubeMoves;
 }
-
-// vector<array<string, 27>> AlgoCube::getVecAnimCubes() {
-//     return getVecAnimCubes;
-// }
 
 void AlgoCube::setPieces(vector<CubePiece> pieces) {
     unsigned i, x, y, z;
@@ -274,55 +261,6 @@ void AlgoCube::setPieces(vector<CubePiece> pieces) {
             }
         }
     }
-}
-
-void AlgoCube::updateAnimCubes() {
-    unsigned x, y, z;
-    int depth;
-
-    for (y = 0; y < 3; y++) {
-        depth = 9*y;
-        for (z = 0; z < 3; z++) {
-            for (x = 0; x < 3; x++) {
-                if (y == 0) {
-                    if (z == 0) {
-                        if (x == 0) {
-                            animCubes[BOTTOM_LEFT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 1) {
-                            animCubes[BOTTOM+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 2) {
-                            animCubes[BOTTOM_RIGHT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                    }
-                    else if (z == 1) {
-                        if (x == 0) {
-                            animCubes[LEFT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 1) {
-                            animCubes[MIDDLE+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 2) {
-                            animCubes[RIGHT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                    }
-                    else if (z == 2) {
-                        if (x == 0) {
-                            animCubes[TOP_LEFT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 1) {
-                            animCubes[TOP+depth] = cubePieces[x][y][z].getColors();
-                        }
-                        else if (x == 2) {
-                            animCubes[TOP_RIGHT+depth] = cubePieces[x][y][z].getColors();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    vecAnimCubes.push_back(animCubes);
 }
 
 // prints first (bottom) layer
@@ -373,7 +311,6 @@ void AlgoCube::spinUp90AlongX() {
     spinLayerUp90AlongX(2, true);
 
     moves.push_back(0);
-    updateAnimCubes();
 }
 
 // spins whole cube down along the x axis
@@ -383,7 +320,6 @@ void AlgoCube::spinDown90AlongX() {
     spinLayerDown90AlongX(2, true);
 
     moves.push_back(1);
-    updateAnimCubes();
 }
 
 // spins whole cube to the right along the y axis
@@ -393,7 +329,6 @@ void AlgoCube::spinRight90AlongY() {
     spinLayerRight90AlongY(2, true);
 
     moves.push_back(2);
-    updateAnimCubes();
 }
 
 // spins whole cube to the left along the y axis
@@ -403,7 +338,6 @@ void AlgoCube::spinLeft90AlongY() {
     spinLayerLeft90AlongY(2, true);
 
     moves.push_back(3);
-    updateAnimCubes();
 }
 
 // spins whole cube to the right along the z axis
@@ -413,7 +347,6 @@ void AlgoCube::spinRight90AlongZ() {
     spinLayerRight90AlongZ(2, true);
 
     moves.push_back(4);
-    updateAnimCubes();
 }
 
 // spins whole cube to the left along the z axis
@@ -423,11 +356,10 @@ void AlgoCube::spinLeft90AlongZ() {
     spinLayerLeft90AlongZ(2, true);
 
     moves.push_back(5);
-    updateAnimCubes();
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) up 90 degrees along the x axis
-void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool wholeCube) {
+void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool wholeCube, int forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -467,12 +399,24 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool wholeCube) {
                 moves.push_back(8);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == false) {
+        switch (xLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(6);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(7);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(8);
+                break;
+        }
     }
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) down 90 degrees along the x axis
-void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool wholeCube) {
+void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool wholeCube, int forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -512,12 +456,24 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool wholeCube) {
                 moves.push_back(11);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == 1) {
+        switch (xLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(9);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(10);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(11);
+                break;
+        }
     }
 }
 
 // spins the affected layer 90 degrees to the right along y axis
-void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool wholeCube) {
+void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool wholeCube, int forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -557,11 +513,23 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool wholeCube) {
                 moves.push_back(14);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == 1) {
+        switch (yLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(12);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(13);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(14);
+                break;
+        }
     }
 }
 
-void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube) {
+void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube, int forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -601,12 +569,24 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube) {
                 moves.push_back(17);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == 1) {
+        switch (yLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(15);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(16);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(17);
+                break;
+        }
     }
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
-void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube) {
+void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -646,12 +626,24 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube) {
                 moves.push_back(20);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == 1) {
+        switch (zLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(18);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(19);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(20);
+                break;
+        }
     }
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the left along z axis
-void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube) {
+void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -691,7 +683,19 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube) {
                 moves.push_back(23);
                 break;
         }
-    updateAnimCubes();
+    }
+    if (forRandomize == 1) {
+        switch (zLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(21);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(19);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(20);
+                break;
+        }
     }
 }
 
@@ -1803,32 +1807,32 @@ void AlgoCube::createRandomCube() {
         switch(randomMove) {
             case 0:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerUp90AlongX(randomLayer, false);
+                    spinLayerUp90AlongX(randomLayer, false, 1);
                 cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 1:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerDown90AlongX(randomLayer, false);
+                    spinLayerDown90AlongX(randomLayer, false, 1);
                 cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 2:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongY(randomLayer, false);
+                    spinLayerRight90AlongY(randomLayer, false, 1);
                 cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 3:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongY(randomLayer, false);
+                    spinLayerLeft90AlongY(randomLayer, false, 1);
                 cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 4:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongZ(randomLayer, false);
+                    spinLayerRight90AlongZ(randomLayer, false, 1);
                 cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 5:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongZ(randomLayer, false);
+                    spinLayerLeft90AlongZ(randomLayer, false, 1);
                 cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
         }
@@ -1850,26 +1854,19 @@ int test() {
     AlgoCube cube = AlgoCube();
 
     cube.initCube();
-    //cube.createRandomCube();
+    cube.createRandomCube();
 
     // cube.printWholeCube();
 
-    cube.spinDown90AlongX();
-    cube.printFirstLayer();
-    cout << "after first: BOTTOM_LEFT: " << cube.vecAnimCubes.at(0)[BOTTOM_LEFT] << " BOTTOM: " << cube.vecAnimCubes.at(0)[BOTTOM] << " BOTTOM_RIGHT: " << cube.vecAnimCubes.at(0)[BOTTOM_RIGHT] << endl;
-
-    cube.spinRight90AlongZ();
-    cube.printFirstLayer();
-    cout << "after second: BOTTOM_LEFT: " << cube.vecAnimCubes.at(1)[BOTTOM_LEFT] << " BOTTOM: " << cube.vecAnimCubes.at(1)[BOTTOM] << " BOTTOM_RIGHT: " << cube.vecAnimCubes.at(1)[BOTTOM_RIGHT] << endl;
-
-
-    // cube.printWholeCube();
-
-    //cube.solveRubiksCube();
+    cube.solveRubiksCube();
+    cube.printWholeCube();
 
     cout << "Nr Moves: " << cube.getMoves().size() << endl;
-    cout << "First Move: " << cube.getMoves().at(0) << endl;
+    
+    cout << "First random Move: " << cube.getRandomizeCubeMoves().at(0) << endl;
+    cout << "Second random Move: " << cube.getRandomizeCubeMoves().at(1) << endl;
+    cout << "Third random Move: " << cube.getRandomizeCubeMoves().at(2) << endl;
+    cout << "Fourth random Move: " << cube.getRandomizeCubeMoves().at(3) << endl;
 
     return 0;
 }
-

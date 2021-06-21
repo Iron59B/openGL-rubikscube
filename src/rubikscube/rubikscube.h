@@ -66,34 +66,30 @@ private:
     //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
     vector<int> moves;
-    array<string, 27> animCubes;
-
+    vector<int> randomizeCubeMoves;
 public:
-    vector<array<string, 27>> vecAnimCubes;
     AlgoCube();
     AlgoCube(vector<CubePiece> pieces);
     void setPieces(vector<CubePiece> pieces);
     void initCube();
     AlgoCube getCube();
     vector<int> getMoves();
-    void updateAnimCubes();
-    vector<array<string, 27>> getVecAnimCubes();
-    array<string, 27> getAnimCubes();
+    vector<int> getRandomizeCubeMoves();
     void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
     void spinUp90AlongX();
-    void spinLayerUp90AlongX(unsigned xLayer, bool wholeCube);
+    void spinLayerUp90AlongX(unsigned xLayer, bool wholeCube, int forRandomize=0);
     void spinDown90AlongX();
-    void spinLayerDown90AlongX(unsigned xLayer, bool wholeCube);
+    void spinLayerDown90AlongX(unsigned xLayer, bool wholeCube, int forRandomize=0);
     void spinRight90AlongY();
-    void spinLayerRight90AlongY(unsigned yLayer, bool wholeCube);
+    void spinLayerRight90AlongY(unsigned yLayer, bool wholeCube, int forRandomize=0);
     void spinLeft90AlongY();
-    void spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube);
+    void spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube, int forRandomize=0);
     void spinRight90AlongZ();
-    void spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube);
+    void spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize=0);
     void spinLeft90AlongZ();
-    void spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube);
+    void spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize=0);
 
     bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
 
