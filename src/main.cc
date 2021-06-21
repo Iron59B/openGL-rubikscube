@@ -381,7 +381,7 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
                 xAxisArray[i] = z;
                 zAxisArray[i] = -x;
             }
-        } else if( vZ == 1.0f) { 
+        } else if( vZ == 1.0f) {
             if(z == AXIS_LEFT) {
                 xAxisArray[i] = y;
                 yAxisArray[i] = -x;
@@ -407,7 +407,7 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
                 xAxisArray[i] = -z;
                 zAxisArray[i] = x;
             }
-        } else if( vZ == 1.0f) { 
+        } else if( vZ == 1.0f) {
             if(z == AXIS_LEFT) {
                 xAxisArray[i] = -y;
                 yAxisArray[i] = x;
@@ -433,7 +433,7 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
                 xAxisArray[i] = z;
                 zAxisArray[i] = -x;
             }
-        } else if( vZ == 1.0f) { 
+        } else if( vZ == 1.0f) {
             if(z == AXIS_UP) {
                 xAxisArray[i] = y;
                 yAxisArray[i] = -x;
@@ -459,7 +459,7 @@ static void setAxis(int i, glm::vec3 axis, int direction) {
                 xAxisArray[i] = -z;
                 zAxisArray[i] = x;
             }
-        } else if( vZ == 1.0f) { 
+        } else if( vZ == 1.0f) {
             if(z == AXIS_UP) {
                 xAxisArray[i] = -y;
                 yAxisArray[i] = x;
@@ -1058,7 +1058,7 @@ glm::mat4 spinX2(glm::mat4 anim, float orientation, int i) {
 glm::mat4 spinX1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     int sign;
-    
+
     if(i == positionArray[1][0][0] || i == positionArray[1][0][1] || i == positionArray[1][0][2]
         || i == positionArray[1][1][0] || i == positionArray[1][1][1] || i == positionArray[1][1][2]
         || i == positionArray[1][2][0] || i == positionArray[1][2][1] || i == positionArray[1][2][2]) {
@@ -1191,7 +1191,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
         if(orientation == 1.0) {
 
             rot = calcAxis(i, rot, LEFT_Z);
-            
+
             sign = getOrientationFromAxis(i, rot, LEFT_Z);
 
             if(nrRotations >= 90*9-9) {
@@ -1224,7 +1224,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
 glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
-    int sign; 
+    int sign;
 
     if(i == positionArray[0][1][0] || i == positionArray[1][1][0] || i == positionArray[2][1][0]
         || i == positionArray[0][1][1] || i == positionArray[1][1][1] || i == positionArray[2][1][1]
@@ -1237,7 +1237,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
         if(orientation == 1.0) {
 
             rot = calcAxis(i, rot, LEFT_Z);
-            
+
             sign = getOrientationFromAxis(i, rot, LEFT_Z);
 
             if(nrRotations >= 90*9-9) {
@@ -1281,7 +1281,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
        if(orientation == 1.0) {
 
             rot = calcAxis(i, rot, LEFT_Z);
-            
+
             sign = getOrientationFromAxis(i, rot, LEFT_Z);
 
             if(nrRotations >= 90*9-9) {
@@ -1483,24 +1483,24 @@ int main()
         Cube(TOP_RIGHT, 0.0f),
         Cube(BOTTOM_LEFT, 0.0f),
         Cube(BOTTOM_RIGHT, 0.0f),
-        Cube(MIDDLE, -2.2f),
-        Cube(LEFT, -2.2f),
-        Cube(RIGHT, -2.2f),
-        Cube(TOP, -2.2f),
-        Cube(BOTTOM, -2.2f),
-        Cube(TOP_LEFT, -2.2f),
-        Cube(TOP_RIGHT, -2.2f),
-        Cube(BOTTOM_LEFT, -2.2f),
-        Cube(BOTTOM_RIGHT, -2.2f),
-        Cube(MIDDLE, -4.4f),
-        Cube(LEFT, -4.4f),
-        Cube(RIGHT, -4.4f),
-        Cube(TOP, -4.4f),
-        Cube(BOTTOM, -4.4f),
-        Cube(TOP_LEFT, -4.4f),
-        Cube(TOP_RIGHT, -4.4f),
-        Cube(BOTTOM_LEFT, -4.4f),
-        Cube(BOTTOM_RIGHT, -4.4f),
+        Cube(MIDDLE, -2.1f),
+        Cube(LEFT, -2.1f),
+        Cube(RIGHT, -2.1f),
+        Cube(TOP, -2.1f),
+        Cube(BOTTOM, -2.1f),
+        Cube(TOP_LEFT, -2.1f),
+        Cube(TOP_RIGHT, -2.1f),
+        Cube(BOTTOM_LEFT, -2.1f),
+        Cube(BOTTOM_RIGHT, -2.1f),
+        Cube(MIDDLE, -4.2f),
+        Cube(LEFT, -4.2f),
+        Cube(RIGHT, -4.2f),
+        Cube(TOP, -4.2f),
+        Cube(BOTTOM, -4.2f),
+        Cube(TOP_LEFT, -4.2f),
+        Cube(TOP_RIGHT, -4.2f),
+        Cube(BOTTOM_LEFT, -4.2f),
+        Cube(BOTTOM_RIGHT, -4.2f),
         // Cube(BOTTOM, 0.0f)
     };
 
