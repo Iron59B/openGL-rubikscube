@@ -1042,7 +1042,6 @@ glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy) {
 
 glm::mat4 spinX2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    //glm::vec3 new_rot;
     int sign = 1;
 
     //right Row
@@ -1158,7 +1157,6 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
 
 glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
 
     //right Row
@@ -1210,10 +1208,6 @@ glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         } else {
             nrRotations = 90*9;
         }
-        // }
-
-        // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-
     }
 
     return anim;
@@ -1221,7 +1215,6 @@ glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
 
 glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
@@ -1270,17 +1263,14 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
             nrRotations +=1;
         } else {
             nrRotations = 90*9;
-        }        //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-        // }
+        }
     }
-    // }
 
     return anim;
 }
 
 glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
@@ -1324,26 +1314,20 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         } else {
             nrRotations = 90*9;
         }
-        //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
-        // }
+
     }
-    // }
 
     return anim;
 }
 
 glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign;
     bool trans = true;
 
     if(i == positionArray[0][2][0] || i == positionArray[1][2][0] || i == positionArray[2][2][0]
         || i == positionArray[0][2][1] || i == positionArray[1][2][1] || i == positionArray[2][2][1]
         || i == positionArray[0][2][2] || i == positionArray[1][2][2] || i == positionArray[2][2][2]) {
-        // if(nrRotations <= 90*9) {
-
-
 
         rot = glm::vec3(0.0f, 0.0f, 1.0f);
 
@@ -1379,14 +1363,12 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
             nrRotations = 90*9;       //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         }
     }
-    // }
 
     return anim;
 }
 
 glm::mat4 spinY2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
     if(i == positionArray[0][0][2] || i == positionArray[1][0][2] || i == positionArray[2][0][2]
         || i == positionArray[0][1][2] || i == positionArray[1][1][2] || i == positionArray[2][1][2]
@@ -1429,14 +1411,12 @@ glm::mat4 spinY2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         }
     }
-    // }
 
     return anim;
 }
 
 glm::mat4 spinY1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
     if(i == positionArray[0][0][1] || i == positionArray[1][0][1] || i == positionArray[2][0][1]
         || i == positionArray[0][1][1] || i == positionArray[1][1][1] || i == positionArray[2][1][1]
@@ -1486,7 +1466,6 @@ glm::mat4 spinY1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
 
 glm::mat4 spinY0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
-    glm::vec3 new_rot;
     int sign = 0;
 
     if(i == positionArray[0][0][0] || i == positionArray[1][0][0] || i == positionArray[2][0][0]
@@ -1867,8 +1846,8 @@ int main()
     nrRotations = 0;
 
     // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
-    // std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
-    std::vector<int> moves {6,7, 8 ,14, -1};
+    // std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, -1};
+    // std::vector<int> solverMoves {0,2,4,1,3,5,15,22,2,5,0, -1};
     int move = 0;
     array<glm::mat4,27> animArray;
 
@@ -1877,89 +1856,156 @@ int main()
     }
 
     int vecCounter = 0;
+    bool solver = false;
+
     initPositionArray();
     initAxisArray();
+
+    AlgoCube algoCube = AlgoCube();
+    algoCube.initCube();
+    algoCube.createRandomCube();
+    vector<int> randomizer = algoCube.getRandomizeCubeMoves();
+    vector<int> solverMoves = algoCube.getMoves();
     // createAnim(shaderProgram, anim2);
 
-    while (!glfwWindowShouldClose(myWindow)) {
-        if (vecCounter < (int) moves.size()) {
-            move = moves.at(vecCounter);
-        }
+    vector<int> moves = randomizer;
 
-        // if (key_move != -1) {
-        //     move = key_move;
-        // }
+    cout << "randomizer: " << randomizer.size() << endl;
+    cout << "solver: " << solverMoves.size() << endl;
+
+    while (!glfwWindowShouldClose(myWindow)) {
 
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for(int i = 0; i < arraySize; i+=1) {   //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE!
+        if (vecCounter < (int) moves.size()) {
+            move = moves.at(vecCounter);
+        } else if(vecCounter == (int)moves.size()) {
+            if(solver == false) {
+                moves = solverMoves;
+                vecCounter = 0;
+                solver = true;
+                move = moves.at(vecCounter);
+            } else if(vecCounter == (int) moves.size()){
+                move == -1;
+                vecCounter++;
+            }
+        }
+
+        cout << "cnt: " << vecCounter << endl;
+        cout << "move: " << move << endl;
+        for(int i = 0; i < arraySize; i+=1) {  //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE!
+            
             glBindVertexArray(myVAO[i]);
             //glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
-
+            
             if(move == 0) {
-                myAnim = spinX0(myAnim, -1.0, i);
-                myAnim = spinX1(myAnim, -1.0, i);
-                myAnim = spinX2(myAnim, -1.0, i);
-                animArray[i] = myAnim;
-            }
-            if(move == 6) {
-                myAnim = spinX0(myAnim, -1.0, i);
+                moves.insert(moves.begin()+vecCounter, 6);  
+                moves.insert(moves.begin()+vecCounter + 1, 7);  
+                moves.insert(moves.begin()+vecCounter + 2, 8);
+                moves.erase(moves.begin()+vecCounter + 3);
+                // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 1) {
+                moves.insert(moves.begin()+vecCounter, 9);  
+                moves.insert(moves.begin()+vecCounter + 1, 10);  
+                moves.insert(moves.begin()+vecCounter + 2, 11);
+                moves.erase(moves.begin()+vecCounter + 3); 
+                // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 2) {
+                moves.insert(moves.begin()+vecCounter, 12);  
+                moves.insert(moves.begin()+vecCounter + 1, 13);  
+                moves.insert(moves.begin()+vecCounter + 2, 14);
+                moves.erase(moves.begin()+vecCounter +3); 
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 3) {
+                moves.insert(moves.begin()+vecCounter, 15);  
+                moves.insert(moves.begin()+vecCounter + 1, 16);  
+                moves.insert(moves.begin()+vecCounter + 2, 17);
+                moves.erase(moves.begin()+vecCounter +3); 
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 4) {
+                moves.insert(moves.begin()+vecCounter, 21);  
+                moves.insert(moves.begin()+vecCounter + 1, 22);  
+                moves.insert(moves.begin()+vecCounter + 2, 23);
+                moves.erase(moves.begin()+vecCounter +3); 
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 5) {
+                moves.insert(moves.begin()+vecCounter, 18);  
+                moves.insert(moves.begin()+vecCounter + 1, 19);  
+                moves.insert(moves.begin()+vecCounter + 2, 20);
+                moves.erase(moves.begin()+vecCounter +3); 
+                nrRotations = 90*9;
+                vecCounter --;
+                break;
+            } else if(move == 6) {
+                myAnim = spinX0(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 7) {
-                myAnim = spinX1(myAnim, -1.0, i);
+                myAnim = spinX1(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 8) {
-                myAnim = spinX2(myAnim, -1.0, i);
+                myAnim = spinX2(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             }else if(move == 9) {
-                myAnim = spinX0(myAnim, 1.0, i);
+                myAnim = spinX0(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 10) {
-                myAnim = spinX1(myAnim, 1.0, i);
+                myAnim = spinX1(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 11) {
-                myAnim = spinX2(myAnim, 1.0, i);
+                myAnim = spinX2(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 12) {
-                myAnim = spinZ0(myAnim, -1.0, i);
+                myAnim = spinZ0(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 13) {
-                myAnim = spinZ1(myAnim, -1.0, i);
+                myAnim = spinZ1(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 14) {
-                myAnim = spinZ2(myAnim, -1.0, i);
+                myAnim = spinZ2(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 15) {
-                myAnim = spinZ0(myAnim, 1.0, i);
+                myAnim = spinZ0(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 16) {
-                myAnim = spinZ1(myAnim, 1.0, i);
+                myAnim = spinZ1(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 17) {
-                myAnim = spinZ2(myAnim, 1.0, i);
+                myAnim = spinZ2(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 18) {
-                myAnim = spinY0(myAnim, -1.0, i);
+                myAnim = spinY0(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 19) {
-                myAnim = spinY1(myAnim, -1.0, i);
+                myAnim = spinY1(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 20) {
-                myAnim = spinY2(myAnim, -1.0, i);
+                myAnim = spinY2(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 21) {
-                myAnim = spinY0(myAnim, 1.0, i);
+                myAnim = spinY0(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 22) {
-                myAnim = spinY1(myAnim, 1.0, i);
+                myAnim = spinY1(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 23) {
-                myAnim = spinY2(myAnim, 1.0, i);
+                myAnim = spinY2(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             }
             // printf("/-----------------------------------------/ \n");
@@ -1971,17 +2017,12 @@ int main()
             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(myAnim));
             glDrawArrays(GL_TRIANGLES, 0, 6*36);
         }
-        // printCube(vtxArray[1]);
-        // printf("/-----------------------------------------/ \n");
-        // printCube(vtxArray[2]);
-        // printf("/-----------------------------------------/ \n");
-        // break;
-        // move ++;
+
         if(nrRotations == 90*9) {
+            // cout << "here" << endl;
             changeCubePositions(move);
             nrRotations = 0;
             vecCounter += 1;
-            numCalculated = 0;
             // printAxisArray();
             key_move = -1;
         } 
