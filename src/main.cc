@@ -317,7 +317,7 @@ static glm::vec3 calcAxis(int i, glm::vec3 axis, int direction) {
            return axis;
         }
     }
-
+    return axis;
 }
 
 static void setAxis(int i, glm::vec3 axis, int direction) {
@@ -995,12 +995,17 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 }
 
-glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot) {
+glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans) {
     float angle = 1.0f * orientation;
+    
+    if(trans == true) {
+        anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
+        anim = glm::rotate(anim, glm::radians(angle), rot);
+        anim = glm::translate(anim, -(glm::vec3(0.0f, 0.0f, -2.1f)) );
+    } else {
+        anim = glm::rotate(anim, glm::radians(angle), rot);
+    }
 
-    //anim = glm::translate(anim, glm::vec3(-4.2f, 0.0f, 0.0f) );
-    anim = glm::rotate(anim, glm::radians(angle), rot);
-    //anim = glm::translate(anim, -(glm::vec3(-4.2f, 0.0f, 0.0f)) );
 
     return anim;
 }
@@ -1200,7 +1205,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
-    bool trans = false;
+    bool trans = true;
 
     if(i == positionArray[0][0][0] || i == positionArray[1][0][0] || i == positionArray[2][0][0]
         || i == positionArray[0][0][1] || i == positionArray[1][0][1] || i == positionArray[2][0][1]
@@ -1236,12 +1241,12 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i) {
             }
         }
 
-        if (i == positionArray[1][0][0] || i == positionArray[1][0][1] || i == positionArray[1][0][2]) {
-          trans = true;
+        if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
         }
 
         // cout << sign << endl;
-        anim = rotZ(anim, orientation*sign, rot);
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1256,6 +1261,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
+    bool trans = true;
 
     if(i == positionArray[0][1][0] || i == positionArray[1][1][0] || i == positionArray[2][1][0]
         || i == positionArray[0][1][1] || i == positionArray[1][1][1] || i == positionArray[2][1][1]
@@ -1285,7 +1291,12 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i) {
 
             }
         }
-        anim = rotZ(anim, orientation*sign, rot);
+
+         if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
+        }
+        
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1300,6 +1311,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
+    bool trans = true;
 
     if(i == positionArray[0][2][0] || i == positionArray[1][2][0] || i == positionArray[2][2][0]
         || i == positionArray[0][2][1] || i == positionArray[1][2][1] || i == positionArray[2][2][1]
@@ -1331,7 +1343,10 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i) {
             }
         }
 
-        anim = rotZ(anim, orientation*sign, rot);
+        if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+          trans = false;
+        }
+        anim = rotZ(anim, orientation*sign, rot, trans);
         // cout << nrRotations << endl;
         nrRotations +=1;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1818,7 +1833,8 @@ int main()
     nrRotations = 0;
 
     // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
-    std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
+    // std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
+    std::vector<int> moves {6,7, 23, 8,12, 0};
     int move = 0;
     array<glm::mat4,27> animArray;
 
@@ -1830,6 +1846,9 @@ int main()
     initPositionArray();
     initAxisArray();
     // createAnim(shaderProgram, anim2);
+
+    cout << glGetString(GL_VERSION) << endl;
+
     while (!glfwWindowShouldClose(myWindow)) {
         if (vecCounter < (int) moves.size()) {
             move = moves.at(vecCounter);
