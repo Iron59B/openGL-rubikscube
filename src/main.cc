@@ -1156,7 +1156,7 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     return anim;
 }
 
-glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy == true) {
+glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
@@ -1278,7 +1278,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     return anim;
 }
 
-glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy == true) {
+glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign;
@@ -1362,7 +1362,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
 
             sign = getOrientationFromAxis(i, rot, RIGHT_Z);
 
-            if(nrRotations >= 90*9-9 || fancy == flase) {
+            if(nrRotations >= 90*9-9 || fancy == false) {
                setAxis(i,rot, RIGHT_Z);
 
             }
@@ -1384,7 +1384,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     return anim;
 }
 
-glm::mat4 spinY2(glm::mat4 anim, float orientation, int i, bool fancy == true) {
+glm::mat4 spinY2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign = 0;
@@ -1484,7 +1484,7 @@ glm::mat4 spinY1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     return anim;
 }
 
-glm::mat4 spinY0(glm::mat4 anim, float orientation, int i) {
+glm::mat4 spinY0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
     glm::vec3 rot;
     glm::vec3 new_rot;
     int sign = 0;
@@ -1500,7 +1500,7 @@ glm::mat4 spinY0(glm::mat4 anim, float orientation, int i) {
 
             sign = getOrientationFromAxis(i, rot, LEFT_Y);
 
-            if(nrRotations >= 90*9-9) {
+            if(nrRotations >= 90*9-9 || fancy == false) {
                setAxis(i, rot, LEFT_Y);
             //    if(i == BOTTOM_LEFT)
             //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
@@ -1513,13 +1513,13 @@ glm::mat4 spinY0(glm::mat4 anim, float orientation, int i) {
 
          sign = getOrientationFromAxis(i, rot, RIGHT_Y);
 
-         if(nrRotations >= 90*9-9) {
+         if(nrRotations >= 90*9-9 || fancy == false) {
             setAxis(i, rot, RIGHT_Y);
          //    if(i == BOTTOM_LEFT)
          //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
          }
         }
-        anim = rotY(anim, orientation*sign, rot);
+        anim = rotY(anim, orientation*sign, rot, fancy);
         // cout << nrRotations << endl;
         if(fancy == true) {
             nrRotations +=1;
