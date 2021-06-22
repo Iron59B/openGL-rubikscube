@@ -1854,8 +1854,18 @@ int test() {
     AlgoCube cube = AlgoCube();
 
     cube.initCube();
-    cube.createRandomCube();
+    //cube.createRandomCube();
 
+    cube.spinLayerDown90AlongX(2);
+
+    cube.spinLayerLeft90AlongY(1);
+    cube.spinLayerLeft90AlongY(1);
+
+    cube.spinLayerLeft90AlongY(2);
+    cube.spinLayerLeft90AlongY(2);
+    cube.spinLayerLeft90AlongY(2);
+
+    // cube fails to solve this
 
     cube.solveRubiksCube();
     cube.printWholeCube();
@@ -1863,15 +1873,15 @@ int test() {
     cout << "Nr Moves: " << cube.getRandomizeCubeMoves().size() << endl;
     cout << "Nr Moves: " << cube.getMoves().size() << endl;
 
-    cout << "First random Move: " << cube.getRandomizeCubeMoves().at(0) << endl;
-    cout << "Second random Move: " << cube.getRandomizeCubeMoves().at(1) << endl;
-    cout << "Third random Move: " << cube.getRandomizeCubeMoves().at(2) << endl;
-    cout << "Fourth random Move: " << cube.getRandomizeCubeMoves().at(3) << endl;
+    for (unsigned i = 0; i < cube.getRandomizeCubeMoves().size(); i++) {
+        cout << "Random " << i << ": " << cube.getRandomizeCubeMoves().at(i) << endl;
+    }
 
-    cout << "First Move: " << cube.getMoves().at(0) << endl;
-    cout << "Second Move: " << cube.getMoves().at(1) << endl;
-    cout << "Third Move: " << cube.getMoves().at(2) << endl;
-    cout << "Fourth Move: " << cube.getMoves().at(3) << endl;
+    cout << "----------------------------------------------------\n----------------------------------------------------" << endl;
+
+    for (unsigned i = 0; i < cube.getMoves().size(); i++) {
+        cout << "Solver Move " << i << ": " << cube.getMoves().at(i) << endl;
+    }
 
     return 0;
 }
