@@ -36,26 +36,6 @@ int TOP_RIGHT = 6;
 int BOTTOM_LEFT = 7;
 int BOTTOM_RIGHT = 8;
 
-static int MIDDLE_MIDDLE = MIDDLE+9; //+0 -> Front, +9 -> Middle, +18 -> Back
-static int LEFT_MIDDLE = LEFT+9;
-static int RIGHT_MIDDLE = RIGHT+9;
-static int TOP_MIDDLE = TOP+9;
-static int BOTTOM_MIDDLE = BOTTOM+9;
-static int TOP_LEFT_MIDDLE = TOP_LEFT+9;
-static int TOP_RIGHT_MIDDLE = TOP_RIGHT+9;
-static int BOTTOM_LEFT_MIDDLE = BOTTOM_LEFT+9;
-static int BOTTOM_RIGHT_MIDDLE = BOTTOM_RIGHT+9;
-
-static int MIDDLE_BACK = MIDDLE+18; //+0 -> Front, +9 -> Middle, +18 -> Back
-static int LEFT_BACK = LEFT+18;
-static int RIGHT_BACK = RIGHT+18;
-static int TOP_BACK = TOP+18;
-static int BOTTOM_BACK = BOTTOM+18;
-static int TOP_LEFT_BACK = TOP_LEFT+18;
-static int TOP_RIGHT_BACK = TOP_RIGHT+18;
-static int BOTTOM_LEFT_BACK = BOTTOM_LEFT+18;
-static int BOTTOM_RIGHT_BACK = BOTTOM_RIGHT+18;
-
 const int AXIS_UP = 1;
 const int AXIS_DOWN = -1;
 const int AXIS_LEFT = 2;
@@ -70,16 +50,20 @@ const int RIGHT_Y = -2;
 const int LEFT_Z = 3;
 const int RIGHT_Z = -3;
 
-const int X_AXIS = 1;
-const int Y_AXIS = 2;
-const int Z_AXIS = 3;
-// const int X_AXIS_NEG = 3;
-// const int Y_AXIS_NEG = 4;
-// const int Z_AXIS_NEG = 5;
-
+static glm::vec3 position = glm::vec3(4.0f, 4.0f, 6.0f);
+static GLfloat theta=0, phi=0;
+static GLfloat x_pos_old, y_pos_old;
+static GLfloat fov = 100.0f;
 static int nrRotations = 0;
-static int key_move = -1;
 static bool s_clicked = false;
+static bool r_clicked = false;
+static int key_row = -1;
+static int key_axis = -1;
+static bool rotating = false;
+GLfloat deltaTime = 0;
+static int speed = 30;
+static bool cam_move = false;
+static bool solver = true;
 
 static GLint uniformAnim;
 static array<array<GLfloat,6*36>,27> vtxArray;
@@ -560,24 +544,149 @@ static void keyCallback(GLFWwindow* myWindow, int key, int scanCode,
         glfwSetWindowShouldClose(myWindow, GL_TRUE);
     }
 
-    if ((key == GLFW_KEY_S) && action == GLFW_PRESS) {
+    if ((key == GLFW_KEY_S) && action == GLFW_PRESS && r_clicked == true) {
       s_clicked = true;
+    } else if ((key == GLFW_KEY_R) && action == GLFW_PRESS) {
+      solver = false;
+      r_clicked = true;
     }
+
+    if (rotating == true)
+      cout << "wait until current roation is finished!" << endl;
+
+    if (rotating == false) {
+        if ((key == GLFW_KEY_X) && action == GLFW_PRESS) {
+            key_axis = 0;
+            cout << "X" << endl;
+        } else if ((key == GLFW_KEY_Z) && action == GLFW_PRESS) {
+            cout << "Y" << endl;
+            key_axis = 1;
+        } else if ((key == GLFW_KEY_C) && action == GLFW_PRESS) {
+            cout << "Z" << endl;
+            key_axis = 2;
+        } else if ((key == GLFW_KEY_1) && action == GLFW_PRESS) {
+            cout << "1.Row Right" << endl;
+            key_row = 0;
+        } else if ((key == GLFW_KEY_2) && action == GLFW_PRESS) {
+            cout << "2.Row Right" << endl;
+            key_row = 1;
+        } else if ((key == GLFW_KEY_3) && action == GLFW_PRESS) {
+            cout << "3.Row Right" << endl;
+            key_row = 2;
+        } else if ((key == GLFW_KEY_4) && action == GLFW_PRESS) {
+            cout << "1.Row Left" << endl;
+            key_row = 3;
+        } else if ((key == GLFW_KEY_5) && action == GLFW_PRESS) {
+            cout << "2.Row Left" << endl;
+            key_row = 4;
+        } else if ((key == GLFW_KEY_6) && action == GLFW_PRESS) {
+            cout << "3.Row Left" << endl;
+            key_row = 5;
+        }
+    }
+}
+
+static int getMove() {
+    if(key_row != -1 && key_axis != -1) {
+        if (key_axis == 0) {
+            if (key_row == 0) {
+                return 6;
+            } else if (key_row == 1) {
+                return 7;
+            } else if (key_row == 2) {
+                return 8;
+            } else if (key_row == 3) {
+                return 9;
+            } else if (key_row == 4) {
+                return 10;
+            } else if (key_row == 5) {
+                return 11;
+            }
+          } else if (key_axis == 2){
+              if (key_row == 0) {
+                  return 12;
+              } else if (key_row == 1) {
+                  return 13;
+              } else if (key_row == 2) {
+                  return 14;
+              } else if (key_row == 3) {
+                  return 15;
+              } else if (key_row == 4) {
+                  return 16;
+              } else if (key_row == 5) {
+                  return 17;
+              }
+          } else if (key_axis == 1){
+              if (key_row == 0) {
+                  return 18;
+              } else if (key_row == 1) {
+                  return 19;
+              } else if (key_row == 2) {
+                  return 20;
+              } else if (key_row == 3) {
+                  return 21;
+              } else if (key_row == 4) {
+                  return 22;
+              } else if (key_row == 5) {
+                  return 23;
+              }
+        }
+    }
+    return -1;
 }
 
 static void cursorPosCallBack (GLFWwindow* myWindow, double x_pos, double y_pos)
 {
-    printf("Mouse is at (%6.1f, %6.1f) \n", x_pos, y_pos);
+  if(cam_move) {
+      x_pos_old = x_pos;
+      y_pos_old = y_pos;
+      // printf("Mouse is at (%6.1f, %6.1f) \n", x_pos, y_pos);
+  }
 }
 
 static void mouseButtonCallBack(GLFWwindow* myWindow, int button, int action, int mods) {
-    if((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS)) {
-        double x_pos, y_pos;
-        glfwGetCursorPos(myWindow, &x_pos, &y_pos);
-        printf("Left mouse button pressed at (%6.1f, %6.1f) \n", x_pos, y_pos);
-    }
+  if((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS)) {
+      double x_pos, y_pos;
+      cam_move = true;
+      glfwGetCursorPos(myWindow, &x_pos, &y_pos);
+      x_pos_old = x_pos;
+      y_pos_old = y_pos;
+//        printf("Left mouse button pressed at (%6.1f, %6.1f) \n", x_pos, y_pos);
+  } else if((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_RELEASE)) {
+      cam_move = false;
+//        printf("Left mouse button released \n");
+  }
 }
 
+void scrollCallback(GLFWwindow* mywindow, double xoffset, double yoffset)
+{
+    if (fov >= 1.0f && fov <= 100.0f)
+        fov -= yoffset;
+    if (fov <= 1.0f)
+        fov = 1.0f;
+    if (fov >= 100.0f)
+        fov = 100.0f;
+}
+
+void lookAtCallBack(GLFWwindow* myWindow)
+{
+    GLfloat radius = 10.0f;
+    GLfloat tmp_x, tmp_y, tmp_z;
+    if (cam_move) {
+        theta += (800/2 - x_pos_old) * 0.0001f;
+        phi += (600/2 - y_pos_old) * 0.00005f;
+
+        tmp_x = radius*cos(phi)*sin(theta);
+        tmp_y = radius*sin(phi);
+        tmp_z = radius*cos(theta)*cos(phi);
+
+        position.x = tmp_x;
+        position.y = tmp_y;
+        position.z = tmp_z;
+
+        // cout << position.x << ", " << position.y << ", " << position.z << endl;
+    }
+}
 
 bool checkShaderCompileStatus(GLuint shaderID)
 {
@@ -610,79 +719,7 @@ bool checkShaderProgramLinkStatus(GLuint programID)
     return true;
 }
 
-glm::vec3* getDirectionRightUp(GLFWwindow* myWindow, glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngle, GLfloat initialFoV, GLfloat speed, GLfloat mouseSpeed, GLfloat deltaTime)
-{
-    static glm::vec3 look[3];
-    double x_pos, y_pos;
-
-    glfwGetCursorPos(myWindow, &x_pos, &y_pos);
-    //glfwSetCursorPos(myWindow, 800/2, 600/2);
-
-    horizontalAngle += mouseSpeed * deltaTime * float(800/2 - x_pos);
-    verticalAngle   += mouseSpeed * deltaTime * float(600/2 - y_pos);
-
-    glm::vec3 direction(
-        cos(verticalAngle) * sin(horizontalAngle),
-        sin(verticalAngle),
-        cos(verticalAngle) * cos(horizontalAngle)
-    );
-
-    glm::vec3 right = glm::vec3(
-        sin(horizontalAngle - 3.14f/2.0f),
-        0,
-        cos(horizontalAngle - 3.14f/2.0f)
-    );
-
-    glm::vec3 up = glm::cross(right, direction);
-
-    if (glfwGetKey(myWindow, GLFW_KEY_UP) == GLFW_PRESS){
-        position += direction * deltaTime * speed;
-    }
-    // Move backward
-    if (glfwGetKey(myWindow, GLFW_KEY_DOWN) == GLFW_PRESS){
-        position -= direction * deltaTime * speed;
-    }
-    // Strafe right
-    if (glfwGetKey(myWindow, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        position += right * deltaTime * speed;
-    }
-    // Strafe left
-    if (glfwGetKey(myWindow, GLFW_KEY_LEFT) == GLFW_PRESS){
-        position -= right * deltaTime * speed;
-    }
-
-    //float FoV = initialFoV - 5 * glfwGetMouseWheel(myWindow);
-    look[0] = direction;
-    look[1] = right;
-    look[2] = up;
-
-    return look;
-}
-
 void changeCubePositions(int move) {
-  // int tmp_top = TOP;
-  // int tmp_topleft = TOP_LEFT;
-  // int tmp_topright = TOP_RIGHT;
-  //
-  // if (direction == 1 && row == 0) {
-  //
-  //   TOP_RIGHT = BOTTOM_RIGHT;
-  //   std::cout << "TOPRIGHT: " << TOP_RIGHT << std::endl;
-  //   TOP_LEFT = tmp_topright;
-  //   std::cout << "TOPLEFT: " << TOP_LEFT << std::endl;
-  //   TOP = RIGHT;
-  //   std::cout << "TOP: " << TOP << std::endl;
-  //   BOTTOM_RIGHT = BOTTOM_LEFT;
-  //   std::cout << "BOTTOMRIGHT: " << BOTTOM_RIGHT << std::endl;
-  //   BOTTOM_LEFT = tmp_topleft;
-  //   std::cout << "BOTTOMLEFT: " << BOTTOM_LEFT << std::endl;
-  //   RIGHT = BOTTOM;
-  //   std::cout << "RIGHT: " << RIGHT << std::endl;
-  //   BOTTOM = LEFT;
-  //   std::cout << "BOTTOM: " << BOTTOM << std::endl;
-  //   LEFT = tmp_top;
-  //   std::cout << "LEFT: " << LEFT << std::endl;
-  // }
   unsigned x, y, z;
   int tmp;
 
@@ -989,7 +1026,8 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
 
 glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans, bool fancy) {
     float angle = 1.0f * orientation;
-      if(fancy == false) {
+    // float angle = 1.0f * deltaTime*speed * orientation;
+    if(fancy == false) {
         angle = 90.0f * orientation;
     }
     if(trans == true) {
@@ -1006,6 +1044,7 @@ glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans, boo
 
 glm::mat4 rotX(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy) {
     float angle = 1.0f * orientation;
+    // float angle = 1.0f * deltaTime*speed * orientation;
     if(fancy == false) {
         angle = 90.0f * orientation;
     }
@@ -1019,7 +1058,8 @@ glm::mat4 rotX(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy) {
 
 glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy) {
     float angle = 1.0f * orientation;
-  if(fancy == false) {
+    // float angle = 1.0f * deltaTime*speed * orientation;
+    if(fancy == false) {
         angle = 90.0f * orientation;
     }
     anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, -4.2f));
@@ -1764,24 +1804,12 @@ int main()
 
     /* define a view transformation */
 
-    // position
-    glm::vec3 position = glm::vec3( 0, 0, 5 );
-    // horizontal angle : toward -Z
-    GLfloat horizontalAngle = 3.14f;
-    // vertical angle : 0, look at the horizon
-    GLfloat verticalAngle = 0.0f;
-    // Initial Field of View
-    GLfloat initialFoV = 45.0f;
-
-    GLfloat speed = 3.0f; // 3 units / second
-    GLfloat mouseSpeed = 0.005f;
     GLfloat lastTime = 0;
-    glm::vec3* look;
-    GLfloat deltaTime = 0;
+    GLfloat currentTime = 0;
 
 
     glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
-                                 glm::vec3(0.0f, 0.0f, 0.0f),
+                                 glm::vec3(0.0f, 0.0f, -2.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
 
     //glm::mat4 view = glm::lookAt(look[0], look[1], look[2]);
@@ -1826,8 +1854,9 @@ int main()
 
     /* register callback functions */
     glfwSetKeyCallback(myWindow, keyCallback);
-    //glfwSetCursorPosCallback(myWindow, cursorPosCallBack);
+    glfwSetCursorPosCallback(myWindow, cursorPosCallBack);
     glfwSetMouseButtonCallback(myWindow, mouseButtonCallBack);
+    glfwSetScrollCallback(myWindow, scrollCallback);
 
     /*                                                                        */
     /* event-handling and rendering loop                                      */
@@ -1837,10 +1866,9 @@ int main()
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    //std::vector<int> moves { 0, 1, 2, 15, 2, 1, 0, -1};
-    // std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, -1};
-    // std::vector<int> solverMoves {0,2,4,1,3,5,15,22,2,5,0, -1};
-    int move = 0;
+    // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
+    //std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
+    int move = -1;
     array<glm::mat4,27> animArray;
 
     for(int i = 0; i < (int) animArray.size(); i++) {
@@ -1848,7 +1876,6 @@ int main()
     }
 
     int vecCounter = 0;
-    bool solver = false;
 
     initPositionArray();
     initAxisArray();
@@ -1871,7 +1898,7 @@ int main()
     //vector<int> solverMoves = {-1};
     // createAnim(shaderProgram, anim2);
 
-    vector<int> moves = randomizer;
+    vector<int> moves = {-1};
 
     // cout << "randomizer: " << endl;
     // for (int i = 0; i < randomizer.size(); i++) {
@@ -1888,25 +1915,41 @@ int main()
 
     while (!glfwWindowShouldClose(myWindow)) {
 
+        if (r_clicked == false) {
+          if (key_row != -1 && key_axis != -1) {
+             move = getMove();
+             if (move != -1)
+               rotating = true;
+           } else if (key_row != -1 && key_axis == -1) {
+               key_row = -1;
+               cout << "please choose a axis first!" << endl;
+           }
+        }
         /* set the window background to black */
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (vecCounter < (int) moves.size()) {
-            move = moves.at(vecCounter);
+        if (r_clicked == true) {
+          if (move == -1 && moves.at(0) == -1)
+            moves = randomizer;
         }
-        else if(vecCounter == (int)moves.size()) {
-            if(solver == false && s_clicked == true) {
-                moves = solverMoves;
-                vecCounter = 0;
-                solver = true;
-                move = moves.at(vecCounter);
-            } else if(solver == false && s_clicked == false){
-                move = -1;
-            } else {
-              move = -1;
-              vecCounter++;
-            }
+        if (moves.at(0) != -1) {
+          if (vecCounter < (int) moves.size()) {
+              move = moves.at(vecCounter);
+          }
+          else if(vecCounter == (int)moves.size()) {
+              if(solver == false && s_clicked == true) {
+                  moves = solverMoves;
+                  vecCounter = 0;
+                  solver = true;
+                  move = moves.at(vecCounter);
+              } else if(solver == false && s_clicked == false){
+                  move = -1;
+              } else {
+                  move = -1;
+                  vecCounter++;
+              }
+          }
         }
 
         // cout << "cnt: " << vecCounter << endl;
@@ -1918,6 +1961,7 @@ int main()
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
+            rotating = true;
 
             if(move == 0) {
                 moves.insert(moves.begin()+vecCounter, 6);
@@ -2023,6 +2067,8 @@ int main()
             } else if(move == 23) {
                 myAnim = spinY2(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
+            } else {
+              rotating = false;
             }
             // printf("/-----------------------------------------/ \n");
 
@@ -2040,17 +2086,25 @@ int main()
             nrRotations = 0;
             vecCounter += 1;
             // printAxisArray();
-            key_move = -1;
             if (vecCounter % 10 == 0)
               cout << "cnt: " << vecCounter << endl;
+            key_row = -1;
+            key_axis = -1;
+            move = -1;
+            rotating = false;
         }
 
+        currentTime = glfwGetTime();
+        deltaTime = GLfloat(currentTime - lastTime);
+        lastTime = currentTime;
 
-        deltaTime = GLfloat(glfwGetTime() - lastTime);
-        lastTime = deltaTime;
+        lookAtCallBack(myWindow);
+        view = glm::lookAt(position, glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
+        // printf("%f, %f, %f \n", position.x, position.y, position.z);
 
-        look = getDirectionRightUp(myWindow, position, horizontalAngle, verticalAngle, initialFoV, speed, mouseSpeed, deltaTime);
-        view = glm::lookAt(look[0], look[1], look[2]);
+        proj = glm::perspective(glm::radians(fov), 4.0f/3.0f, 0.1f, 40.0f);
+        glUniformMatrix4fv(uniformProj, 1, GL_FALSE, glm::value_ptr(proj));
 
         /* Swap buffers */
         glfwSwapBuffers(myWindow);
