@@ -1807,32 +1807,32 @@ void AlgoCube::createRandomCube() {
         switch(randomMove) {
             case 0:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerUp90AlongX(randomLayer, false, 1);
+                    spinLayerUp90AlongX(randomLayer, true, 1);
                 cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 1:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerDown90AlongX(randomLayer, false, 1);
+                    spinLayerDown90AlongX(randomLayer, true, 1);
                 cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 2:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongY(randomLayer, false, 1);
+                    spinLayerRight90AlongY(randomLayer, true, 1);
                 cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 3:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongY(randomLayer, false, 1);
+                    spinLayerLeft90AlongY(randomLayer, true, 1);
                 cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 4:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongZ(randomLayer, false, 1);
+                    spinLayerRight90AlongZ(randomLayer, true, 1);
                 cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 5:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongZ(randomLayer, false, 1);
+                    spinLayerLeft90AlongZ(randomLayer, true, 1);
                 cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
         }
