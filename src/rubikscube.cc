@@ -387,7 +387,7 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool wholeCube, int forRando
     cubePieces[x][2][1] = cubePieces[x][1][2];
     cubePieces[x][1][2] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (xLayer) {
             case 0:
                 moves.push_back(6);
@@ -444,7 +444,7 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool wholeCube, int forRan
     cubePieces[x][1][2] = cubePieces[x][2][1];
     cubePieces[x][2][1] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (xLayer) {
             case 0:
                 moves.push_back(9);
@@ -501,7 +501,7 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool wholeCube, int forRa
     cubePieces[2][y][1] = cubePieces[1][y][2];
     cubePieces[1][y][2] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (yLayer) {
             case 0:
                 moves.push_back(12);
@@ -557,7 +557,7 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube, int forRan
     cubePieces[1][y][2] = cubePieces[2][y][1];
     cubePieces[2][y][1] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (yLayer) {
             case 0:
                 moves.push_back(15);
@@ -614,7 +614,7 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube, int forRa
     cubePieces[2][1][z] = cubePieces[1][2][z];
     cubePieces[1][2][z] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (zLayer) {
             case 0:
                 moves.push_back(18);
@@ -671,7 +671,7 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube, int forRan
     cubePieces[1][2][z] = cubePieces[2][1][z];
     cubePieces[2][1][z] = tmp;
 
-    if (wholeCube == false) {
+    if (wholeCube == false && forRandomize == 0) {
         switch (zLayer) {
             case 0:
                 moves.push_back(21);
