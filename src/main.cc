@@ -79,6 +79,7 @@ const int Z_AXIS = 3;
 
 static int nrRotations = 0;
 static int key_move = -1;
+static bool s_clicked = false;
 
 static GLint uniformAnim;
 static array<array<GLfloat,6*36>,27> vtxArray;
@@ -557,19 +558,10 @@ static void keyCallback(GLFWwindow* myWindow, int key, int scanCode,
         (action == GLFW_PRESS)){
     /* close window upon hitting the escape key or Q/q */
         glfwSetWindowShouldClose(myWindow, GL_TRUE);
+    }
 
-    } else if ((key == GLFW_KEY_A) && action == GLFW_PRESS) {
-        key_move = 6;
-    } else if ((key == GLFW_KEY_S) && action == GLFW_PRESS) {
-        key_move = 7;
-    } else if ((key == GLFW_KEY_D) && action == GLFW_PRESS) {
-        key_move = 8;
-    } else if ((key == GLFW_KEY_F) && action == GLFW_PRESS) {
-        key_move = 9;
-    } else if ((key == GLFW_KEY_G) && action == GLFW_PRESS) {
-        key_move = 10;
-    } else if ((key == GLFW_KEY_H) && action == GLFW_PRESS) {
-        key_move = 11;
+    if ((key == GLFW_KEY_S) && action == GLFW_PRESS) {
+      s_clicked = true;
     }
 }
 
@@ -1863,12 +1855,12 @@ int main()
 
     AlgoCube algoCube = AlgoCube();
     algoCube.initCube();
-    // algoCube.createRandomCube();
-    algoCube.spinLayerDown90AlongX(0, 1);
-    algoCube.spinLayerDown90AlongX(2, 1);
-    algoCube.spinLayerRight90AlongZ(0, 1);
-    algoCube.spinLayerUp90AlongX(2, 1);
-    algoCube.spinLayerLeft90AlongY(0, 1);
+    algoCube.createRandomCube();
+    // algoCube.spinLayerDown90AlongX(0, 1);
+    // algoCube.spinLayerDown90AlongX(2, 1);
+    // algoCube.spinLayerRight90AlongZ(0, 1);
+    // algoCube.spinLayerUp90AlongX(2, 1);
+    // algoCube.spinLayerLeft90AlongY(0, 1);
     algoCube.solveRubiksCube();
     vector<int> randomizer = algoCube.getRandomizeCubeMoves();
     vector<int> solverMoves = algoCube.getMoves();
@@ -1881,15 +1873,15 @@ int main()
 
     vector<int> moves = randomizer;
 
-    cout << "randomizer: " << endl;
-    for (int i = 0; i < randomizer.size(); i++) {
-      cout << randomizer.at(i) << ", " << endl;
-    }
-    cout << endl;
-    cout << "solver: " << endl;
-    for (int i = 0; i < solverMoves.size(); i++) {
-      cout << solverMoves.at(i) << ", " << endl;
-    }
+    // cout << "randomizer: " << endl;
+    // for (int i = 0; i < randomizer.size(); i++) {
+    //   cout << randomizer.at(i) << ", " << endl;
+    // }
+    // cout << endl;
+    // cout << "solver: " << endl;
+    // for (int i = 0; i < solverMoves.size(); i++) {
+    //   cout << solverMoves.at(i) << ", " << endl;
+    // }
 
     cout << "randomizer: " << randomizer.size() << endl;
     cout << "solver: " << solverMoves.size() << endl;
@@ -1904,19 +1896,21 @@ int main()
             move = moves.at(vecCounter);
         }
         else if(vecCounter == (int)moves.size()) {
-            if(solver == false) {
+            if(solver == false && s_clicked == true) {
                 moves = solverMoves;
                 vecCounter = 0;
                 solver = true;
                 move = moves.at(vecCounter);
+            } else if(solver == false && s_clicked == false){
+                move = -1;
             } else {
-                move == -1;
-                vecCounter++;
+              move = -1;
+              vecCounter++;
             }
         }
 
-        cout << "cnt: " << vecCounter << endl;
-        cout << "move: " << move << endl;
+        // cout << "cnt: " << vecCounter << endl;
+        // cout << "move: " << move << endl;
         for(int i = 0; i < arraySize; i+=1) {  //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE!
 
             glBindVertexArray(myVAO[i]);
@@ -2047,6 +2041,8 @@ int main()
             vecCounter += 1;
             // printAxisArray();
             key_move = -1;
+            if (vecCounter % 10 == 0)
+              cout << "cnt: " << vecCounter << endl;
         }
 
 
