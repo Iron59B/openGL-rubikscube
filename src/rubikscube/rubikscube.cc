@@ -387,7 +387,7 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool irrelevantMove, int for
     cubePieces[x][2][1] = cubePieces[x][1][2];
     cubePieces[x][1][2] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (xLayer) {
             case 0:
                 moves.push_back(6);
@@ -444,7 +444,7 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool irrelevantMove, int f
     cubePieces[x][1][2] = cubePieces[x][2][1];
     cubePieces[x][2][1] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (xLayer) {
             case 0:
                 moves.push_back(9);
@@ -501,7 +501,7 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool irrelevantMove, int 
     cubePieces[2][y][1] = cubePieces[1][y][2];
     cubePieces[1][y][2] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (yLayer) {
             case 0:
                 moves.push_back(12);
@@ -557,7 +557,7 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool irrelevantMove, int f
     cubePieces[1][y][2] = cubePieces[2][y][1];
     cubePieces[2][y][1] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (yLayer) {
             case 0:
                 moves.push_back(15);
@@ -614,7 +614,7 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool irrelevantMove, int 
     cubePieces[2][1][z] = cubePieces[1][2][z];
     cubePieces[1][2][z] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (zLayer) {
             case 0:
                 moves.push_back(18);
@@ -671,7 +671,7 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool irrelevantMove, int f
     cubePieces[1][2][z] = cubePieces[2][1][z];
     cubePieces[2][1][z] = tmp;
 
-    if (wholeCube == false) {
+    if (irrelevantMove == false) {
         switch (zLayer) {
             case 0:
                 moves.push_back(21);
@@ -1867,6 +1867,11 @@ int test() {
     cout << "Second random Move: " << cube.getRandomizeCubeMoves().at(1) << endl;
     cout << "Third random Move: " << cube.getRandomizeCubeMoves().at(2) << endl;
     cout << "Fourth random Move: " << cube.getRandomizeCubeMoves().at(3) << endl;
+
+    cout << "First Move: " << cube.getMoves().at(0) << endl;
+    cout << "Second Move: " << cube.getMoves().at(1) << endl;
+    cout << "Third Move: " << cube.getMoves().at(2) << endl;
+    cout << "Fourth Move: " << cube.getMoves().at(3) << endl;
 
     return 0;
 }
