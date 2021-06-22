@@ -1863,11 +1863,20 @@ int main()
 
     AlgoCube algoCube = AlgoCube();
     algoCube.initCube();
-    algoCube.createRandomCube();
+    // algoCube.createRandomCube();
+    algoCube.spinLayerDown90AlongX(0, 1);
+    algoCube.spinLayerDown90AlongX(2, 1);
+    algoCube.spinLayerRight90AlongZ(0, 1);
+    algoCube.spinLayerUp90AlongX(2, 1);
+    algoCube.spinLayerLeft90AlongY(0, 1);
     algoCube.solveRubiksCube();
     vector<int> randomizer = algoCube.getRandomizeCubeMoves();
     vector<int> solverMoves = algoCube.getMoves();
-
+    solverMoves.push_back(-1);
+    // vector<int> randomizer = {6, 9};
+    // vector<int> solverMoves = {9, 11, 18, 8, 15,-1};
+    //vector<int> randomizer = {};
+    //vector<int> solverMoves = {-1};
     // createAnim(shaderProgram, anim2);
 
     vector<int> moves = randomizer;
