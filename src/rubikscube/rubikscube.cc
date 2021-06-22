@@ -310,7 +310,7 @@ void AlgoCube::spinUp90AlongX() {
     spinLayerUp90AlongX(1);
     spinLayerUp90AlongX(2);
 
-    moves.push_back(0);
+    //moves.push_back(0);
 }
 
 // spins whole cube down along the x axis
@@ -319,7 +319,7 @@ void AlgoCube::spinDown90AlongX() {
     spinLayerDown90AlongX(1);
     spinLayerDown90AlongX(2);
 
-    moves.push_back(1);
+    //moves.push_back(1);
 }
 
 // spins whole cube to the right along the y axis
@@ -328,7 +328,7 @@ void AlgoCube::spinRight90AlongY() {
     spinLayerRight90AlongY(1);
     spinLayerRight90AlongY(2);
 
-    moves.push_back(2);
+    //moves.push_back(2);
 }
 
 // spins whole cube to the left along the y axis
@@ -337,7 +337,7 @@ void AlgoCube::spinLeft90AlongY() {
     spinLayerLeft90AlongY(1);
     spinLayerLeft90AlongY(2);
 
-    moves.push_back(3);
+    //moves.push_back(3);
 }
 
 // spins whole cube to the right along the z axis
@@ -346,7 +346,7 @@ void AlgoCube::spinRight90AlongZ() {
     spinLayerRight90AlongZ(1);
     spinLayerRight90AlongZ(2);
 
-    moves.push_back(4);
+    //moves.push_back(4);
 }
 
 // spins whole cube to the left along the z axis
@@ -355,7 +355,7 @@ void AlgoCube::spinLeft90AlongZ() {
     spinLayerLeft90AlongZ(1);
     spinLayerLeft90AlongZ(2);
 
-    moves.push_back(5);
+    //moves.push_back(5);
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) up 90 degrees along the x axis
