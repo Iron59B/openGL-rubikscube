@@ -551,6 +551,10 @@ static void keyCallback(GLFWwindow* myWindow, int key, int scanCode,
       r_clicked = true;
     }
 
+    if ((key == GLFW_KEY_SPACE) && action == GLFW_PRESS) {
+      position = glm::vec3(4.0f, 4.0f, 6.0f);
+    }
+
     if (rotating == true)
       cout << "wait until current roation is finished!" << endl;
 
@@ -637,11 +641,11 @@ static int getMove() {
 
 static void cursorPosCallBack (GLFWwindow* myWindow, double x_pos, double y_pos)
 {
-  if(cam_move) {
+    if(cam_move) {
       x_pos_old = x_pos;
       y_pos_old = y_pos;
+    }
       // printf("Mouse is at (%6.1f, %6.1f) \n", x_pos, y_pos);
-  }
 }
 
 static void mouseButtonCallBack(GLFWwindow* myWindow, int button, int action, int mods) {
@@ -651,7 +655,7 @@ static void mouseButtonCallBack(GLFWwindow* myWindow, int button, int action, in
       glfwGetCursorPos(myWindow, &x_pos, &y_pos);
       x_pos_old = x_pos;
       y_pos_old = y_pos;
-//        printf("Left mouse button pressed at (%6.1f, %6.1f) \n", x_pos, y_pos);
+      // printf("Left mouse button pressed at (%6.1f, %6.1f) \n", x_pos, y_pos);
   } else if((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_RELEASE)) {
       cam_move = false;
 //        printf("Left mouse button released \n");
@@ -674,8 +678,7 @@ void lookAtCallBack(GLFWwindow* myWindow)
     GLfloat tmp_x, tmp_y, tmp_z;
     if (cam_move) {
         theta += (800/2 - x_pos_old) * 0.0001f;
-        phi += (600/2 - y_pos_old) * 0.00005f;
-
+        phi += (600/2 - y_pos_old) * 0.00007f;
         tmp_x = radius*cos(phi)*sin(theta);
         tmp_y = radius*sin(phi);
         tmp_z = radius*cos(theta)*cos(phi);
