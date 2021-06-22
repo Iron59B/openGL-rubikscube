@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<vector>
 #include<string>
+#include <array>
 #include "rubikscube.h"
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
@@ -54,6 +55,17 @@ void CubePiece::setColors(string colorstring) {
 
 char CubePiece::getColor(unsigned index) {
     return colors.at(index).getColorChar();
+}
+
+string CubePiece::getColors() {
+    unsigned i;
+    string ret = "";
+
+    for (i = 0; i < colors.size(); i++) {
+        ret = ret + colors.at(i).getColorChar();
+    }
+
+    return ret;
 }
 
 void CubePiece::print() {
@@ -209,9 +221,9 @@ int CubePiece::getPositionOfColor(char color) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-Cube::Cube(){}
+AlgoCube::AlgoCube() {}
 
-Cube::Cube(vector<CubePiece> pieces) {
+AlgoCube::AlgoCube(vector<CubePiece> pieces) {
     unsigned i, x, y, z;
     i = 0;
 
@@ -225,19 +237,34 @@ Cube::Cube(vector<CubePiece> pieces) {
             }
         }
     }
-    countMoves = 0;
 }
 
-unsigned Cube::getNrMoves() {
-    return countMoves;
+vector<int> AlgoCube::getMoves() {
+    return moves;
 }
 
-void Cube::incrementMovesCounter() {
-    countMoves = countMoves + 1;
+vector<int> AlgoCube::getRandomizeCubeMoves() {
+    return randomizeCubeMoves;
+}
+
+void AlgoCube::setPieces(vector<CubePiece> pieces) {
+    unsigned i, x, y, z;
+    i = 0;
+
+    for (z = 0; z < 3; z++) {
+        for (y = 0; y < 3; y++) {
+            for (x = 0; x < 3; x++) {
+                if (i < 27) {
+                    cubePieces[x][y][z] = pieces[i];
+                    i++;
+                }
+            }
+        }
+    }
 }
 
 // prints first (bottom) layer
-void Cube::printFirstLayer() {
+void AlgoCube::printFirstLayer() {
     unsigned i, p;
     string out = "";
 
@@ -249,7 +276,7 @@ void Cube::printFirstLayer() {
     }
 }
 
-void Cube::printWholeCube() {
+void AlgoCube::printWholeCube() {
     unsigned i, p, k;
     string out = "";
 
@@ -278,14 +305,61 @@ void Cube::printWholeCube() {
 
 
 // spins whole cube up along the x axis
-void Cube::spinUp90AlongX() {
+void AlgoCube::spinUp90AlongX() {
     spinLayerUp90AlongX(0);
     spinLayerUp90AlongX(1);
     spinLayerUp90AlongX(2);
+
+    //moves.push_back(0);
+}
+
+// spins whole cube down along the x axis
+void AlgoCube::spinDown90AlongX() {
+    spinLayerDown90AlongX(0);
+    spinLayerDown90AlongX(1);
+    spinLayerDown90AlongX(2);
+
+    //moves.push_back(1);
+}
+
+// spins whole cube to the right along the y axis
+void AlgoCube::spinRight90AlongY() {
+    spinLayerRight90AlongY(0);
+    spinLayerRight90AlongY(1);
+    spinLayerRight90AlongY(2);
+
+    //moves.push_back(2);
+}
+
+// spins whole cube to the left along the y axis
+void AlgoCube::spinLeft90AlongY() {
+    spinLayerLeft90AlongY(0);
+    spinLayerLeft90AlongY(1);
+    spinLayerLeft90AlongY(2);
+
+    //moves.push_back(3);
+}
+
+// spins whole cube to the right along the z axis
+void AlgoCube::spinRight90AlongZ() {
+    spinLayerRight90AlongZ(0);
+    spinLayerRight90AlongZ(1);
+    spinLayerRight90AlongZ(2);
+
+    //moves.push_back(4);
+}
+
+// spins whole cube to the left along the z axis
+void AlgoCube::spinLeft90AlongZ() {
+    spinLayerLeft90AlongZ(0);
+    spinLayerLeft90AlongZ(1);
+    spinLayerLeft90AlongZ(2);
+
+    //moves.push_back(5);
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) up 90 degrees along the x axis
-void Cube::spinLayerUp90AlongX(unsigned xLayer) {
+void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, int forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -312,17 +386,37 @@ void Cube::spinLayerUp90AlongX(unsigned xLayer) {
     cubePieces[x][1][0] = cubePieces[x][2][1];
     cubePieces[x][2][1] = cubePieces[x][1][2];
     cubePieces[x][1][2] = tmp;
-}
 
-// spins whole cube down along the x axis
-void Cube::spinDown90AlongX() {
-    spinLayerDown90AlongX(0);
-    spinLayerDown90AlongX(1);
-    spinLayerDown90AlongX(2);
+    if (forRandomize == 0) {
+        switch (xLayer) {
+            case 0:
+                moves.push_back(6);
+                break;
+            case 1:
+                moves.push_back(7);
+                break;
+            case 2:
+                moves.push_back(8);
+                break;
+        }
+    }
+    else {
+        switch (xLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(6);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(7);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(8);
+                break;
+        }
+    }
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) down 90 degrees along the x axis
-void Cube::spinLayerDown90AlongX(unsigned xLayer) {
+void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, int forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -349,17 +443,37 @@ void Cube::spinLayerDown90AlongX(unsigned xLayer) {
     cubePieces[x][0][1] = cubePieces[x][1][2];
     cubePieces[x][1][2] = cubePieces[x][2][1];
     cubePieces[x][2][1] = tmp;
-}
 
-// spins whole cube to the right along the y axis
-void Cube::spinRight90AlongY() {
-    spinLayerRight90AlongY(0);
-    spinLayerRight90AlongY(1);
-    spinLayerRight90AlongY(2);
+    if (forRandomize == 0) {
+        switch (xLayer) {
+            case 0:
+                moves.push_back(9);
+                break;
+            case 1:
+                moves.push_back(10);
+                break;
+            case 2:
+                moves.push_back(11);
+                break;
+        }
+    }
+    else {
+        switch (xLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(9);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(10);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(11);
+                break;
+        }
+    }
 }
 
 // spins the affected layer 90 degrees to the right along y axis
-void Cube::spinLayerRight90AlongY(unsigned yLayer) {
+void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, int forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -386,15 +500,36 @@ void Cube::spinLayerRight90AlongY(unsigned yLayer) {
     cubePieces[1][y][0] = cubePieces[2][y][1];
     cubePieces[2][y][1] = cubePieces[1][y][2];
     cubePieces[1][y][2] = tmp;
+
+    if (forRandomize == 0) {
+        switch (yLayer) {
+            case 0:
+                moves.push_back(12);
+                break;
+            case 1:
+                moves.push_back(13);
+                break;
+            case 2:
+                moves.push_back(14);
+                break;
+        }
+    }
+    else {
+        switch (yLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(12);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(13);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(14);
+                break;
+        }
+    }
 }
 
-void Cube::spinLeft90AlongY() {
-    spinLayerLeft90AlongY(0);
-    spinLayerLeft90AlongY(1);
-    spinLayerLeft90AlongY(2);
-}
-
-void Cube::spinLayerLeft90AlongY(unsigned yLayer) {
+void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, int forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -421,17 +556,37 @@ void Cube::spinLayerLeft90AlongY(unsigned yLayer) {
     cubePieces[0][y][1] = cubePieces[1][y][2];
     cubePieces[1][y][2] = cubePieces[2][y][1];
     cubePieces[2][y][1] = tmp;
-}
 
-// spins whole cube to the right along the z axis
-void Cube::spinRight90AlongZ() {
-    spinLayerRight90AlongZ(0);
-    spinLayerRight90AlongZ(1);
-    spinLayerRight90AlongZ(2);
+    if (forRandomize == 0) {
+        switch (yLayer) {
+            case 0:
+                moves.push_back(15);
+                break;
+            case 1:
+                moves.push_back(16);
+                break;
+            case 2:
+                moves.push_back(17);
+                break;
+        }
+    }
+    else {
+        switch (yLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(15);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(16);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(17);
+                break;
+        }
+    }
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
-void Cube::spinLayerRight90AlongZ(unsigned zLayer) {
+void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, int forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -458,17 +613,37 @@ void Cube::spinLayerRight90AlongZ(unsigned zLayer) {
     cubePieces[1][0][z] = cubePieces[2][1][z];
     cubePieces[2][1][z] = cubePieces[1][2][z];
     cubePieces[1][2][z] = tmp;
-}
 
-// spins whole cube to the left along the z axis
-void Cube::spinLeft90AlongZ() {
-    spinLayerLeft90AlongZ(0);
-    spinLayerLeft90AlongZ(1);
-    spinLayerLeft90AlongZ(2);
+    if (forRandomize == 0) {
+        switch (zLayer) {
+            case 0:
+                moves.push_back(18);
+                break;
+            case 1:
+                moves.push_back(19);
+                break;
+            case 2:
+                moves.push_back(20);
+                break;
+        }
+    }
+    else {
+        switch (zLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(18);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(19);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(20);
+                break;
+        }
+    }
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the left along z axis
-void Cube::spinLayerLeft90AlongZ(unsigned zLayer) {
+void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -495,6 +670,33 @@ void Cube::spinLayerLeft90AlongZ(unsigned zLayer) {
     cubePieces[0][1][z] = cubePieces[1][2][z];
     cubePieces[1][2][z] = cubePieces[2][1][z];
     cubePieces[2][1][z] = tmp;
+
+    if (forRandomize == 0) {
+        switch (zLayer) {
+            case 0:
+                moves.push_back(21);
+                break;
+            case 1:
+                moves.push_back(22);
+                break;
+            case 2:
+                moves.push_back(23);
+                break;
+        }
+    }
+    else {
+        switch (zLayer) {
+            case 0:
+                randomizeCubeMoves.push_back(21);
+                break;
+            case 1:
+                randomizeCubeMoves.push_back(22);
+                break;
+            case 2:
+                randomizeCubeMoves.push_back(23);
+                break;
+        }
+    }
 }
 
 
@@ -506,7 +708,7 @@ void Cube::spinLayerLeft90AlongZ(unsigned zLayer) {
 /***    	       SOLVE FIRST LAYER            ***/
 
 
-void Cube::buildWhiteFlowerMiddleLayer() {
+void AlgoCube::buildWhiteFlowerMiddleLayer() {
     unsigned x, y, z;
     unsigned counter;
     z = 1;
@@ -518,15 +720,15 @@ void Cube::buildWhiteFlowerMiddleLayer() {
                     while (cubePieces[x][1][2].getColor(0) == 'w' && counter < 4) { // layer can be turned only if target piece is not white
                         if (counter == 4)
                             return;
-                        spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongZ(2);
                         counter++;
                     }
                     if (cubePieces[x][1][2].getColor(0) != 'w') {
                         if (y == 0) { // front y layer
-                            spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+                            spinLayerUp90AlongX(x);
                         }
                         else if (y == 2) { // back y layer
-                            spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
+                            spinLayerDown90AlongX(x);
                         }
                     }
                     else
@@ -537,15 +739,15 @@ void Cube::buildWhiteFlowerMiddleLayer() {
                     while (cubePieces[1][y][2].getColor(1) == 'w' && counter < 4) {
                         if (counter == 4)
                             return;
-                        spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongZ(2);
                         counter++;
                     }
                     if (cubePieces[1][y][2].getColor(1) != 'w') {
                         if (x == 0) { // left x layer
-                            spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongY(y);
                         }
                         else if (x == 2) { // right x layer
-                            spinLayerLeft90AlongY(y); incrementMovesCounter(); //relMove
+                            spinLayerLeft90AlongY(y);
                         }
                     }
                     else
@@ -556,7 +758,7 @@ void Cube::buildWhiteFlowerMiddleLayer() {
     }
 }
 
-void Cube::buildWhiteFlowerBottomLayer() {
+void AlgoCube::buildWhiteFlowerBottomLayer() {
     unsigned x, y, z;
     unsigned counter;
     if (isWhiteFlowerOnTop())
@@ -571,13 +773,13 @@ void Cube::buildWhiteFlowerBottomLayer() {
                         while (cubePieces[x][1][2].getColor(0) == 'w' && counter < 5) {
                             if (counter == 4)
                                 return;
-                            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongZ(2);
                             counter++;
                         }
                         if (cubePieces[x][1][2].getColor(0) != 'w') {
                             // turn the layer 180 degrees and insert piece in opposite side of cube
-                            spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
-                            spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+                            spinLayerUp90AlongX(x);
+                            spinLayerUp90AlongX(x);
                         }
                         else
                             return;
@@ -587,12 +789,12 @@ void Cube::buildWhiteFlowerBottomLayer() {
                         while (cubePieces[x][1][2].getColor(0) == 'w' && counter < 5) {
                             if (counter == 4)
                                 return;
-                            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongZ(2);
                             counter++;
                         }
                         if (cubePieces[x][1][2].getColor(0) != 'w') {
                             spinLayerUp90AlongX(x); // piece gets inserted in top layer in the next loop
-                            incrementMovesCounter(); //relMove
+
                         }
                         else
                             return;
@@ -604,12 +806,12 @@ void Cube::buildWhiteFlowerBottomLayer() {
                         while (cubePieces[1][y][2].getColor(1) == 'w' && counter < 5) {
                             if (counter == 4)
                                 return;
-                            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongZ(2);
                             counter++;
                         }
                         if (cubePieces[1][y][2].getColor(1) != 'w') {
-                            spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
-                            spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongY(y);
+                            spinLayerRight90AlongY(y);
                         }
                         else {
                             return;
@@ -620,12 +822,12 @@ void Cube::buildWhiteFlowerBottomLayer() {
                         while (cubePieces[1][y][2].getColor(1) == 'w' && counter < 5) {
                             if (counter == 4)
                                 return;
-                            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+                            spinLayerRight90AlongZ(2);
                             counter++;
                         }
                         if (cubePieces[1][y][2].getColor(0) != 'w') {
                             spinLayerRight90AlongY(y); // piece gets inserted in top layer in the next loop
-                            incrementMovesCounter(); //relMove
+
                         }
                         else return;
                     }
@@ -635,7 +837,7 @@ void Cube::buildWhiteFlowerBottomLayer() {
     }
 }
 
-void Cube::buildWhiteFlowerTopLayer() {
+void AlgoCube::buildWhiteFlowerTopLayer() {
     unsigned x, y, z;
     if (isWhiteFlowerOnTop())
         return;
@@ -645,12 +847,12 @@ void Cube::buildWhiteFlowerTopLayer() {
             if (cubePieces[x][y][z].isEdgePiece() && cubePieces[x][y][z].edgePieceContainsColor('w')) {
                 if (x == 0 || x == 2) {
                     if (cubePieces[x][y][z].getColor(1) == 'w') {
-                        spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
+                        spinLayerDown90AlongX(x);
                     }
                 }
                 else if (x == 1) {
                     if (cubePieces[x][y][z].getColor(0) == 'w') {
-                        spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongY(y);
                     }
                 }
             }
@@ -658,7 +860,7 @@ void Cube::buildWhiteFlowerTopLayer() {
     }
 }
 
-void Cube::buildWhiteFlower() {
+void AlgoCube::buildWhiteFlower() {
     turnCubeYellowTop();
     unsigned counter = 0;
 
@@ -671,7 +873,7 @@ void Cube::buildWhiteFlower() {
     cout << "white flower built" << endl;
 }
 
-void Cube::buildWhiteCross() {
+void AlgoCube::buildWhiteCross() {
     unsigned x, y, z;
     unsigned counter;
 
@@ -684,18 +886,18 @@ void Cube::buildWhiteCross() {
             for (x = 0; x < 3; x++) {
                 if (cubePieces[x][y][z].isEdgePiece() && x == 1 && cubePieces[x][y][z].isColorOnTopOfEdgePiece('w', x)) {
                     counter = 0;
-                    while (cubePieces[x][y][z].getColor(0) != cubePieces[x][y][z-1].getColor(0)) {                        
+                    while (cubePieces[x][y][z].getColor(0) != cubePieces[x][y][z-1].getColor(0)) {
                         if (counter > 4) {
                             if (isWhiteCrossOnBottom())
                                 return;
                         }
-                        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-                        spinLayerRight90AlongZ(1); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongZ(0);
+                        spinLayerRight90AlongZ(1);
                         counter++;
                     }
                     if (cubePieces[x][y][z].getColor(0) == cubePieces[x][y][z-1].getColor(0)) {
-                        spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
-                        spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongY(y);
+                        spinLayerRight90AlongY(y);
                     }
                     else {
                         cout << "An error occured." << endl;
@@ -709,13 +911,13 @@ void Cube::buildWhiteCross() {
                             if (isWhiteCrossOnBottom())
                                 return;
                         }
-                        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-                        spinLayerRight90AlongZ(1); incrementMovesCounter(); //relMove
+                        spinLayerRight90AlongZ(0);
+                        spinLayerRight90AlongZ(1);
                         counter++;
                     }
                     if (cubePieces[x][y][z].getColor(1) == cubePieces[x][y][z-1].getColor(0)) {
-                        spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
-                        spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
+                        spinLayerDown90AlongX(x);
+                        spinLayerDown90AlongX(x);
                     }
                     else {
                         cout << "An error occured." << endl;
@@ -728,14 +930,14 @@ void Cube::buildWhiteCross() {
     cout << "white cross built" << endl;
 }
 
-void Cube::solveFirstLayer() {
+void AlgoCube::solveFirstLayer() {
     unsigned nextCornerX;
-    
+
     if (!isWhiteCrossOnBottom())
         buildWhiteCross();
 
     turnCubeWhiteTop();
-    
+
     while (!isFirstLayerSolved()) {
         nextCornerX = turnCubeUntilWhiteBottomCornerFront();
         insertNextWhiteCornerPiece(nextCornerX);
@@ -744,42 +946,42 @@ void Cube::solveFirstLayer() {
 
 }
 
-void Cube::insertNextWhiteCornerPiece(unsigned x) {
+void AlgoCube::insertNextWhiteCornerPiece(unsigned x) {
     if (x == 0) {               // bottom side                      // front surface                    // lateral side                 // lateral surface
         while (!(cubePieces[x][0][0].getColor(1) == cubePieces[1][0][1].getColor(0) && cubePieces[x][0][0].getColor(2) == cubePieces[x][1][1].getColor(0))) {
-            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(1); incrementMovesCounter(); //relMove
+            spinLayerRight90AlongZ(2);
+            spinLayerRight90AlongZ(1);
         }
-        spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
-        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+        spinLayerLeft90AlongZ(0);
+        spinLayerDown90AlongX(x);
+        spinLayerRight90AlongZ(0);
+        spinLayerUp90AlongX(x);
     }
     else if (x == 2) {
         while (!(cubePieces[x][0][0].getColor(1) == cubePieces[1][0][1].getColor(0) && cubePieces[x][0][0].getColor(2) == cubePieces[x][1][1].getColor(0))) {
-            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(1); incrementMovesCounter(); //relMove
+            spinLayerRight90AlongZ(2);
+            spinLayerRight90AlongZ(1);
         }
-        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
-        spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+        spinLayerRight90AlongZ(0);
+        spinLayerDown90AlongX(x);
+        spinLayerLeft90AlongZ(0);
+        spinLayerUp90AlongX(x);
     }
 }
 
 // turns cube until white face of corner piece is in front, returns corresponding x coordinate (0 or 2) of the piece
-int Cube::turnCubeUntilWhiteBottomCornerFront() {
+int AlgoCube::turnCubeUntilWhiteBottomCornerFront() {
     unsigned counter;
 
     counter = 0;
     while (isWhiteBottomCornerFront() == -1 && counter < 4) { // when there is an outer white face, turn cube until it faces the user
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
+        spinRight90AlongZ();
         counter++;
     }
     if (isWhiteBottomCornerFront() != -1)
         return isWhiteBottomCornerFront();
     else {                    // when there is no such piece, check if there is one on the bottom, else look in top layer for incorrect white corners
-        bringBottomWhiteCornerFront();      
+        bringBottomWhiteCornerFront();
         if (isWhiteBottomCornerFront() == -1) {
             bringTopWhiteCornerFront();
         }
@@ -796,34 +998,34 @@ int Cube::turnCubeUntilWhiteBottomCornerFront() {
 }
 
 // turns bottom layer until a front corner piece has white on bottom, then turns upper 2 layers until target corner is free and finally let white be on front side (through some rotations)
-void Cube::bringBottomWhiteCornerFront() {
+void AlgoCube::bringBottomWhiteCornerFront() {
     unsigned counter;
 
     counter = 0;
     while (!isWhiteBottomCornerLeftBottom() && counter < 4) {
-        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
+        spinLayerRight90AlongZ(0);
         counter++;
     }
     if (isWhiteBottomCornerLeftBottom()) {
         counter = 0;
         while (isCornerPieceCorrect(0, 0, 'w') && counter < 4) {
-            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(1); incrementMovesCounter(); //relMove
+            spinLayerRight90AlongZ(2);
+            spinLayerRight90AlongZ(1);
             counter++;
         }
         if (!isCornerPieceCorrect(0, 0, 'w')) {
-            spinLayerDown90AlongX(0); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-            spinLayerUp90AlongX(0); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove // white face is now on right bottom front
+            spinLayerDown90AlongX(0);
+            spinLayerRight90AlongZ(0);
+            spinLayerUp90AlongX(0);
+            spinLayerRight90AlongZ(0); // white face is now on right bottom front
         }
-        else 
+        else
             return; // no bottom faced white corner piece
-    }       
+    }
 }
 
 // checks for incorrect white corner pieces in the top layer, if they exist, bring them to bottom layer
-void Cube::bringTopWhiteCornerFront() {
+void AlgoCube::bringTopWhiteCornerFront() {
     unsigned x, y, z;
 
     z = 2;
@@ -842,12 +1044,12 @@ void Cube::bringTopWhiteCornerFront() {
 
 // puts incorrect corner piece containing white from its current position to the bottom layer (facing out)
 // when corner piece appears to be on the back side of the cube (y == 2), cube is being turned twice and x and y change, so it can be inserted more easily
-void Cube::dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y) {
+void AlgoCube::dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y) {
     unsigned z;
 
     if (y == 2) {
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
+        spinRight90AlongZ();
+        spinRight90AlongZ();
         if (x == 0) {
             x = 2;
         }
@@ -861,14 +1063,14 @@ void Cube::dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y) {
     z = 2;
     if (x == 0) {                           // on top                                        // on the side -> same movements
         if (cubePieces[x][y][z].getPositionOfColor('w') == 1 || cubePieces[x][y][z].getPositionOfColor('w') == 2) {
-            spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
-            spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-            spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+            spinLayerDown90AlongX(x);
+            spinLayerLeft90AlongZ(0);
+            spinLayerUp90AlongX(x);
         }
         else if (cubePieces[x][y][z].getPositionOfColor('w') == 0) {
-            spinLayerLeft90AlongY(y); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
+            spinLayerLeft90AlongY(y);
+            spinLayerRight90AlongZ(0);
+            spinLayerRight90AlongY(y);
         }
         else if (cubePieces[x][y][z].getPositionOfColor('w') == -1) {
             cout << "no white piece to move" << endl;
@@ -876,14 +1078,14 @@ void Cube::dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y) {
     }
     else if (x == 2) {
         if (cubePieces[x][y][z].getPositionOfColor('w') == 1 || cubePieces[x][y][z].getPositionOfColor('w') == 2) {
-            spinLayerDown90AlongX(x); incrementMovesCounter(); //relMove
-            spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-            spinLayerUp90AlongX(x); incrementMovesCounter(); //relMove
+            spinLayerDown90AlongX(x);
+            spinLayerRight90AlongZ(0);
+            spinLayerUp90AlongX(x);
         }
         else if (cubePieces[x][y][z].getPositionOfColor('w') == 0) {
-            spinLayerRight90AlongY(y); incrementMovesCounter(); //relMove
-            spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-            spinLayerLeft90AlongY(y); incrementMovesCounter(); //relMove
+            spinLayerRight90AlongY(y);
+            spinLayerLeft90AlongZ(0);
+            spinLayerLeft90AlongY(y);
         }
         else if (cubePieces[x][y][z].getPositionOfColor('w') == -1) {
             cout << "no white piece to move" << endl;
@@ -892,7 +1094,7 @@ void Cube::dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y) {
 }
 
 // returns 0 if bottom left front corner has a white face and it's on front, 2 if right front corner -"- , else -1
-int Cube::isWhiteBottomCornerFront() {
+int AlgoCube::isWhiteBottomCornerFront() {
     if (cubePieces[0][0][0].getColor(0) == 'w')
         return 0;
     else if (cubePieces[2][0][0].getColor(0) == 'w')
@@ -902,11 +1104,11 @@ int Cube::isWhiteBottomCornerFront() {
 }
 
 // returns true if the first (white) layer -- which is usually currently on top -- is fully solved, else false
-bool Cube::isFirstLayerSolved() {
+bool AlgoCube::isFirstLayerSolved() {
     unsigned x, y, z;
 
     turnCubeWhiteTop();
-    
+
     if (isColorCrossOnTop('w')) {
         z = 2;
         for (y = 0; y < 3; y++) {
@@ -925,35 +1127,35 @@ bool Cube::isFirstLayerSolved() {
 }
 
 // turns the cube so the yellow surface piece is on top
-void Cube::turnCubeYellowTop() {
+void AlgoCube::turnCubeYellowTop() {
 
     if (cubePieces[1][1][2].getColor(0) != 'y') {
         if (cubePieces[1][1][0].getColor(0) == 'y') {
-            spinUp90AlongX(); incrementMovesCounter(); //relMove
-            spinUp90AlongX(); incrementMovesCounter(); //relMove
+            spinUp90AlongX();
+            spinUp90AlongX();
         }
         else if (cubePieces[0][1][1].getColor(0) == 'y') {
-            spinRight90AlongY(); incrementMovesCounter(); //relMove
+            spinRight90AlongY();
         }
         else if (cubePieces[2][1][1].getColor(0) == 'y') {
-            spinLeft90AlongY(); incrementMovesCounter(); //relMove
+            spinLeft90AlongY();
         }
         else if (cubePieces[1][0][1].getColor(0) == 'y') {
-            spinUp90AlongX(); incrementMovesCounter(); //relMove
+            spinUp90AlongX();
         }
         else if (cubePieces[1][2][1].getColor(0) == 'y') {
-            spinDown90AlongX(); incrementMovesCounter(); //relMove
+            spinDown90AlongX();
         }
     }
 }
 
 // since function is only being called when white is on bottom, cube is being turned twice along x axis to turn it around
-void Cube::turnCubeWhiteTop() {
+void AlgoCube::turnCubeWhiteTop() {
     if (cubePieces[1][1][2].getColor(0) == 'w')
         return;
     if (cubePieces[1][1][0].getColor(0) == 'w') {
-        spinDown90AlongX(); incrementMovesCounter(); //relMove
-        spinDown90AlongX(); incrementMovesCounter(); //relMove
+        spinDown90AlongX();
+        spinDown90AlongX();
     }
     else {
         turnCubeYellowTop();
@@ -962,7 +1164,7 @@ void Cube::turnCubeWhiteTop() {
 }
 
 // returns true if bottom left front corner has a white face and it's on the bottom, else false
-bool Cube::isWhiteBottomCornerLeftBottom() {
+bool AlgoCube::isWhiteBottomCornerLeftBottom() {
     if (cubePieces[0][0][0].getColor(1) == 'w')
         return true;
     else
@@ -970,7 +1172,7 @@ bool Cube::isWhiteBottomCornerLeftBottom() {
 }
 
 // returns true if corner piece is correct -- top layer (z = 2), else false
-bool Cube::isCornerPieceCorrect(unsigned x, unsigned y, char color) {
+bool AlgoCube::isCornerPieceCorrect(unsigned x, unsigned y, char color) {
     if (!cubePieces[x][y][2].isCornerPiece()) {
         cout << "passed piece is no corner piece" << endl;
         exit(1);
@@ -987,7 +1189,7 @@ bool Cube::isCornerPieceCorrect(unsigned x, unsigned y, char color) {
 }
 
 // returns true if top layer forms the white flower
-bool Cube::isWhiteFlowerOnTop() {
+bool AlgoCube::isWhiteFlowerOnTop() {
     if (cubePieces[1][1][2].getColor(0) == 'y') {
         if (cubePieces[1][0][2].isColorOnTopOfEdgePiece('w', 1) && cubePieces[0][1][2].isColorOnTopOfEdgePiece('w', 0)
         && cubePieces[2][1][2].isColorOnTopOfEdgePiece('w', 2) && cubePieces[1][2][2].isColorOnTopOfEdgePiece('w', 1))
@@ -997,7 +1199,7 @@ bool Cube::isWhiteFlowerOnTop() {
 }
 
 // returns true if bottom layer forms the white cross
-bool Cube::isWhiteCrossOnBottom() {
+bool AlgoCube::isWhiteCrossOnBottom() {
     if (cubePieces[1][1][0].getColor(0) == 'w') {
         if (cubePieces[1][0][0].isColorOnTopOfEdgePiece('w', 1) && edgePieceSecondaryMatchesSurface(1, 0, 0) &&
         cubePieces[0][1][0].isColorOnTopOfEdgePiece('w', 0) && edgePieceSecondaryMatchesSurface(0, 1, 0) &&
@@ -1009,7 +1211,7 @@ bool Cube::isWhiteCrossOnBottom() {
 }
 
 // returns true if top layer forms the white cross
-bool Cube::isColorCrossOnTop(char color) {
+bool AlgoCube::isColorCrossOnTop(char color) {
     if (cubePieces[1][1][2].getColor(0) == color) {
         if (cubePieces[1][0][2].isColorOnTopOfEdgePiece(color, 1) && edgePieceSecondaryMatchesSurface(1, 0, 2) &&
         cubePieces[0][1][2].isColorOnTopOfEdgePiece(color, 0) && edgePieceSecondaryMatchesSurface(0, 1, 2) &&
@@ -1021,7 +1223,7 @@ bool Cube::isColorCrossOnTop(char color) {
 }
 
 // returns true if the secondary color (mostly white primary) matches the color of the surface piece above or below
-bool Cube::edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z) {
+bool AlgoCube::edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z) {
     if (x == 0 || x == 2) {
         if (cubePieces[x][y][z].getColor(1) == cubePieces[x][y][1].getColor(0))
             return true;
@@ -1036,7 +1238,7 @@ bool Cube::edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z) 
 
 /***    	       SOLVE SECOND LAYER            ***/
 
-void Cube::solveSecondLayer() {
+void AlgoCube::solveSecondLayer() {
     int nextMoveAwayFrom;
 
     if (!isFirstLayerSolved())
@@ -1052,7 +1254,7 @@ void Cube::solveSecondLayer() {
 
 /* looks for next edge piece to be inserted, returns 0 when next move is away from x=0 layer, or 2 when the next move is away from x=2 layer,
 *  if there is no edge piece w/o yellow in it, brings it to bottom layer (yellow)  -- finally returns -1                      */
-int Cube::prepareForNextEdgePieceInsertion() {
+int AlgoCube::prepareForNextEdgePieceInsertion() {
     unsigned x, y, z;
     unsigned counter;
     char frontColor;
@@ -1074,7 +1276,7 @@ int Cube::prepareForNextEdgePieceInsertion() {
                 turnCubeColorFront(frontColor);
 
                 while (!(cubePieces[1][0][0].getColor(0) == frontColor && cubePieces[1][0][0].getColor(1) != 'y')) {
-                    spinLayerRight90AlongZ(z); incrementMovesCounter(); //relMove
+                    spinLayerRight90AlongZ(z);
                 }
 
                 if (cubePieces[0][1][1].getColor(0) == bottomColor) {
@@ -1088,54 +1290,54 @@ int Cube::prepareForNextEdgePieceInsertion() {
     }
 
     // no non-yellow edge piece in bottom layer
-    
+
     turnCubeYellowTop();
     counter = 0;
     while (isEdgePieceCorrect(2, 0) && counter < 4) {
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
+        spinRight90AlongZ();
         counter++;
     }
     if (cubePieces[2][0][1].edgePieceContainsColor('y') == false) {
-        spinLayerUp90AlongX(2); incrementMovesCounter(); //relMove
-        spinLayerLeft90AlongZ(2); incrementMovesCounter(); //relMove
-        spinLayerDown90AlongX(2); incrementMovesCounter(); //relMove
-        spinDown90AlongX(); incrementMovesCounter(); //relMove
-        spinDown90AlongX(); incrementMovesCounter(); //relMove
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
-        insertNextWhiteCornerPiece(2); incrementMovesCounter(); //relMove
+        spinLayerUp90AlongX(2);
+        spinLayerLeft90AlongZ(2);
+        spinLayerDown90AlongX(2);
+        spinDown90AlongX();
+        spinDown90AlongX();
+        spinRight90AlongZ();
+        insertNextWhiteCornerPiece(2);
     }
     return -1;
 }
 
 // inserts the next regular edge piece in second layer, starting with the spin of bottom layer away from awayFrom x coordinate
-void Cube::insertNextEdgePiece(unsigned awayFrom) {
+void AlgoCube::insertNextEdgePiece(unsigned awayFrom) {
     if (awayFrom == 0) {
-        spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerDown90AlongX(0); incrementMovesCounter(); //relMove
-        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerUp90AlongX(0); incrementMovesCounter(); //relMove
-        spinLeft90AlongZ(); incrementMovesCounter(); //relMove
-        insertNextWhiteCornerPiece(2); incrementMovesCounter(); //relMove
+        spinLayerLeft90AlongZ(0);
+        spinLayerDown90AlongX(0);
+        spinLayerRight90AlongZ(0);
+        spinLayerUp90AlongX(0);
+        spinLeft90AlongZ();
+        insertNextWhiteCornerPiece(2);
     }
     else if (awayFrom == 2) {
-        spinLayerRight90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerDown90AlongX(2); incrementMovesCounter(); //relMove
-        spinLayerLeft90AlongZ(0); incrementMovesCounter(); //relMove
-        spinLayerUp90AlongX(2); incrementMovesCounter(); //relMove
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
-        insertNextWhiteCornerPiece(0); incrementMovesCounter(); //relMove
+        spinLayerRight90AlongZ(0);
+        spinLayerDown90AlongX(2);
+        spinLayerLeft90AlongZ(0);
+        spinLayerUp90AlongX(2);
+        spinRight90AlongZ();
+        insertNextWhiteCornerPiece(0);
     }
 }
 
-void Cube::turnCubeColorFront(char color) {
+void AlgoCube::turnCubeColorFront(char color) {
     turnCubeWhiteTop();
 
     while (cubePieces[1][0][1].getColor(0) != color) {
-        spinRight90AlongZ(); incrementMovesCounter(); //relMove
+        spinRight90AlongZ();
     }
 }
 
-bool Cube::isSecondLayerSolved() {
+bool AlgoCube::isSecondLayerSolved() {
     turnCubeWhiteTop();
 
     if (isFirstLayerSolved()) {
@@ -1148,7 +1350,7 @@ bool Cube::isSecondLayerSolved() {
     return false;
 }
 
-bool Cube::isEdgePieceCorrect(unsigned x, unsigned y) {
+bool AlgoCube::isEdgePieceCorrect(unsigned x, unsigned y) {
     if (y == 0) {
         if (x == 0) {
             return cubePieces[0][0][1].getColor(0) == cubePieces[1][0][1].getColor(0) && cubePieces[0][0][1].getColor(1) == cubePieces[0][1][1].getColor(0);
@@ -1174,35 +1376,35 @@ bool Cube::isEdgePieceCorrect(unsigned x, unsigned y) {
  * **************************************************
 */
 
-void Cube::r() {
+void AlgoCube::r() {
     spinLayerUp90AlongX(2);
 }
 
-void Cube::r_() {
+void AlgoCube::r_() {
     spinLayerDown90AlongX(2);
 }
 
-void Cube::u() {
+void AlgoCube::u() {
     spinLayerRight90AlongZ(2);
 }
 
-void Cube::u_() {
+void AlgoCube::u_() {
     spinLayerLeft90AlongZ(2);
 }
 
-void Cube::l() {
+void AlgoCube::l() {
     spinLayerDown90AlongX(0);
 }
 
-void Cube::l_() {
+void AlgoCube::l_() {
     spinLayerUp90AlongX(0);
 }
 
-void Cube::f() {
+void AlgoCube::f() {
     spinLayerRight90AlongY(0);
 }
 
-void Cube::f_() {
+void AlgoCube::f_() {
     spinLayerLeft90AlongY(0);
 }
 
@@ -1210,7 +1412,7 @@ void Cube::f_() {
 
 /***    	       SOLVE THIRD LAYER             ***/
 
-void Cube::solveThirdLayer() {
+void AlgoCube::solveThirdLayer() {
 
     if (!isSecondLayerSolved()) {
         solveSecondLayer();
@@ -1221,7 +1423,7 @@ void Cube::solveThirdLayer() {
     connectEdges();
     bringCornersIntoCorrectPosition();
     bringCornersIntoCorrectOrientation();
-    
+
     if (!isThirdLayerSolved()) {
         solveThirdLayer();
     }
@@ -1230,21 +1432,21 @@ void Cube::solveThirdLayer() {
     }
 }
 
-void Cube::buildYellowCross() {
+void AlgoCube::buildYellowCross() {
 
     while (!isColorCrossOnTopNoSecondary('y')) {
         prepareNextStepYellowCross();
-        f(); incrementMovesCounter(); //relMove
-        r(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        r_(); incrementMovesCounter(); //relMove
-        u_(); incrementMovesCounter(); //relMove
-        f_(); incrementMovesCounter(); //relMove
+        f();
+        r();
+        u();
+        r_();
+        u_();
+        f_();
     }
     cout << "yellow cross built" << endl;
 }
 
-void Cube::prepareNextStepYellowCross() {
+void AlgoCube::prepareNextStepYellowCross() {
     unsigned x, y, z;
     unsigned counter;
 
@@ -1266,16 +1468,16 @@ void Cube::prepareNextStepYellowCross() {
     }
     else if (counter == 2) {
         while (cubePieces[1][0][2].isColorOnTopOfEdgePiece('y', 1) == false) {
-            spinRight90AlongZ(); incrementMovesCounter(); //relMove
+            spinRight90AlongZ();
         }
         if (cubePieces[1][0][2].isColorOnTopOfEdgePiece('y', 1)) {
             if (cubePieces[1][2][2].isColorOnTopOfEdgePiece('y', 1)) { // yellow line (vertically oriented)
-                spinRight90AlongZ(); incrementMovesCounter(); //relMove
+                spinRight90AlongZ();
                 // oriented horizontally now
                 return;
             }
             else if (cubePieces[0][1][2].isColorOnTopOfEdgePiece('y', 0)) { // yellow L to the left edge
-                spinLeft90AlongZ(); incrementMovesCounter(); //relMove
+                spinLeft90AlongZ();
                 // oriented to the right now
                 return;
             }
@@ -1287,47 +1489,47 @@ void Cube::prepareNextStepYellowCross() {
 }
 
 // perform rotations so that all secondary colors of yellow edge pieces match surfaces below
-void Cube::connectEdges() {
+void AlgoCube::connectEdges() {
 
     while (!isColorCrossOnTop('y')) { // secondary colors need to match as well
         while (edgesConnected() == 0) { // no edges right
-            spinLayerRight90AlongZ(2); incrementMovesCounter(); //relMove
+            spinLayerRight90AlongZ(2);
         }
         if (edgesConnected() == 1) {
             // while not both bottom and top edge piece match surfaces, spin cube right
             while (!(edgePieceSecondaryMatchesSurface(1, 0, 2) && edgePieceSecondaryMatchesSurface(1, 2, 2))) {
-                spinRight90AlongZ(); incrementMovesCounter(); //relMove
+                spinRight90AlongZ();
             }
-            r(); incrementMovesCounter(); //relMove
-            u(); incrementMovesCounter(); //relMove
-            u(); incrementMovesCounter(); //relMove
-            r_(); incrementMovesCounter(); //relMove
-            u_(); incrementMovesCounter(); //relMove
-            r(); incrementMovesCounter(); //relMove
-            u_(); incrementMovesCounter(); //relMove
-            r_(); incrementMovesCounter(); //relMove
+            r();
+            u();
+            u();
+            r_();
+            u_();
+            r();
+            u_();
+            r_();
         }
         if (edgesConnected() == 2) {  // two edges next each other correct
             // while not both bottom and right edge pieces dont match surfaces, spin cube right
             while (!(edgePieceSecondaryMatchesSurface(1, 0, 2) == false && edgePieceSecondaryMatchesSurface(2, 1, 2) == false)) {
                 spinRight90AlongZ();
             }
-            r(); incrementMovesCounter(); //relMove
-            u(); incrementMovesCounter(); //relMove
-            u(); incrementMovesCounter(); //relMove
-            r_(); incrementMovesCounter(); //relMove
-            u_(); incrementMovesCounter(); //relMove
-            r(); incrementMovesCounter(); //relMove
-            u_(); incrementMovesCounter(); //relMove
-            r_(); incrementMovesCounter(); //relMove
-            u_(); incrementMovesCounter(); //relMove
+            r();
+            u();
+            u();
+            r_();
+            u_();
+            r();
+            u_();
+            r_();
+            u_();
         }
     }
     cout << "connected edges" << endl;
 }
 
 // returns 0 if no edges are connected with surface below, 1 if two opposite edges, 2 if two besided edges, 4 if all edges are connected with surfaces below
-unsigned Cube::edgesConnected() {
+unsigned AlgoCube::edgesConnected() {
     unsigned x, y, z;
     unsigned counter;
 
@@ -1356,36 +1558,36 @@ unsigned Cube::edgesConnected() {
             }
         }
     }
-    
+
     // all edges connected
     return 4;
 }
 
-void Cube::bringCornersIntoCorrectPosition() {
+void AlgoCube::bringCornersIntoCorrectPosition() {
     unsigned nrCornersCorrectPos;
 
     nrCornersCorrectPos = getNrCornerPiecesInCorrectPosition();
     while (nrCornersCorrectPos < 4) {
         if (nrCornersCorrectPos == 1) {
             while (!isCornerPieceInCorrectPosition(2, 0, 'y')) {
-                spinRight90AlongZ(); incrementMovesCounter(); //relMove
+                spinRight90AlongZ();
             }
         }
-        l_(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        r(); incrementMovesCounter(); //relMove
-        u_(); incrementMovesCounter(); //relMove
-        l(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        r_(); incrementMovesCounter(); //relMove
-        u_(); incrementMovesCounter(); //relMove
+        l_();
+        u();
+        r();
+        u_();
+        l();
+        u();
+        r_();
+        u_();
         nrCornersCorrectPos = getNrCornerPiecesInCorrectPosition();
     }
     cout << "positioned corners in third layer correctly" << endl;
 }
 
 // can only return 0, 1 or 4
-unsigned Cube::getNrCornerPiecesInCorrectPosition() {
+unsigned AlgoCube::getNrCornerPiecesInCorrectPosition() {
     unsigned x, y, z;
     unsigned counter;
 
@@ -1401,47 +1603,47 @@ unsigned Cube::getNrCornerPiecesInCorrectPosition() {
     return counter;
 }
 
-void Cube::bringCornersIntoCorrectOrientation() {
+void AlgoCube::bringCornersIntoCorrectOrientation() {
     unsigned nrCornersCorrect;
 
     nrCornersCorrect = getNrCornerPiecesInCorrectOrientation();
     while (getNrCornerPiecesInCorrectOrientation() < 4) {
         if (nrCornersCorrect == 1) {
             while (!isCornerPieceCorrect(0, 0, 'y')) { // correct one should be in bottom left
-                spinRight90AlongZ(); incrementMovesCounter(); //relMove
+                spinRight90AlongZ();
             }
         }
         if (nrCornersCorrect == 2) {
             while (!(isCornerPieceCorrect(0, 0, 'y') && isCornerPieceCorrect(2, 0, 'y') == false)) {
-                spinRight90AlongZ(); incrementMovesCounter(); //relMove
+                spinRight90AlongZ();
             }
         }
 
-        r(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        r_(); incrementMovesCounter(); //relMove
-        u_(); incrementMovesCounter(); //relMove
-        r(); incrementMovesCounter(); //relMove
-        u_(); incrementMovesCounter(); //relMove
-        r_(); incrementMovesCounter(); //relMove
+        r();
+        u();
+        u();
+        r_();
+        u_();
+        r();
+        u_();
+        r_();
 
-        l_(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        l(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        l_(); incrementMovesCounter(); //relMove
-        u(); incrementMovesCounter(); //relMove
-        l(); incrementMovesCounter(); //relMove
-        
+        l_();
+        u();
+        u();
+        l();
+        u();
+        l_();
+        u();
+        l();
+
         nrCornersCorrect = getNrCornerPiecesInCorrectOrientation();
     }
     cout << "orientated corners in third layer correctly" << endl;
 }
 
 // can only return 0, 1, 2, 4
-unsigned Cube::getNrCornerPiecesInCorrectOrientation() {
+unsigned AlgoCube::getNrCornerPiecesInCorrectOrientation() {
     unsigned x, y, z;
     unsigned counter;
 
@@ -1458,7 +1660,7 @@ unsigned Cube::getNrCornerPiecesInCorrectOrientation() {
 }
 
 // returns true if the corner piece is within the layer of passed @param color, and contains neighbored colors of surfaces as well, else false
-bool Cube::isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color) {
+bool AlgoCube::isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color) {
     char surfaceColorFrontBack;
     char surfaceColorLeftRight;
     unsigned z;
@@ -1475,7 +1677,7 @@ bool Cube::isCornerPieceInCorrectPosition(unsigned x, unsigned y, char color) {
 }
 
 // returns true if yellow cross on top (criterias like in isColorCrossOnTop() concerning secondary colors not considered)
-bool Cube::isColorCrossOnTopNoSecondary(char color) {
+bool AlgoCube::isColorCrossOnTopNoSecondary(char color) {
     if (cubePieces[1][0][2].isColorOnTopOfEdgePiece(color, 1) &&
     cubePieces[0][1][2].isColorOnTopOfEdgePiece(color, 0) &&
     cubePieces[2][1][2].isColorOnTopOfEdgePiece(color, 2) &&
@@ -1485,7 +1687,7 @@ bool Cube::isColorCrossOnTopNoSecondary(char color) {
     return false;
 }
 
-bool Cube::isThirdLayerSolved() {
+bool AlgoCube::isThirdLayerSolved() {
     unsigned x, y, z;
 
     turnCubeYellowTop();
@@ -1507,78 +1709,18 @@ bool Cube::isThirdLayerSolved() {
 
 /////////////////////////////////////////////////////////////////////////////
 
-void Cube::solveRubiksCube() {
+void AlgoCube::solveRubiksCube() {
     solveFirstLayer();
     solveSecondLayer();
     solveThirdLayer();
 
-    if (isFirstLayerSolved() && isSecondLayerSolved() && isThirdLayerSolved()) {
-        cout << "-- Rubik's Cube solved successfully --" << endl;
-    }
+    cout << "-- Rubik's Cube solved successfully --" << endl;
+
 }
 
 /***    	           BUILD CUBE                ***/
 
-void Cube::createRandomCube() {
-    srand(time(NULL));
-    unsigned randomLoops = rand() % 40 + 12; // at least 12 moves
-    unsigned randomMove;
-    unsigned randomNrRotations;
-    unsigned randomLayer;
-    unsigned i, p;
-
-    cout << "started to rotate cube randomly...\n.\n." << endl;
-
-    for (i = 0; i < randomLoops; i++) {
-        randomMove = rand() % 6;
-        randomNrRotations = rand() % 3 + 1;
-        randomLayer = rand() % 3;
-        switch(randomMove) {
-            case 0:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerUp90AlongX(randomLayer);
-                cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 1:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerDown90AlongX(randomLayer);
-                cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 2:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongY(randomLayer);
-                cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 3:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongY(randomLayer);
-                cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 4:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongZ(randomLayer);
-                cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-            case 5:
-                for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongZ(randomLayer);
-                cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
-                break;
-        }
-    }
-    cout << ".\n.\n...finished rotating cube randomly" << endl;
-
-}
-
-
-/**********************************************************************
-**                    GLOBAL FUNCTION DEFINITIONS                    **
-**********************************************************************/
-
-
-
-// testing function
-int test() {
+void AlgoCube::initCube() {
     vector<CubePiece> testCube;
 
     // first layer:
@@ -1644,19 +1786,105 @@ int test() {
     testCube.push_back(c122);
     testCube.push_back(c222);
 
-    Cube cube = Cube(testCube);
+    setPieces(testCube);
 
-    cube.createRandomCube();
-    // cube.printWholeCube();
-
-    cube.solveRubiksCube();
-    // cube.printWholeCube();
-
-
-    cout << "Nr relevant moves: " << cube.getNrMoves() << endl;
-    return 0;
 }
 
-int main() {
-    test();
+void AlgoCube::createRandomCube() {
+    srand(time(NULL));
+    unsigned randomLoops = rand() % 40 + 12; // at least 12 moves
+    unsigned randomMove;
+    unsigned randomNrRotations;
+    unsigned randomLayer;
+    unsigned i, p;
+
+    cout << "started to rotate cube randomly...\n.\n." << endl;
+
+    for (i = 0; i < randomLoops; i++) {
+        randomMove = rand() % 6;
+        randomNrRotations = rand() % 3 + 1;
+        randomLayer = rand() % 3;
+        switch(randomMove) {
+            case 0:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerUp90AlongX(randomLayer, 1);
+                cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 1:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerDown90AlongX(randomLayer, 1);
+                cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 2:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerRight90AlongY(randomLayer, 1);
+                cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 3:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerLeft90AlongY(randomLayer, 1);
+                cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 4:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerRight90AlongZ(randomLayer, 1);
+                cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+            case 5:
+                for (p = 0; p < randomNrRotations; p++)
+                    spinLayerLeft90AlongZ(randomLayer, 1);
+                cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
+                break;
+        }
+    }
+    cout << ".\n.\n...finished rotating cube randomly" << endl;
+
+}
+
+
+/**********************************************************************
+**                    GLOBAL FUNCTION DEFINITIONS                    **
+**********************************************************************/
+
+
+
+// testing function
+int test() {
+
+    AlgoCube cube = AlgoCube();
+
+    cube.initCube();
+    //cube.createRandomCube();
+
+    // cube.printWholeCube();
+    cube.spinLayerRight90AlongZ(1, 1);
+
+    cube.spinLayerUp90AlongX(2, 1);
+    cube.spinLayerUp90AlongX(2, 1);
+    cube.spinLayerUp90AlongX(2, 1);
+
+    cube.spinLayerDown90AlongX(1, 1);
+    cube.spinLayerDown90AlongX(1, 1);
+    cube.spinLayerDown90AlongX(1, 1);
+
+    cube.spinLayerRight90AlongZ(1, 1);
+
+
+    cube.solveRubiksCube();
+    cube.printWholeCube();
+
+    cout << "Nr Moves: " << cube.getRandomizeCubeMoves().size() << endl;
+    cout << "Nr Moves: " << cube.getMoves().size() << endl;
+    
+    cout << "First random Move: " << cube.getRandomizeCubeMoves().at(0) << endl;
+    cout << "Second random Move: " << cube.getRandomizeCubeMoves().at(1) << endl;
+    cout << "Third random Move: " << cube.getRandomizeCubeMoves().at(2) << endl;
+    cout << "Fourth random Move: " << cube.getRandomizeCubeMoves().at(3) << endl;
+
+    cout << "First Move: " << cube.getMoves().at(0) << endl;
+    cout << "Second Move: " << cube.getMoves().at(1) << endl;
+    cout << "Third Move: " << cube.getMoves().at(2) << endl;
+    cout << "Fourth Move: " << cube.getMoves().at(3) << endl;
+
+    return 0;
 }

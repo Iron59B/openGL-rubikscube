@@ -3,6 +3,7 @@
 /* standard includes */
 #include<stdio.h>
 #include<stdlib.h>
+#include<array>
 
 /* We use glew.h instead of gl.h to get all the GL prototypes declared */
 #include <GL/glew.h>
@@ -15,6 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace std;
+
 class Cube {
 public:
     Cube(){
@@ -22,9 +25,13 @@ public:
     };
     Cube(int position, GLfloat depth){
         this->position = position;
-        this->depth = depth; 
+        this->depth = depth;
     };
-    GLfloat* createCubes();
+    array<GLfloat,6*36> createCubes();
+
+    // array<GLfloat,6*36> getInitCube() {
+    //   return initCube;
+    // }
 
 private:
     int position;
@@ -39,20 +46,20 @@ private:
     const int BOTTOM_LEFT = 7;
     const int BOTTOM_RIGHT = 8;
 
-    GLfloat* addCube(int position, GLfloat depth);
+    array<GLfloat,6*36> addCube(array<GLfloat,6*36> vtx, int position, GLfloat depth);
     GLfloat initCube[6*36] = {
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f, /* bottom: blue */
-         1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-         1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f, /* top: green */
-        -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-         1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
-         1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
-        -1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-         1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+        -1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f, /* bottom: white */
+         1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
+        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
+         1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
+         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
+        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f, /* top: yellow */
+        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
+         1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
+         1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
+         1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
         -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f, /* front: red */
          1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
         -1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
@@ -65,19 +72,19 @@ private:
          1.0f,-1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
         -1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
          1.0f, 1.0f,-1.0f,   1.0f, 0.5f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f, /* left: white */
-        -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f, /* right: yellow */
-         1.0f,-1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
-         1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
-         1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
-         1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 0.0f,
-         1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 0.0f,
-    }; 
+        -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f, /* left: blue */
+        -1.0f, 1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
+        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
+        -1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+        -1.0f, 1.0f,-1.0f,   0.0f, 0.0f, 1.0f,
+         1.0f,-1.0f, 1.0f,   0.0f, 1.0f, 0.0f, /* right: green */
+         1.0f,-1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
+         1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
+         1.0f,-1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+         1.0f, 1.0f,-1.0f,   0.0f, 1.0f, 0.0f,
+         1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+    };
 };
 
 

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <array>
 
 using namespace std;
 
@@ -42,6 +43,7 @@ public:
     CubePiece(string colorstring);
     void setColors(string colorstring);
     char getColor(unsigned index);
+    string getColors();
     void print();
     bool isCornerPiece();
     bool isEdgePiece();
@@ -59,31 +61,35 @@ public:
 
 };
 
-class Cube {
+class AlgoCube {
 private:
     //      [x: left->right] [y: front->back] [z: bottom->top]
     CubePiece cubePieces[3][3][3];
-    unsigned countMoves;
+    vector<int> moves;
+    vector<int> randomizeCubeMoves;
 public:
-    Cube();
-    Cube(vector<CubePiece> pieces);
-    unsigned getNrMoves();
-    void incrementMovesCounter();
+    AlgoCube();
+    AlgoCube(vector<CubePiece> pieces);
+    void setPieces(vector<CubePiece> pieces);
+    void initCube();
+    AlgoCube getCube();
+    vector<int> getMoves();
+    vector<int> getRandomizeCubeMoves();
     void createRandomCube();
     void printFirstLayer();
     void printWholeCube();
     void spinUp90AlongX();
-    void spinLayerUp90AlongX(unsigned xLayer);
+    void spinLayerUp90AlongX(unsigned xLayer, int forRandomize=0);
     void spinDown90AlongX();
-    void spinLayerDown90AlongX(unsigned xLayer);
+    void spinLayerDown90AlongX(unsigned xLayer, int forRandomize=0);
     void spinRight90AlongY();
-    void spinLayerRight90AlongY(unsigned yLayer);
+    void spinLayerRight90AlongY(unsigned yLayer, int forRandomize=0);
     void spinLeft90AlongY();
-    void spinLayerLeft90AlongY(unsigned yLayer);
+    void spinLayerLeft90AlongY(unsigned yLayer, int forRandomize=0);
     void spinRight90AlongZ();
-    void spinLayerRight90AlongZ(unsigned zLayer);
+    void spinLayerRight90AlongZ(unsigned zLayer, int forRandomize=0);
     void spinLeft90AlongZ();
-    void spinLayerLeft90AlongZ(unsigned zLayer);
+    void spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize=0);
 
     bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
 
@@ -100,7 +106,7 @@ public:
     void bringTopWhiteCornerFront();
     void dismantleIncorrectWhiteCornerPiece(unsigned x, unsigned y);
     void insertNextWhiteCornerPiece(unsigned x);
-    
+
     void turnCubeYellowTop();
     void turnCubeWhiteTop();
     int turnCubeUntilWhiteBottomCornerFront();
@@ -148,7 +154,5 @@ public:
 
     void solveRubiksCube();
 };
-
-
 
 #endif
