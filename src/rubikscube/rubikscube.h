@@ -79,17 +79,17 @@ public:
     void printFirstLayer();
     void printWholeCube();
     void spinUp90AlongX();
-    void spinLayerUp90AlongX(unsigned xLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerUp90AlongX(unsigned xLayer, bool intoMovesArray=true, bool forRandomize=false);
     void spinDown90AlongX();
-    void spinLayerDown90AlongX(unsigned xLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerDown90AlongX(unsigned xLayer, bool intoMovesArray=true, bool forRandomize=false);
     void spinRight90AlongY();
-    void spinLayerRight90AlongY(unsigned yLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerRight90AlongY(unsigned yLayer, bool intoMovesArray=true, bool forRandomize=false);
     void spinLeft90AlongY();
-    void spinLayerLeft90AlongY(unsigned yLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerLeft90AlongY(unsigned yLayer, bool intoMovesArray=true, bool forRandomize=false);
     void spinRight90AlongZ();
-    void spinLayerRight90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerRight90AlongZ(unsigned zLayer, bool intoMovesArray=true, bool forRandomize=false);
     void spinLeft90AlongZ();
-    void spinLayerLeft90AlongZ(unsigned zLayer, bool wholeCube, int forRandomize=0);
+    void spinLayerLeft90AlongZ(unsigned zLayer, bool intoMovesArray=true, bool forRandomize=false);
 
     bool edgePieceSecondaryMatchesSurface(unsigned x, unsigned y, unsigned z);
 
