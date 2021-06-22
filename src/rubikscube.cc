@@ -690,10 +690,10 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize) {
                 randomizeCubeMoves.push_back(21);
                 break;
             case 1:
-                randomizeCubeMoves.push_back(19);
+                randomizeCubeMoves.push_back(22);
                 break;
             case 2:
-                randomizeCubeMoves.push_back(20);
+                randomizeCubeMoves.push_back(23);
                 break;
         }
     }
@@ -1854,9 +1854,21 @@ int test() {
     AlgoCube cube = AlgoCube();
 
     cube.initCube();
-    cube.createRandomCube();
+    //cube.createRandomCube();
 
     // cube.printWholeCube();
+    cube.spinLayerRight90AlongZ(1, 1);
+
+    cube.spinLayerUp90AlongX(2, 1);
+    cube.spinLayerUp90AlongX(2, 1);
+    cube.spinLayerUp90AlongX(2, 1);
+
+    cube.spinLayerDown90AlongX(1, 1);
+    cube.spinLayerDown90AlongX(1, 1);
+    cube.spinLayerDown90AlongX(1, 1);
+
+    cube.spinLayerRight90AlongZ(1, 1);
+
 
     cube.solveRubiksCube();
     cube.printWholeCube();
