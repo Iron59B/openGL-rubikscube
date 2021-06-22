@@ -1306,7 +1306,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
          if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
           trans = false;
         }
-        
+
         anim = rotZ(anim, orientation*sign, rot, trans, fancy);
         // cout << nrRotations << endl;
         if(fancy == true) {
@@ -1845,7 +1845,7 @@ int main()
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
+    //std::vector<int> moves { 0, 1, 2, 15, 2, 1, 0, -1};
     // std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, -1};
     // std::vector<int> solverMoves {0,2,4,1,3,5,15,22,2,5,0, -1};
     int move = 0;
@@ -1864,11 +1864,23 @@ int main()
     AlgoCube algoCube = AlgoCube();
     algoCube.initCube();
     algoCube.createRandomCube();
+    algoCube.solveRubiksCube();
     vector<int> randomizer = algoCube.getRandomizeCubeMoves();
     vector<int> solverMoves = algoCube.getMoves();
+
     // createAnim(shaderProgram, anim2);
 
     vector<int> moves = randomizer;
+
+    cout << "randomizer: " << endl;
+    for (int i = 0; i < randomizer.size(); i++) {
+      cout << randomizer.at(i) << ", " << endl;
+    }
+    cout << endl;
+    cout << "solver: " << endl;
+    for (int i = 0; i < solverMoves.size(); i++) {
+      cout << solverMoves.at(i) << ", " << endl;
+    }
 
     cout << "randomizer: " << randomizer.size() << endl;
     cout << "solver: " << solverMoves.size() << endl;
@@ -1881,13 +1893,14 @@ int main()
 
         if (vecCounter < (int) moves.size()) {
             move = moves.at(vecCounter);
-        } else if(vecCounter == (int)moves.size()) {
+        }
+        else if(vecCounter == (int)moves.size()) {
             if(solver == false) {
                 moves = solverMoves;
                 vecCounter = 0;
                 solver = true;
                 move = moves.at(vecCounter);
-            } else if(vecCounter == (int) moves.size()){
+            } else {
                 move == -1;
                 vecCounter++;
             }
@@ -1896,16 +1909,16 @@ int main()
         cout << "cnt: " << vecCounter << endl;
         cout << "move: " << move << endl;
         for(int i = 0; i < arraySize; i+=1) {  //TODO: Cube Array aufteilen mit veränderte und unveränderte Cubes IDEE!
-            
+
             glBindVertexArray(myVAO[i]);
             //glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
             myAnim = animArray[i];
             // cout << glm::to_string(myAnim) << endl;
             // createAnim(shaderProgram, anim);
-            
+
             if(move == 0) {
-                moves.insert(moves.begin()+vecCounter, 6);  
-                moves.insert(moves.begin()+vecCounter + 1, 7);  
+                moves.insert(moves.begin()+vecCounter, 6);
+                moves.insert(moves.begin()+vecCounter + 1, 7);
                 moves.insert(moves.begin()+vecCounter + 2, 8);
                 moves.erase(moves.begin()+vecCounter + 3);
                 // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
@@ -1913,43 +1926,43 @@ int main()
                 vecCounter --;
                 break;
             } else if(move == 1) {
-                moves.insert(moves.begin()+vecCounter, 9);  
-                moves.insert(moves.begin()+vecCounter + 1, 10);  
+                moves.insert(moves.begin()+vecCounter, 9);
+                moves.insert(moves.begin()+vecCounter + 1, 10);
                 moves.insert(moves.begin()+vecCounter + 2, 11);
-                moves.erase(moves.begin()+vecCounter + 3); 
+                moves.erase(moves.begin()+vecCounter + 3);
                 // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
                 nrRotations = 90*9;
                 vecCounter --;
                 break;
             } else if(move == 2) {
-                moves.insert(moves.begin()+vecCounter, 12);  
-                moves.insert(moves.begin()+vecCounter + 1, 13);  
+                moves.insert(moves.begin()+vecCounter, 12);
+                moves.insert(moves.begin()+vecCounter + 1, 13);
                 moves.insert(moves.begin()+vecCounter + 2, 14);
-                moves.erase(moves.begin()+vecCounter +3); 
+                moves.erase(moves.begin()+vecCounter +3);
                 nrRotations = 90*9;
                 vecCounter --;
                 break;
             } else if(move == 3) {
-                moves.insert(moves.begin()+vecCounter, 15);  
-                moves.insert(moves.begin()+vecCounter + 1, 16);  
+                moves.insert(moves.begin()+vecCounter, 15);
+                moves.insert(moves.begin()+vecCounter + 1, 16);
                 moves.insert(moves.begin()+vecCounter + 2, 17);
-                moves.erase(moves.begin()+vecCounter +3); 
+                moves.erase(moves.begin()+vecCounter +3);
                 nrRotations = 90*9;
                 vecCounter --;
                 break;
             } else if(move == 4) {
-                moves.insert(moves.begin()+vecCounter, 21);  
-                moves.insert(moves.begin()+vecCounter + 1, 22);  
+                moves.insert(moves.begin()+vecCounter, 21);
+                moves.insert(moves.begin()+vecCounter + 1, 22);
                 moves.insert(moves.begin()+vecCounter + 2, 23);
-                moves.erase(moves.begin()+vecCounter +3); 
+                moves.erase(moves.begin()+vecCounter +3);
                 nrRotations = 90*9;
                 vecCounter --;
                 break;
             } else if(move == 5) {
-                moves.insert(moves.begin()+vecCounter, 18);  
-                moves.insert(moves.begin()+vecCounter + 1, 19);  
+                moves.insert(moves.begin()+vecCounter, 18);
+                moves.insert(moves.begin()+vecCounter + 1, 19);
                 moves.insert(moves.begin()+vecCounter + 2, 20);
-                moves.erase(moves.begin()+vecCounter +3); 
+                moves.erase(moves.begin()+vecCounter +3);
                 nrRotations = 90*9;
                 vecCounter --;
                 break;
@@ -2025,7 +2038,7 @@ int main()
             vecCounter += 1;
             // printAxisArray();
             key_move = -1;
-        } 
+        }
 
 
         deltaTime = GLfloat(glfwGetTime() - lastTime);
