@@ -726,21 +726,118 @@ void changeCubePositions(int move) {
   unsigned x, y, z;
   int tmp;
 
-  if (move == 6) {
-      x = 0;
-      // moving corner pieces
-      tmp = positionArray[x][0][2];
-      positionArray[x][0][2] = positionArray[x][0][0];
-      positionArray[x][0][0] = positionArray[x][2][0];
-      positionArray[x][2][0] = positionArray[x][2][2];
-      positionArray[x][2][2] = tmp;
+  if(move == 0) {
+      for(int x = 0; x < 3; x++) {
+        // moving corner pieces
+        tmp = positionArray[x][0][2];
+        positionArray[x][0][2] = positionArray[x][0][0];
+        positionArray[x][0][0] = positionArray[x][2][0];
+        positionArray[x][2][0] = positionArray[x][2][2];
+        positionArray[x][2][2] = tmp;
 
-      // moving edge positionArray
-      tmp = positionArray[x][0][1];
-      positionArray[x][0][1] = positionArray[x][1][0];
-      positionArray[x][1][0] = positionArray[x][2][1];
-      positionArray[x][2][1] = positionArray[x][1][2];
-      positionArray[x][1][2] = tmp;
+        // moving edge positionArray
+        tmp = positionArray[x][0][1];
+        positionArray[x][0][1] = positionArray[x][1][0];
+        positionArray[x][1][0] = positionArray[x][2][1];
+        positionArray[x][2][1] = positionArray[x][1][2];
+        positionArray[x][1][2] = tmp;
+      }
+    } else if (move == 1) {
+      x = 0;
+      for (int x = 0; x < 3; x++) {
+        tmp = positionArray[x][2][0];
+        positionArray[x][2][0] = positionArray[x][0][0];
+        positionArray[x][0][0] = positionArray[x][0][2];
+        positionArray[x][0][2] = positionArray[x][2][2];
+        positionArray[x][2][2] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[x][1][0];
+        positionArray[x][1][0] = positionArray[x][0][1];
+        positionArray[x][0][1] = positionArray[x][1][2];
+        positionArray[x][1][2] = positionArray[x][2][1];
+        positionArray[x][2][1] = tmp;
+      }
+    } else if (move == 2) {
+      y = 0;
+      for (int y = 0; y < 3; y++) {
+        tmp = positionArray[0][y][2];
+        positionArray[0][y][2] = positionArray[0][y][0];
+        positionArray[0][y][0] = positionArray[2][y][0];
+        positionArray[2][y][0] = positionArray[2][y][2];
+        positionArray[2][y][2] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[0][y][1];
+        positionArray[0][y][1] = positionArray[1][y][0];
+        positionArray[1][y][0] = positionArray[2][y][1];
+        positionArray[2][y][1] = positionArray[1][y][2];
+        positionArray[1][y][2] = tmp;
+      }
+    } else if (move == 3) {
+      y = 0;
+      for (int y = 0; y < 3; y++) {
+        tmp = positionArray[2][y][0];
+        positionArray[2][y][0] = positionArray[0][y][0];
+        positionArray[0][y][0] = positionArray[0][y][2];
+        positionArray[0][y][2] = positionArray[2][y][2];
+        positionArray[2][y][2] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[1][y][0];
+        positionArray[1][y][0] = positionArray[0][y][1];
+        positionArray[0][y][1] = positionArray[1][y][2];
+        positionArray[1][y][2] = positionArray[2][y][1];
+        positionArray[2][y][1] = tmp;
+      }
+    } else if (move == 5) {
+      z = 0;
+      for (int z = 0; z < 3; z++) {
+        tmp = positionArray[2][0][z];
+        positionArray[2][0][z] = positionArray[0][0][z];
+        positionArray[0][0][z] = positionArray[0][2][z];
+        positionArray[0][2][z] = positionArray[2][2][z];
+        positionArray[2][2][z] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[1][0][z];
+        positionArray[1][0][z] = positionArray[0][1][z];
+        positionArray[0][1][z] = positionArray[1][2][z];
+        positionArray[1][2][z] = positionArray[2][1][z];
+        positionArray[2][1][z] = tmp;
+      }
+    } else if (move == 4) {
+      z = 0;
+      for (int z = 0; z < 3; z++) {
+        tmp = positionArray[0][2][z];
+        positionArray[0][2][z] = positionArray[0][0][z];
+        positionArray[0][0][z] = positionArray[2][0][z];
+        positionArray[2][0][z] = positionArray[2][2][z];
+        positionArray[2][2][z] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[0][1][z];
+        positionArray[0][1][z] = positionArray[1][0][z];
+        positionArray[1][0][z] = positionArray[2][1][z];
+        positionArray[2][1][z] = positionArray[1][2][z];
+        positionArray[1][2][z] = tmp;
+      }
+
+    } else if (move == 6) {
+        x = 0;
+        // moving corner pieces
+        tmp = positionArray[x][0][2];
+        positionArray[x][0][2] = positionArray[x][0][0];
+        positionArray[x][0][0] = positionArray[x][2][0];
+        positionArray[x][2][0] = positionArray[x][2][2];
+        positionArray[x][2][2] = tmp;
+
+        // moving edge positionArray
+        tmp = positionArray[x][0][1];
+        positionArray[x][0][1] = positionArray[x][1][0];
+        positionArray[x][1][0] = positionArray[x][2][1];
+        positionArray[x][2][1] = positionArray[x][1][2];
+        positionArray[x][1][2] = tmp;
   }
   else if (move == 7) {
       x = 1;
@@ -1071,6 +1168,140 @@ glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy) {
     anim = glm::translate(anim, -(glm::vec3(2.1f, 0.0f, 2.1f)));
     anim = glm::translate(anim, -(glm::vec3(-2.1f, 0.0f, -4.2f)));
 
+
+    return anim;
+}
+
+glm::mat4 spinAllX(glm::mat4 anim, float orientation, int i, bool fancy = true) {
+    glm::vec3 rot;
+    int sign = 1;
+
+    //right Row
+    rot = glm::vec3(1.0f, 0.0f, 0.0f);
+
+    if(orientation == -1.0) {
+
+        rot = calcAxis(i, rot, UP_X);
+
+        sign = getOrientationFromAxis(i, rot, UP_X);
+
+        // if(i == BOTTOM_LEFT) {
+        //     cout << i << ": " << rot.x << rot.y << rot.z << endl;
+        //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+        // }
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+            setAxis(i, rot, UP_X);
+
+            // if(i == BOTTOM)
+            //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+        }
+    } else {
+        rot = calcAxis(i, rot, DOWN_X);
+
+        sign = getOrientationFromAxis(i, rot, DOWN_X);
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+            setAxis(i, rot, DOWN_X);
+
+            // if(i == BOTTOM)
+            //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+        }
+    }
+    anim = rotX(anim, orientation*sign, rot, fancy);
+        // cout << nrRotations << endl;
+    if(fancy == true) {
+        nrRotations += 1;
+    } else {
+        nrRotations = 90*27;
+    }
+
+    return anim;
+}
+
+glm::mat4 spinAllZ(glm::mat4 anim, float orientation, int i, bool fancy = true) {
+    glm::vec3 rot;
+    int sign;
+    bool trans = true;
+
+    rot = glm::vec3(0.0f, 0.0f, 1.0f); //TODO: initial
+
+
+    if(orientation == 1.0) {
+
+        rot = calcAxis(i, rot, LEFT_Z);
+
+        sign = getOrientationFromAxis(i, rot, LEFT_Z);
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+            setAxis(i, rot, LEFT_Z);
+        }
+
+    } else {
+        rot = calcAxis(i, rot, RIGHT_Z);
+
+        sign = getOrientationFromAxis(i, rot, RIGHT_Z);
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+            setAxis(i,rot, RIGHT_Z);
+
+        }
+    }
+
+    if (xAxisArray[i] == AXIS_RIGHT && yAxisArray[i] == AXIS_UP && zAxisArray[i] == AXIS_FRONT) {
+        trans = false;
+    }
+
+    // cout << sign << endl;
+    anim = rotZ(anim, orientation*sign, rot, trans, fancy);
+    // cout << nrRotations << endl;
+    if(fancy == true) {
+        nrRotations +=1;
+    } else {
+        nrRotations = 90*27;
+    }
+
+    return anim;
+}
+
+glm::mat4 spinAllY(glm::mat4 anim, float orientation, int i, bool fancy = true) {
+    glm::vec3 rot;
+    int sign = 0;
+
+    rot = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    if (orientation == 1.0) { // counter clockwise
+        rot = calcAxis(i, rot, LEFT_Y);
+
+        sign = getOrientationFromAxis(i, rot, LEFT_Y);
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+            setAxis(i, rot, LEFT_Y);
+        //    if(i == BOTTOM_LEFT)
+        //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+        }
+    } else {
+        // if(i == BOTTOM+9)
+        //  cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+
+        rot = calcAxis(i, rot, RIGHT_Y);
+
+        sign = getOrientationFromAxis(i, rot, RIGHT_Y);
+
+        if(nrRotations >= 90*27-27 || fancy == false) {
+        setAxis(i, rot, RIGHT_Y);
+        //    if(i == BOTTOM_LEFT)
+        //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
+        }
+    }
+
+    anim = rotY(anim, orientation*sign, rot, fancy);
+    // cout << nrRotations << endl;
+    if(fancy == true) {
+        nrRotations +=1;
+    } else {
+        nrRotations = 90*27;
+    }
 
     return anim;
 }
@@ -1865,12 +2096,9 @@ int main()
     /* event-handling and rendering loop                                      */
     /*                                                                        */
 
-    // bool state = true;
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
-    //std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
     int move = -1;
     array<glm::mat4,27> animArray;
 
@@ -1886,20 +2114,10 @@ int main()
     AlgoCube algoCube = AlgoCube();
     algoCube.initCube();
     algoCube.createRandomCube();
-    // algoCube.spinLayerDown90AlongX(0, 1);
-    // algoCube.spinLayerDown90AlongX(2, 1);
-    // algoCube.spinLayerRight90AlongZ(0, 1);
-    // algoCube.spinLayerUp90AlongX(2, 1);
-    // algoCube.spinLayerLeft90AlongY(0, 1);
     algoCube.solveRubiksCube();
     vector<int> randomizer = algoCube.getRandomizeCubeMoves();
     vector<int> solverMoves = algoCube.getMoves();
     solverMoves.push_back(-1);
-    // vector<int> randomizer = {6, 9};
-    // vector<int> solverMoves = {9, 11, 18, 8, 15,-1};
-    //vector<int> randomizer = {};
-    //vector<int> solverMoves = {-1};
-    // createAnim(shaderProgram, anim2);
 
     vector<int> moves = {-1};
 
@@ -1967,55 +2185,23 @@ int main()
             rotating = true;
 
             if(move == 0) {
-                moves.insert(moves.begin()+vecCounter, 6);
-                moves.insert(moves.begin()+vecCounter + 1, 7);
-                moves.insert(moves.begin()+vecCounter + 2, 8);
-                moves.erase(moves.begin()+vecCounter + 3);
-                // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+                myAnim = spinAllX(myAnim, -1.0, i, solver);
+                animArray[i] = myAnim;
             } else if(move == 1) {
-                moves.insert(moves.begin()+vecCounter, 9);
-                moves.insert(moves.begin()+vecCounter + 1, 10);
-                moves.insert(moves.begin()+vecCounter + 2, 11);
-                moves.erase(moves.begin()+vecCounter + 3);
-                // cout << moves.at(0) << " " << moves.at(1) << " " << moves.at(2) << " " <<moves.at(3) << endl;
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+                myAnim = spinAllX(myAnim, 1.0, i, solver);
+                animArray[i] = myAnim;
             } else if(move == 2) {
-                moves.insert(moves.begin()+vecCounter, 12);
-                moves.insert(moves.begin()+vecCounter + 1, 13);
-                moves.insert(moves.begin()+vecCounter + 2, 14);
-                moves.erase(moves.begin()+vecCounter +3);
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+                myAnim = spinAllZ(myAnim, -1.0, i, solver);
+                animArray[i] = myAnim;
             } else if(move == 3) {
-                moves.insert(moves.begin()+vecCounter, 15);
-                moves.insert(moves.begin()+vecCounter + 1, 16);
-                moves.insert(moves.begin()+vecCounter + 2, 17);
-                moves.erase(moves.begin()+vecCounter +3);
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+                myAnim = spinAllZ(myAnim, 1.0, i, solver);
+                animArray[i] = myAnim;
             } else if(move == 4) {
-                moves.insert(moves.begin()+vecCounter, 21);
-                moves.insert(moves.begin()+vecCounter + 1, 22);
-                moves.insert(moves.begin()+vecCounter + 2, 23);
-                moves.erase(moves.begin()+vecCounter +3);
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+                myAnim = spinAllY(myAnim, -1.0, i, solver);
+                animArray[i] = myAnim;
             } else if(move == 5) {
-                moves.insert(moves.begin()+vecCounter, 18);
-                moves.insert(moves.begin()+vecCounter + 1, 19);
-                moves.insert(moves.begin()+vecCounter + 2, 20);
-                moves.erase(moves.begin()+vecCounter +3);
-                nrRotations = 90*9;
-                vecCounter --;
-                break;
+               myAnim = spinAllY(myAnim, 1.0, i, solver);
+               animArray[i] = myAnim;
             } else if(move == 6) {
                 myAnim = spinX0(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
@@ -2083,18 +2269,32 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, 6*36);
         }
 
-        if(nrRotations == 90*9) {
-            // cout << "here" << endl;
-            changeCubePositions(move);
-            nrRotations = 0;
-            vecCounter += 1;
-            // printAxisArray();
-            if (vecCounter % 10 == 0)
-              cout << "cnt: " << vecCounter << endl;
-            key_row = -1;
-            key_axis = -1;
-            move = -1;
-            rotating = false;
+        if(move == 0 || move == 1 || move == 2 || move == 3 || move == 4 || move == 5) {
+            if(nrRotations == 90*27) {
+                changeCubePositions(move);
+                nrRotations = 0;
+                vecCounter += 1;
+                // printAxisArray();
+                if (vecCounter % 10 == 0)
+                cout << "cnt: " << vecCounter << endl;
+                key_row = -1;
+                key_axis = -1;
+                move = -1;
+                rotating = false;
+            }
+        } else {
+            if(nrRotations == 90*9) {
+                changeCubePositions(move);
+                nrRotations = 0;
+                vecCounter += 1;
+                // printAxisArray();
+                if (vecCounter % 10 == 0)
+                cout << "cnt: " << vecCounter << endl;
+                key_row = -1;
+                key_axis = -1;
+                move = -1;
+                rotating = false;
+            }
         }
 
         currentTime = glfwGetTime();

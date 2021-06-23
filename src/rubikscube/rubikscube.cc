@@ -306,60 +306,60 @@ void AlgoCube::printWholeCube() {
 
 // spins whole cube up along the x axis
 void AlgoCube::spinUp90AlongX() {
-    spinLayerUp90AlongX(0);
-    spinLayerUp90AlongX(1);
-    spinLayerUp90AlongX(2);
+    spinLayerUp90AlongX(0, false, false);
+    spinLayerUp90AlongX(1, false, false);
+    spinLayerUp90AlongX(2, false, false);
 
-    //moves.push_back(0);
+    moves.push_back(0);
 }
 
 // spins whole cube down along the x axis
 void AlgoCube::spinDown90AlongX() {
-    spinLayerDown90AlongX(0);
-    spinLayerDown90AlongX(1);
-    spinLayerDown90AlongX(2);
+    spinLayerDown90AlongX(0, false, false);
+    spinLayerDown90AlongX(1, false, false);
+    spinLayerDown90AlongX(2, false, false);
 
-    //moves.push_back(1);
+    moves.push_back(1);
 }
 
 // spins whole cube to the right along the y axis
 void AlgoCube::spinRight90AlongY() {
-    spinLayerRight90AlongY(0);
-    spinLayerRight90AlongY(1);
-    spinLayerRight90AlongY(2);
+    spinLayerRight90AlongY(0, false, false);
+    spinLayerRight90AlongY(1, false, false);
+    spinLayerRight90AlongY(2, false, false);
 
-    //moves.push_back(2);
+    moves.push_back(2);
 }
 
 // spins whole cube to the left along the y axis
 void AlgoCube::spinLeft90AlongY() {
-    spinLayerLeft90AlongY(0);
-    spinLayerLeft90AlongY(1);
-    spinLayerLeft90AlongY(2);
+    spinLayerLeft90AlongY(0, false, false);
+    spinLayerLeft90AlongY(1, false, false);
+    spinLayerLeft90AlongY(2, false, false);
 
-    //moves.push_back(3);
+    moves.push_back(3);
 }
 
 // spins whole cube to the right along the z axis
 void AlgoCube::spinRight90AlongZ() {
-    spinLayerRight90AlongZ(0);
-    spinLayerRight90AlongZ(1);
-    spinLayerRight90AlongZ(2);
+    spinLayerRight90AlongZ(0, false, false);
+    spinLayerRight90AlongZ(1, false, false);
+    spinLayerRight90AlongZ(2, false, false);
 
-    //moves.push_back(4);
+    moves.push_back(4);
 }
 
 // spins whole cube to the left along the z axis
 void AlgoCube::spinLeft90AlongZ() {
-    spinLayerLeft90AlongZ(0);
-    spinLayerLeft90AlongZ(1);
-    spinLayerLeft90AlongZ(2);
+    spinLayerLeft90AlongZ(0, false, false);
+    spinLayerLeft90AlongZ(1, false, false);
+    spinLayerLeft90AlongZ(2, false, false);
 
-    //moves.push_back(5);
+    moves.push_back(5);
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) up 90 degrees along the x axis
-void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, int forRandomize) {
+void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, bool intoMovesArray, bool forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -387,7 +387,7 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, int forRandomize) {
     cubePieces[x][2][1] = cubePieces[x][1][2];
     cubePieces[x][1][2] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (xLayer) {
             case 0:
                 moves.push_back(6);
@@ -400,7 +400,7 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (xLayer) {
             case 0:
                 randomizeCubeMoves.push_back(6);
@@ -416,7 +416,7 @@ void AlgoCube::spinLayerUp90AlongX(unsigned xLayer, int forRandomize) {
 }
 
 // spins affected layer (0: left, 1: middle, 2: right) down 90 degrees along the x axis
-void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, int forRandomize) {
+void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, bool intoMovesArray, bool forRandomize) {
     unsigned y, z;
     unsigned x = xLayer;
     CubePiece tmp;
@@ -444,7 +444,7 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, int forRandomize) {
     cubePieces[x][1][2] = cubePieces[x][2][1];
     cubePieces[x][2][1] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (xLayer) {
             case 0:
                 moves.push_back(9);
@@ -457,7 +457,7 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (xLayer) {
             case 0:
                 randomizeCubeMoves.push_back(9);
@@ -473,7 +473,7 @@ void AlgoCube::spinLayerDown90AlongX(unsigned xLayer, int forRandomize) {
 }
 
 // spins the affected layer 90 degrees to the right along y axis
-void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, int forRandomize) {
+void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, bool intoMovesArray, bool forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -501,7 +501,7 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, int forRandomize) {
     cubePieces[2][y][1] = cubePieces[1][y][2];
     cubePieces[1][y][2] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (yLayer) {
             case 0:
                 moves.push_back(12);
@@ -514,7 +514,7 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (yLayer) {
             case 0:
                 randomizeCubeMoves.push_back(12);
@@ -529,7 +529,7 @@ void AlgoCube::spinLayerRight90AlongY(unsigned yLayer, int forRandomize) {
     }
 }
 
-void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, int forRandomize) {
+void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, bool intoMovesArray, bool forRandomize) {
     unsigned x, z;
     unsigned y = yLayer;
     CubePiece tmp;
@@ -557,7 +557,7 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, int forRandomize) {
     cubePieces[1][y][2] = cubePieces[2][y][1];
     cubePieces[2][y][1] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (yLayer) {
             case 0:
                 moves.push_back(15);
@@ -570,7 +570,7 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (yLayer) {
             case 0:
                 randomizeCubeMoves.push_back(15);
@@ -586,7 +586,7 @@ void AlgoCube::spinLayerLeft90AlongY(unsigned yLayer, int forRandomize) {
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the right along z axis
-void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, int forRandomize) {
+void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, bool intoMovesArray, bool forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -614,7 +614,7 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, int forRandomize) {
     cubePieces[2][1][z] = cubePieces[1][2][z];
     cubePieces[1][2][z] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (zLayer) {
             case 0:
                 moves.push_back(18);
@@ -627,7 +627,7 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (zLayer) {
             case 0:
                 randomizeCubeMoves.push_back(18);
@@ -643,7 +643,7 @@ void AlgoCube::spinLayerRight90AlongZ(unsigned zLayer, int forRandomize) {
 }
 
 // spins the affected layer (0: bottom - 1: middle - 2: top) 90 degrees to the left along z axis
-void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize) {
+void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, bool intoMovesArray, bool forRandomize) {
     unsigned x, y;
     unsigned z = zLayer;
     CubePiece tmp;
@@ -671,7 +671,7 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize) {
     cubePieces[1][2][z] = cubePieces[2][1][z];
     cubePieces[2][1][z] = tmp;
 
-    if (forRandomize == 0) {
+    if (intoMovesArray == true && forRandomize == false) {
         switch (zLayer) {
             case 0:
                 moves.push_back(21);
@@ -684,7 +684,7 @@ void AlgoCube::spinLayerLeft90AlongZ(unsigned zLayer, int forRandomize) {
                 break;
         }
     }
-    else {
+    else if (intoMovesArray == false && forRandomize == true){
         switch (zLayer) {
             case 0:
                 randomizeCubeMoves.push_back(21);
@@ -1807,32 +1807,32 @@ void AlgoCube::createRandomCube() {
         switch(randomMove) {
             case 0:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerUp90AlongX(randomLayer, 1);
+                    spinLayerUp90AlongX(randomLayer, false, true);
                 cout << "spinned layer up 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 1:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerDown90AlongX(randomLayer, 1);
+                    spinLayerDown90AlongX(randomLayer, false, true);
                 cout << "spinned layer down 90 along x, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 2:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongY(randomLayer, 1);
+                    spinLayerRight90AlongY(randomLayer, false, true);
                 cout << "spinned layer right 90 along y, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 3:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongY(randomLayer, 1);
+                    spinLayerLeft90AlongY(randomLayer, false, true);
                 cout << "spinned layer left 90 along y, layer:" << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 4:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerRight90AlongZ(randomLayer, 1);
+                    spinLayerRight90AlongZ(randomLayer, false, true);
                 cout << "spinned layer right 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
             case 5:
                 for (p = 0; p < randomNrRotations; p++)
-                    spinLayerLeft90AlongZ(randomLayer, 1);
+                    spinLayerLeft90AlongZ(randomLayer, false, true);
                 cout << "spinned layer left 90 along z, layer: " << randomLayer << ", " << randomNrRotations << " times" << endl;
                 break;
         }
@@ -1856,35 +1856,32 @@ int test() {
     cube.initCube();
     //cube.createRandomCube();
 
-    // cube.printWholeCube();
-    cube.spinLayerRight90AlongZ(1, 1);
+    cube.spinLayerDown90AlongX(2, false, true);
 
-    cube.spinLayerUp90AlongX(2, 1);
-    cube.spinLayerUp90AlongX(2, 1);
-    cube.spinLayerUp90AlongX(2, 1);
+    cube.spinLayerLeft90AlongY(1, false, true);
+    cube.spinLayerLeft90AlongY(1, false, true);
 
-    cube.spinLayerDown90AlongX(1, 1);
-    cube.spinLayerDown90AlongX(1, 1);
-    cube.spinLayerDown90AlongX(1, 1);
+    cube.spinLayerLeft90AlongY(2, false, true);
+    cube.spinLayerLeft90AlongY(2, false, true);
+    cube.spinLayerLeft90AlongY(2, false, true);
 
-    cube.spinLayerRight90AlongZ(1, 1);
-
+    // cube fails to solve this
 
     cube.solveRubiksCube();
     cube.printWholeCube();
 
     cout << "Nr Moves: " << cube.getRandomizeCubeMoves().size() << endl;
     cout << "Nr Moves: " << cube.getMoves().size() << endl;
-    
-    cout << "First random Move: " << cube.getRandomizeCubeMoves().at(0) << endl;
-    cout << "Second random Move: " << cube.getRandomizeCubeMoves().at(1) << endl;
-    cout << "Third random Move: " << cube.getRandomizeCubeMoves().at(2) << endl;
-    cout << "Fourth random Move: " << cube.getRandomizeCubeMoves().at(3) << endl;
 
-    cout << "First Move: " << cube.getMoves().at(0) << endl;
-    cout << "Second Move: " << cube.getMoves().at(1) << endl;
-    cout << "Third Move: " << cube.getMoves().at(2) << endl;
-    cout << "Fourth Move: " << cube.getMoves().at(3) << endl;
+    for (unsigned i = 0; i < cube.getRandomizeCubeMoves().size(); i++) {
+        cout << "Random " << i << ": " << cube.getRandomizeCubeMoves().at(i) << endl;
+    }
+
+    cout << "----------------------------------------------------\n----------------------------------------------------" << endl;
+
+    for (unsigned i = 0; i < cube.getMoves().size(); i++) {
+        cout << "Solver Move " << i << ": " << cube.getMoves().at(i) << endl;
+    }
 
     return 0;
 }
