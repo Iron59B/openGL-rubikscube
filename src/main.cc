@@ -1299,7 +1299,7 @@ glm::mat4 spinAllY(glm::mat4 anim, float orientation, int i, bool fancy = true) 
     } else {
         nrRotations = 90*27;
     }
-    
+
     return anim;
 }
 
@@ -2199,7 +2199,7 @@ int main()
                 animArray[i] = myAnim;
             } else if(move == 1) {
                 myAnim = spinAllX(myAnim, 1.0, i, solver);
-                animArray[i] = myAnim; 
+                animArray[i] = myAnim;
             } else if(move == 2) {
                 myAnim = spinAllZ(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
@@ -2281,7 +2281,6 @@ int main()
 
         if(move == 0 || move == 1 || move == 2 || move == 3 || move == 4 || move == 5) {
             if(nrRotations == 90*27) {
-                cout << nrRotations << endl;
                 changeCubePositions(move);
                 nrRotations = 0;
                 vecCounter += 1;
@@ -2295,7 +2294,6 @@ int main()
             }
         } else {
             if(nrRotations == 90*9) {
-                cout << nrRotations << endl;
                 changeCubePositions(move);
                 nrRotations = 0;
                 vecCounter += 1;
