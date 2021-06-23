@@ -787,7 +787,7 @@ void changeCubePositions(int move) {
         positionArray[1][y][2] = positionArray[2][y][1];
         positionArray[2][y][1] = tmp;
       }
-    } else if (move == 4) {
+    } else if (move == 5) {
       z = 0;
       for (int z = 0; z < 3; z++) {
         tmp = positionArray[2][0][z];
@@ -803,7 +803,7 @@ void changeCubePositions(int move) {
         positionArray[1][2][z] = positionArray[2][1][z];
         positionArray[2][1][z] = tmp;
       }
-    } else if (move == 5) {
+    } else if (move == 4) {
       z = 0;
       for (int z = 0; z < 3; z++) {
         tmp = positionArray[0][2][z];
@@ -2093,12 +2093,9 @@ int main()
     /* event-handling and rendering loop                                      */
     /*                                                                        */
 
-    // bool state = true;
     glm::mat4 myAnim;
     nrRotations = 0;
 
-    // std::vector<int> moves { 15, 8, 22, 7, 6, 10, 9, 0};
-    //std::vector<int> moves {7, 6, 19, 8, 8, 18, 23, 21, 20, 12, 0};
     int move = -1;
     array<glm::mat4,27> animArray;
 
@@ -2114,20 +2111,10 @@ int main()
     AlgoCube algoCube = AlgoCube();
     algoCube.initCube();
     algoCube.createRandomCube();
-    // algoCube.spinLayerDown90AlongX(0, 1);
-    // algoCube.spinLayerDown90AlongX(2, 1);
-    // algoCube.spinLayerRight90AlongZ(0, 1);
-    // algoCube.spinLayerUp90AlongX(2, 1);
-    // algoCube.spinLayerLeft90AlongY(0, 1);
     algoCube.solveRubiksCube();
     vector<int> randomizer = algoCube.getRandomizeCubeMoves();
     vector<int> solverMoves = algoCube.getMoves();
     solverMoves.push_back(-1);
-    // vector<int> randomizer = {6, 9};
-    // vector<int> solverMoves = {0,1,2,8,3,4,5,15,23,9,4,2,5,1,-1};
-    //vector<int> randomizer = {};
-    // vector<int> solverMoves = {-1};
-    // createAnim(shaderProgram, anim2);
 
     vector<int> moves = {-1};
 
@@ -2207,10 +2194,10 @@ int main()
                 myAnim = spinAllZ(myAnim, 1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 4) {
-                myAnim = spinAllY(myAnim, 1.0, i, solver);
+                myAnim = spinAllY(myAnim, -1.0, i, solver);
                 animArray[i] = myAnim;
             } else if(move == 5) {
-               myAnim = spinAllY(myAnim, -1.0, i, solver);
+               myAnim = spinAllY(myAnim, 1.0, i, solver);
                animArray[i] = myAnim;
             } else if(move == 6) {
                 myAnim = spinX0(myAnim, -1.0, i, solver);

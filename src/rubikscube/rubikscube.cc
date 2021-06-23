@@ -1800,7 +1800,7 @@ void AlgoCube::createRandomCube() {
 
     cout << "started to rotate cube randomly...\n.\n." << endl;
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < randomLoops; i++) {
         randomMove = rand() % 6;
         randomNrRotations = rand() % 3 + 1;
         randomLayer = rand() % 3;
