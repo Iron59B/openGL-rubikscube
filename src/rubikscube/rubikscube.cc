@@ -1800,7 +1800,7 @@ void AlgoCube::createRandomCube() {
 
     cout << "started to rotate cube randomly...\n.\n." << endl;
 
-    for (i = 0; i < randomLoops; i++) {
+    for (i = 0; i < 3; i++) {
         randomMove = rand() % 6;
         randomNrRotations = rand() % 3 + 1;
         randomLayer = rand() % 3;
@@ -1856,14 +1856,14 @@ int test() {
     cube.initCube();
     //cube.createRandomCube();
 
-    cube.spinLayerDown90AlongX(2);
+    cube.spinLayerDown90AlongX(2, false, true);
 
-    cube.spinLayerLeft90AlongY(1);
-    cube.spinLayerLeft90AlongY(1);
+    cube.spinLayerLeft90AlongY(1, false, true);
+    cube.spinLayerLeft90AlongY(1, false, true);
 
-    cube.spinLayerLeft90AlongY(2);
-    cube.spinLayerLeft90AlongY(2);
-    cube.spinLayerLeft90AlongY(2);
+    cube.spinLayerLeft90AlongY(2, false, true);
+    cube.spinLayerLeft90AlongY(2, false, true);
+    cube.spinLayerLeft90AlongY(2, false, true);
 
     // cube fails to solve this
 
