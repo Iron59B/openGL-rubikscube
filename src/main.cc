@@ -2258,6 +2258,8 @@ int main()
                 animArray[i] = myAnim;
             } else {
               rotating = false;
+              if (s_clicked == true)
+                r_clicked = false;
             }
             // printf("/-----------------------------------------/ \n");
 
@@ -2289,7 +2291,7 @@ int main()
                 vecCounter += 1;
                 // printAxisArray();
                 if (vecCounter % 10 == 0)
-                cout << "cnt: " << vecCounter << endl;
+                  cout << "cnt: " << vecCounter << endl;
                 key_row = -1;
                 key_axis = -1;
                 move = -1;
