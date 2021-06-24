@@ -1879,7 +1879,6 @@ int main()
         Cube(TOP_RIGHT, -4.2f),
         Cube(BOTTOM_LEFT, -4.2f),
         Cube(BOTTOM_RIGHT, -4.2f),
-        // Cube(BOTTOM, 0.0f)
     };
 
     //std::vector<GLfloat> vtxArray;
@@ -2138,6 +2137,7 @@ int main()
 
         if (r_clicked == false) {
           if (key_row != -1 && key_axis != -1) {
+            solver = true;
              move = getMove();
              if (move != -1)
                rotating = true;
@@ -2154,7 +2154,7 @@ int main()
           if (move == -1 && moves.at(0) == -1)
             moves = randomizer;
         }
-        if (moves.at(0) != -1) {
+        if (moves.at(0) != -1 && r_clicked == true) {
           if (vecCounter < (int) moves.size()) {
               move = moves.at(vecCounter);
           }
@@ -2258,8 +2258,10 @@ int main()
                 animArray[i] = myAnim;
             } else {
               rotating = false;
-              if (s_clicked == true)
+              if (s_clicked == true) {
                 r_clicked = false;
+                s_clicked = false;
+              }
             }
             // printf("/-----------------------------------------/ \n");
 
