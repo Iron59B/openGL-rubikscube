@@ -50,7 +50,7 @@ const int RIGHT_Y = -2;
 const int LEFT_Z = 3;
 const int RIGHT_Z = -3;
 
-static glm::vec3 position = glm::vec3(4.0f, 4.0f, 6.0f);
+static glm::vec3 position = glm::vec3(0.0f, 0.0f, 10.0f);
 static GLfloat theta=0, phi=0;
 static GLfloat x_pos_old, y_pos_old;
 static GLfloat fov = 100.0f;
@@ -687,7 +687,7 @@ void lookAtCallBack(GLFWwindow* myWindow)
         position.y = tmp_y;
         position.z = tmp_z;
 
-        // cout << position.x << ", " << position.y << ", " << position.z << endl;
+        //cout << position.x << ", " << position.y << ", " << position.z << endl;
     }
 }
 
@@ -2041,7 +2041,7 @@ int main()
     GLfloat currentTime = 0;
 
 
-    glm::mat4 view = glm::lookAt(glm::vec3(4.0f, 4.0f, 6.0f),
+    glm::mat4 view = glm::lookAt(position,
                                  glm::vec3(0.0f, 0.0f, -2.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
 
