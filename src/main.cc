@@ -66,7 +66,6 @@ static GLfloat deltaTime = 0.0f;
 static int speed = 110;
 static bool cam_move = false;
 static bool solver = true;
-static float resultAngle = 0.0;
 static int avCounter = DELTA_ACCURACY+5;
 static float avDeltaTime = 0.0;
 static float limit = 90.0;
@@ -1145,20 +1144,6 @@ void createAnim(GLuint shaderProgram, glm::mat4 anim) {
   glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
 }
 
-bool reachedLimit(bool allCubes) {
-  float thres = 0.0;
-  if (!allCubes) {
-    if (resultAngle < (9*90 + thres) && resultAngle > (9*90 - thres)) {
-      return true;
-    }
-  } else {
-    if (resultAngle < (27*90 + thres+3) && resultAngle > (27*90 - thres+3)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans, bool fancy, bool lastRound) {
     // float angle = 1.0f * orientation;
     float angle = 0.0;
@@ -1172,12 +1157,8 @@ glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans, boo
         deltaTimeError();
     }
 
-    if(fancy) {
-      resultAngle += abs(angle);
-    }
-    else if(fancy == false) {
+    if(fancy == false) {
         angle = 90.0f * orientation;
-        resultAngle += 90;
     }
     if(trans == true) {
         anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
@@ -1204,12 +1185,8 @@ glm::mat4 rotX(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy, bo
         deltaTimeError();
     }
 
-    if(fancy) {
-      resultAngle += abs(angle);
-    }
-    else if(fancy == false) {
+    if(fancy == false) {
         angle = 90.0f * orientation;
-        resultAngle += 90;
     }
     anim = glm::translate(anim, glm::vec3(0.0f, 0.0f, -2.1f) );
     anim = glm::rotate(anim, glm::radians(angle), axis);
@@ -1232,12 +1209,8 @@ glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy, bo
         deltaTimeError();
     }
 
-    if(fancy) {
-      resultAngle += abs(angle);
-    }
-    else if(fancy == false) {
+    if(fancy == false) {
         angle = 90.0f * orientation;
-        resultAngle += 90;
     }
     anim = glm::translate(anim, glm::vec3(-2.1f, 0.0f, -4.2f));
     anim = glm::translate(anim, glm::vec3(2.1f, 0.0f, 2.1f));
@@ -1410,7 +1383,6 @@ glm::mat4 spinX2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
             //     cout << i << ": " << rot.x << rot.y << rot.z << endl;
             //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
             // }
-            //cout << resultAngle << endl;
 
             if(nrRotations >= (limit*9)-9 || fancy == false) {
                 lastRound = true;
@@ -2385,7 +2357,6 @@ int main()
             if(nrRotations == limit*27) {
                 changeCubePositions(move);
                 nrRotations = 0;
-                resultAngle = 0;
                 vecCounter += 1;
                 // printAxisArray();
                 if (vecCounter % 10 == 0)
@@ -2399,7 +2370,6 @@ int main()
             if(nrRotations == limit*9) {
                 changeCubePositions(move);
                 nrRotations = 0;
-                resultAngle = 0;
                 vecCounter += 1;
                 // printAxisArray();
                 if (vecCounter % 10 == 0)
