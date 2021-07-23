@@ -63,7 +63,7 @@ static int key_row = -1;
 static int key_axis = -1;
 static bool rotating = false;
 static GLfloat deltaTime = 0.0f;
-static int speed = 100;
+static int speed = 110;
 static bool cam_move = false;
 static bool solver = true;
 static float resultAngle = 0.0;
@@ -114,9 +114,9 @@ static void calcAvDeltaTimeAndLimit() {
 
     limit = (int) (90.0 / (avDeltaTime*speed));
     degLoss = 90 - (avDeltaTime*speed * limit);
-    cout << "precise Limit: " << 90.0 / (avDeltaTime*speed) << endl;
-    cout << "roughly limit: " << limit << endl;
-    cout << "loss of degrees per cube: " << 90 - (avDeltaTime*speed * limit) << endl;
+    // cout << "precise Limit: " << 90.0 / (avDeltaTime*speed) << endl;
+    // cout << "roughly limit: " << limit << endl;
+    // cout << "loss of degrees per cube: " << 90 - (avDeltaTime*speed * limit) << endl;
 }
 
 static void deltaTimeError() {
@@ -1166,7 +1166,7 @@ glm::mat4 rotZ(glm::mat4 anim, float orientation, glm::vec3 rot, bool trans, boo
     if (avDeltaTime != 0.0) {
         angle = 1.0f * avDeltaTime*speed * orientation;
         if (lastRound) {
-            angle += degLoss;
+            angle += orientation * degLoss;
         }
     } else {
         deltaTimeError();
@@ -1198,8 +1198,7 @@ glm::mat4 rotX(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy, bo
     if (avDeltaTime != 0.0) {
         angle = 1.0f * avDeltaTime*speed * orientation;
         if (lastRound) {
-            angle += orientation*degLoss;
-            cout << "end of round, angle:" << angle << endl;
+            angle += orientation * degLoss;
         }
     } else {
         deltaTimeError();
@@ -1227,7 +1226,7 @@ glm::mat4 rotY(glm::mat4 anim, float orientation, glm::vec3 axis, bool fancy, bo
     if (avDeltaTime != 0.0) {
         angle = 1.0f * avDeltaTime*speed * orientation;
         if (lastRound) {
-            angle += degLoss;
+            angle += orientation * degLoss;
         }
     } else {
         deltaTimeError();
@@ -1439,7 +1438,7 @@ glm::mat4 spinX2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
        if(fancy == true) {
         nrRotations +=1;
        } else {
-         nrRotations = limit*27;
+         nrRotations = limit*9;
        }
         // }
 
@@ -1469,7 +1468,7 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
             //     cout << i << ": " << rot.x << rot.y << rot.z << endl;
             //     cout << "X: " << xAxisArray[i] << " Y: " << yAxisArray[i] << " Z: " << zAxisArray[i] << endl;
             // }
-            cout << nrRotations << endl;
+            //cout << nrRotations << endl;
             if(nrRotations >= (limit*9)-9 || fancy == false) {
                 setAxis(i, rot, UP_X);
                 lastRound = true;
@@ -1502,7 +1501,7 @@ glm::mat4 spinX1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
 
         // glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
@@ -1566,7 +1565,7 @@ glm::mat4 spinX0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
 
@@ -1625,7 +1624,7 @@ glm::mat4 spinZ0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
 
@@ -1677,7 +1676,7 @@ glm::mat4 spinZ1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations += 1;
         } else {
-            nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
 
@@ -1726,7 +1725,7 @@ glm::mat4 spinZ2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
 
@@ -1776,7 +1775,7 @@ glm::mat4 spinY2(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-            nrRotations = limit*27;
+          nrRotations = limit*9;
         //    glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(anim));
         }
     }
@@ -1828,7 +1827,7 @@ glm::mat4 spinY1(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
     // }
@@ -1878,7 +1877,7 @@ glm::mat4 spinY0(glm::mat4 anim, float orientation, int i, bool fancy = true) {
         if(fancy == true) {
             nrRotations +=1;
         } else {
-          nrRotations = limit*27;
+          nrRotations = limit*9;
         }
     }
     // }
