@@ -2133,7 +2133,7 @@ int main()
     /* load texture image */
     GLint texWidth, texHeight;
      GLint channels;
-    unsigned char* texImage = SOIL_load_image("img/katze.png",
+    unsigned char* texImage = SOIL_load_image("img/lel.png",
      &texWidth, &texHeight, &channels,
      SOIL_LOAD_RGB);
      if (texImage == NULL) {
