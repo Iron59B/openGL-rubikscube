@@ -26,32 +26,14 @@ std::array<GLfloat, 5 * 36> TexCube::createCubes()
         vtx[i] = this->initCube[i];
     }
 
-    // if (this->position == this->MIDDLE && (this->depth == 0))
-    // {
-    //     // printf("START OF INIT CUBE \n");
-    //   return vtx;
-    // }
-    // else
-    // {
-        // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
-        return addCube(vtx, this->position, this->depth);
-    // }
+    return addCube(vtx, this->position, this->depth);
 }
 
 std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, int position, GLfloat depth)
 {
 
-    // printf("Pointer: %u\n", &vtx);
-    // std::cout << &vtx << std::endl;
-
-    // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
-    // printf("Pointer before alg: %u\n", *vtx);
-    // printf("Pointer during alg: %u\n", *vtx);
-
     int elementsPerCube = 36 * 5;
 
-    //left cube
-    // printf("START OF CUBE \n");
     for (int i = 0; i + 4 < elementsPerCube; i += 5)
     {
         vtx[i + 2] = vtx[i + 2] + depth;
@@ -60,7 +42,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
         {
             vtx[i] = vtx[i] - 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 143 && i < 180)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
@@ -69,18 +50,14 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i > 143 && i < 180)) {
                 vtx[i + 3] = this->initCube[i + 3];
                 vtx[i + 4] = this->initCube[i + 4];
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 143 && i < 180)) {
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
@@ -89,7 +66,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
                 }
-            //   } 
             }
         }
 
@@ -97,7 +73,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
         {
             vtx[i] = vtx[i] + 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 179 && i < 216)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
@@ -106,16 +81,12 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i > 179 && i < 216)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 179 && i < 216)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
@@ -124,7 +95,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
                 }
-            //   } 
             }
         }
 
@@ -132,7 +102,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
         {
             vtx[i + 1] = vtx[i + 1] + 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 35 && i < 72)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
@@ -141,16 +110,12 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i > 35 && i < 72)) {
                 if(i > 29 && i < 60) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 35 && i < 72)) {
                 if(i > 89 && i < 120 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f; 
@@ -159,7 +124,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   } 
             }
         }
 
@@ -167,7 +131,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
         {
             vtx[i + 1] = vtx[i + 1] - 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i < 36)) {
                 if(i > 59 && i < 90) {
                 vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                 vtx[i + 4] = this->initCube[i + 4];
@@ -176,16 +139,12 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i < 36)) {
                 if(i >= 0 && i < 30) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i < 36)) {
                 if(i > 89 && i < 120 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4]; 
@@ -194,7 +153,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             }
         }
 
@@ -203,7 +161,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
             vtx[i] = vtx[i] - 2.1f;
             vtx[i + 1] = vtx[i + 1] + 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 35 && i < 72) || (i > 143 && i < 180)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
@@ -216,9 +173,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i > 35 && i < 72)  || (i > 143 && i < 180)) {
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f; 
@@ -227,9 +182,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 143 && i < 180) || (i > 35 && i < 72)) {
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f; 
@@ -242,7 +195,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   } 
             }
         }
 
@@ -251,7 +203,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
             vtx[i] = vtx[i] + 2.1f;
             vtx[i + 1] = vtx[i + 1] + 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 179 && i < 216) || (i > 35 && i < 72)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
@@ -264,9 +215,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i > 35 && i < 72) || (i > 179 && i < 216)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
@@ -275,9 +224,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 179 && i < 216) || (i > 35 && i < 72)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
@@ -290,7 +237,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   } 
             }
         }
 
@@ -300,7 +246,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
             vtx[i + 1] = vtx[i + 1] - 2.1f;
             if(depth == 0) {
                 if(i > 59 && i < 90) {
-            //   if((i > 71 && i < 108) || (i > 143 && i < 180) || (i < 36)) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4];
                 }
@@ -312,9 +257,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -2.1f) {
-            //   if((i < 36) || (i > 143 && i < 180)) {
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4]; 
@@ -323,9 +266,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 143 && i < 180) || (i < 36)) {
                 if(i > 119 && i < 150 ) {
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4]; 
@@ -338,7 +279,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3];
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             }
         }
 
@@ -347,7 +287,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
             vtx[i] = vtx[i] + 2.1f;
             vtx[i + 1] = vtx[i + 1] - 2.1f;
             if(depth == 0) {
-            //   if((i > 71 && i < 108) || (i > 179 && i < 216) || (i < 36)) {
                 if(i > 59 && i < 90) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
@@ -360,9 +299,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 2.0f/6.0f;
                 }
-            //   }  
             } else if (depth == -2.1f) {
-            //   if((i < 36) || (i > 179 && i < 216)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
@@ -371,9 +308,7 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
-            //   } 
             } else if (depth == -4.2f) {
-            //   if((i > 107 && i < 144) || (i > 179 && i < 216) || (i < 36)) {
                 if(i > 149 && i < 180) {
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
@@ -386,7 +321,6 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 3] = this->initCube[i + 3] + 2.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4];
                 }
-            //   } 
             }
         } else if (position == this->MIDDLE) {
           if (depth == 0) {
@@ -395,32 +329,16 @@ std::array<GLfloat, 5 * 36> TexCube::addCube(std::array<GLfloat, 5 * 36> vtx, in
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f;
                 }
           } else if (depth == -2.1f) {
-            // for (int i = 0; i < 36*6; i+=6) {
                vtx[i + 3] = this->initCube[i + 3];
                vtx[i + 4] = this->initCube[i + 4];
-            //  }
           } else if (depth == -4.2f) {
-        //    for (int i = 0; i < 36*6; i+=6) {
-        //      if ((i < 108 || i > 143)) {
                 if(i > 89 && i < 120 ) {
                     vtx[i + 3] = this->initCube[i + 3] + 1.0f/9.0f;
                     vtx[i + 4] = this->initCube[i + 4] + 1.0f/6.0f; 
                 }
-        //      }
-        //    }
-        }
+            }
        }
-
-
-        //printf("%f, %f, %f, %f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2], vtx[i+3], vtx[i+4], vtx[i+5]);
-        // printf("x: %f ", vtx[i]);
-        // printf("y: %f ", vtx[i+1]);
-        // printf("z: %f \n", vtx[i+2]);
-        // if(i+5 == elementsPerCube - 1) {
-        //     printf("END OF CUBE \n");
-        // }
     }
 
-    // printf("Pointer after alg: %u\n", *vtx);
     return vtx;
 }
