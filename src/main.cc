@@ -74,7 +74,8 @@ static float degLoss = 0.0;
 static bool lastRound = false;
 
 static GLint uniformAnim;
-static array<array<GLfloat,5*36>,27> vtxArray;
+static array<array<GLfloat,6*36>,27> vtxArray;
+static array<array<GLfloat,5*36>,27> vtxArrayTex;
 
 static int xAxisArray[27];
 static int yAxisArray[27];
@@ -1888,6 +1889,16 @@ void printCube(std::array<GLfloat,6*36> vtx) {
 
 int main()
 {
+    cout << "Textured Cube? [y/n]" << endl;
+    char cInput;
+    cin >> cInput ;
+    bool isTexured = false;
+
+    if(cInput == 'y') {
+        isTexured = true;
+
+    }
+    
     /* window dimensions */
     const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -1930,40 +1941,39 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // int vtxSize = 6*36;
-    // int arraySize = 27;
-    // static Cube cube[] ={
-    //     Cube(MIDDLE, 0.0f),
-    //     Cube(LEFT, 0.0f),
-    //     Cube(RIGHT, 0.0f),
-    //     Cube(TOP, 0.0f),
-    //     Cube(BOTTOM, 0.0f),
-    //     Cube(TOP_LEFT, 0.0f),
-    //     Cube(TOP_RIGHT, 0.0f),
-    //     Cube(BOTTOM_LEFT, 0.0f),
-    //     Cube(BOTTOM_RIGHT, 0.0f),
-    //     Cube(MIDDLE, -2.1f),
-    //     Cube(LEFT, -2.1f),
-    //     Cube(RIGHT, -2.1f),
-    //     Cube(TOP, -2.1f),
-    //     Cube(BOTTOM, -2.1f),
-    //     Cube(TOP_LEFT, -2.1f),
-    //     Cube(TOP_RIGHT, -2.1f),
-    //     Cube(BOTTOM_LEFT, -2.1f),
-    //     Cube(BOTTOM_RIGHT, -2.1f),
-    //     Cube(MIDDLE, -4.2f),
-    //     Cube(LEFT, -4.2f),
-    //     Cube(RIGHT, -4.2f),
-    //     Cube(TOP, -4.2f),
-    //     Cube(BOTTOM, -4.2f),
-    //     Cube(TOP_LEFT, -4.2f),
-    //     Cube(TOP_RIGHT, -4.2f),
-    //     Cube(BOTTOM_LEFT, -4.2f),
-    //     Cube(BOTTOM_RIGHT, -4.2f),
-    // };
-
     int arraySize = 27;
-    static TexCube cube[] ={
+    
+    static Cube colCube[] ={
+        Cube(MIDDLE, 0.0f),
+        Cube(LEFT, 0.0f),
+        Cube(RIGHT, 0.0f),
+        Cube(TOP, 0.0f),
+        Cube(BOTTOM, 0.0f),
+        Cube(TOP_LEFT, 0.0f),
+        Cube(TOP_RIGHT, 0.0f),
+        Cube(BOTTOM_LEFT, 0.0f),
+        Cube(BOTTOM_RIGHT, 0.0f),
+        Cube(MIDDLE, -2.1f),
+        Cube(LEFT, -2.1f),
+        Cube(RIGHT, -2.1f),
+        Cube(TOP, -2.1f),
+        Cube(BOTTOM, -2.1f),
+        Cube(TOP_LEFT, -2.1f),
+        Cube(TOP_RIGHT, -2.1f),
+        Cube(BOTTOM_LEFT, -2.1f),
+        Cube(BOTTOM_RIGHT, -2.1f),
+        Cube(MIDDLE, -4.2f),
+        Cube(LEFT, -4.2f),
+        Cube(RIGHT, -4.2f),
+        Cube(TOP, -4.2f),
+        Cube(BOTTOM, -4.2f),
+        Cube(TOP_LEFT, -4.2f),
+        Cube(TOP_RIGHT, -4.2f),
+        Cube(BOTTOM_LEFT, -4.2f),
+        Cube(BOTTOM_RIGHT, -4.2f),
+    };
+   
+    static TexCube texCube[] ={
         TexCube(MIDDLE, 0.0f),
         TexCube(LEFT, 0.0f),
         TexCube(RIGHT, 0.0f),
@@ -1992,6 +2002,7 @@ int main()
         TexCube(BOTTOM_LEFT, -4.2f),
         TexCube(BOTTOM_RIGHT, -4.2f),
     };
+    
 
     //std::vector<GLfloat> vtxArray;
 
@@ -2006,19 +2017,28 @@ int main()
 
     /* copy the vertex data to it */
 
+    int vtxSize = 5;
     for(int i = 0; i < arraySize; i++) {
+        if(!isTexured) {
+            vtxSize = 6;
+            vtxArray[i] = colCube[i].createCubes();
 
-       vtxArray[i] = cube[i].createCubes();
+            glBindVertexArray(myVAO[i]);
+            glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+            glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
+        } else if (isTexured) {
+            vtxArrayTex[i] = texCube[i].createCubes();
 
-        glBindVertexArray(myVAO[i]);
-        glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, vtxArray[i].size()*4, &vtxArray[i], GL_STATIC_DRAW);
+            glBindVertexArray(myVAO[i]);
+            glBindBuffer(GL_ARRAY_BUFFER, myVBO[i]);
+            glBufferData(GL_ARRAY_BUFFER, vtxArrayTex[i].size()*4, &vtxArrayTex[i], GL_STATIC_DRAW);
+        }
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vtxSize * sizeof(GLfloat), 0);
 
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, vtxSize - 3, GL_FLOAT, GL_FALSE, vtxSize * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
     }
 
     /* OpenGL settings */
@@ -2029,21 +2049,33 @@ int main()
 
     /* define and compile the vertex shader */
     const char* vertexShaderSource = GLSL(
-      layout(location=0) in vec3 position;
-      in vec2 textureCoordIn;
-    //   layout(location=1) in vec3 colorVtxIn;
-      uniform mat4 proj;
-      uniform mat4 view;
-      uniform mat4 anim;
-    //   out vec3 colorVtxOut;
-      out vec2 textureCoordOut;
-      void main() {
-        textureCoordOut = vec2(textureCoordIn.x,
-                            1.0 - textureCoordIn.y);
-        // colorVtxOut = colorVtxIn;
+    layout(location=0) in vec3 position;
+    layout(location=1) in vec3 colorVtxIn;
+    uniform mat4 proj;
+    uniform mat4 view;
+    uniform mat4 anim;
+    out vec3 colorVtxOut;
+    void main() {
+        colorVtxOut = colorVtxIn;
         gl_Position = proj * view * anim * vec4(position, 1.0);
+    });
+
+    if(isTexured) {
+        /* define and compile the vertex shader */
+        vertexShaderSource = GLSL(
+        layout(location=0) in vec3 position;
+        layout(location=1) in vec2 textureCoordIn;
+        uniform mat4 proj;
+        uniform mat4 view;
+        uniform mat4 anim;
+        out vec2 textureCoordOut;
+        void main() {
+            textureCoordOut = vec2(textureCoordIn.x,
+                                1.0 - textureCoordIn.y);
+            gl_Position = proj * view * anim * vec4(position, 1.0);
+        });
     }
-                                          );
+
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -2055,22 +2087,23 @@ int main()
     }
 
     /* define and compile the fragment shader */
-    // const char* fragmentShaderSource = GLSL(
-    //     in vec3 colorVtxOut;
-    //     out vec4 outColor;
-    //     void main() {
-    //         outColor = vec4(colorVtxOut, 1.0f);
-    // }
-    //                                         );
-
     const char* fragmentShaderSource = GLSL(
-      in vec2 textureCoordOut;
-      out vec4 outColor;
-      uniform sampler2D textureData;
-      void main() {
-         outColor = texture(textureData, textureCoordOut);
-      }
-   );
+        in vec3 colorVtxOut;
+        out vec4 outColor;
+        void main() {
+            outColor = vec4(colorVtxOut, 1.0f);
+    });
+    
+    if(isTexured) {
+        fragmentShaderSource = GLSL(
+        in vec2 textureCoordOut;
+        out vec4 outColor;
+        uniform sampler2D textureData;
+        void main() {
+            outColor = texture(textureData, textureCoordOut);
+        });
+    }
+
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
@@ -2108,53 +2141,50 @@ int main()
     // glEnableVertexAttribArray(posAttrib);
     // glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,
     //                       6 * sizeof(GLfloat), 0);
+    if (!isTexured){
+        attributeName = "colorVtxIn";
+        GLint colAttrib = glGetAttribLocation(shaderProgram, attributeName);
+        if (colAttrib == -1) {
+            fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
+        }
+    } else {
+        attributeName = "textureCoordIn";
+        GLint texAttrib = glGetAttribLocation(shaderProgram, attributeName);
+        if (texAttrib == -1) {
+        fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
+        exit(EXIT_FAILURE);
+        }
 
-    // attributeName = "colorVtxIn";
-    // GLint colAttrib = glGetAttribLocation(shaderProgram, attributeName);
-    // if (colAttrib == -1) {
-    //     fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
-    // }
-    
-    // glEnableVertexAttribArray(colAttrib);
-    // glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
-    //                       6 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+        //  glEnableVertexAttribArray(texAttrib);
+        //  glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE,
+        //  5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
-    attributeName = "textureCoordIn";
-     GLint texAttrib = glGetAttribLocation(shaderProgram, attributeName);
-     if (texAttrib == -1) {
-     fprintf(stderr, "Error: could not bind attribute %s\n", attributeName);
-     exit(EXIT_FAILURE);
-     }
+        /* load texture image */
+        GLint texWidth, texHeight;
+        GLint channels;
+        unsigned char* texImage = SOIL_load_image("img/test.jpg",
+        &texWidth, &texHeight, &channels,
+        SOIL_LOAD_RGB);
+        if (texImage == NULL) {
+        fprintf(stderr, "Image file could not be loaded\n");
+        exit(EXIT_FAILURE);
+        }
 
-    //  glEnableVertexAttribArray(texAttrib);
-    //  glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE,
-    //  5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+        /* generate texture */
+        GLuint textureID;
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB,
+        GL_UNSIGNED_BYTE, texImage);
+        SOIL_free_image_data(texImage);
 
-    /* load texture image */
-    GLint texWidth, texHeight;
-     GLint channels;
-    unsigned char* texImage = SOIL_load_image("img/test.jpg",
-     &texWidth, &texHeight, &channels,
-     SOIL_LOAD_RGB);
-     if (texImage == NULL) {
-      fprintf(stderr, "Image file could not be loaded\n");
-      exit(EXIT_FAILURE);
-   }
-
-    /* generate texture */
-    GLuint textureID;
-     glActiveTexture(GL_TEXTURE0);
-     glGenTextures(1, &textureID);
-     glBindTexture(GL_TEXTURE_2D, textureID);
-     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB,
-     GL_UNSIGNED_BYTE, texImage);
-     SOIL_free_image_data(texImage);
-
-    /* set texture parameters */
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        /* set texture parameters */
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
 
     /* define a view transformation */
 
@@ -2180,15 +2210,17 @@ int main()
 
     // glm::mat4 anim4 = glm::mat4(1.0f);
 
-    /* bind uniforms and pass data to the shader program */
     const char* uniformName;
-    uniformName = "textureData";
-     GLint uniformTex = glGetUniformLocation(shaderProgram, uniformName);
-     if (uniformTex == -1) {
-     fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
-     exit(EXIT_FAILURE);
-     }
-     glUniform1i(uniformTex, 0);
+    if(isTexured){
+        /* bind uniforms and pass data to the shader program */
+        uniformName = "textureData";
+        GLint uniformTex = glGetUniformLocation(shaderProgram, uniformName);
+        if (uniformTex == -1) {
+        fprintf(stderr, "Error: could not bind uniform %s\n", uniformName);
+        exit(EXIT_FAILURE);
+        }
+        glUniform1i(uniformTex, 0);
+    }
 
     uniformName = "view";
     GLint uniformView = glGetUniformLocation(shaderProgram, uniformName);
@@ -2391,7 +2423,7 @@ int main()
 
 
             glUniformMatrix4fv(uniformAnim, 1, GL_FALSE, glm::value_ptr(myAnim));
-            glDrawArrays(GL_TRIANGLES, 0, 5*36);
+            glDrawArrays(GL_TRIANGLES, 0, 6*36);
         }
 
         if(move == 0 || move == 1 || move == 2 || move == 3 || move == 4 || move == 5) {
