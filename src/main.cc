@@ -93,19 +93,6 @@ static void initAxisArray() {
     }
 }
 
-static void printAxisArray() {
-  for (int u = 0; u < 27; u++) {
-    for (int i = 0; i < (int) cubePieceRotationsArray[u].size(); i++) {
-        cout << u << ": " << cubePieceRotationsArray[u].at(i) << endl;
-    }
-  }
-}
-
-static void fillRotationsArray(int cubePiece, int rotation) {
-    //cout << cubePiece <<": " << endl;
-    cubePieceRotationsArray[cubePiece].push_back(rotation);
-}
-
 static void calcAvDeltaTimeAndLimit() {
     avDeltaTime = avDeltaTime / DELTA_ACCURACY;
 
