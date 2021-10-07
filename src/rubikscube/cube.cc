@@ -40,25 +40,14 @@ std::array<GLfloat, 6 * 36> Cube::createCubes()
     }
     else
     {
-        // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
-        return addCube(vtx, this->position, this->depth);
+      return addCube(vtx, this->position, this->depth);
     }
 }
 
 std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int position, GLfloat depth)
 {
-
-    // printf("Pointer: %u\n", &vtx);
-    // std::cout << &vtx << std::endl;
-
-    // std::copy(std::begin(this->initCube), std::end(this->initCube), std::begin(vtx));
-    // printf("Pointer before alg: %u\n", *vtx);
-    // printf("Pointer during alg: %u\n", *vtx);
-
     int elementsPerCube = 36 * 6;
 
-    //left cube
-    // printf("START OF CUBE \n");
     for (int i = 0; i + 5 < elementsPerCube; i += 6)
     {
         vtx[i + 2] = vtx[i + 2] + depth;
@@ -370,17 +359,7 @@ std::array<GLfloat, 6 * 36> Cube::addCube(std::array<GLfloat, 6 * 36> vtx, int p
            }
         }
        }
-
-
-        //printf("%f, %f, %f, %f, %f, %f \n", vtx[i], vtx[i+1], vtx[i+2], vtx[i+3], vtx[i+4], vtx[i+5]);
-        // printf("x: %f ", vtx[i]);
-        // printf("y: %f ", vtx[i+1]);
-        // printf("z: %f \n", vtx[i+2]);
-        // if(i+5 == elementsPerCube - 1) {
-        //     printf("END OF CUBE \n");
-        // }
     }
 
-    // printf("Pointer after alg: %u\n", *vtx);
-    return vtx;
+  return vtx;
 }
